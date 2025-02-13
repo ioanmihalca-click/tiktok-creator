@@ -13,10 +13,22 @@ class ImageGenerationService
     protected string $modelOwner = 'black-forest-labs';
     protected string $modelName = 'flux-schnell';
 
+    private function enhancePrompt(string $prompt): string 
+    {
+        // Îmbunătățim promptul cu detalii pentru calitate și stil
+        $enhancedPrompt = trim($prompt) . ", professional photography, high quality, 4k, sharp focus, detailed, natural lighting, vertical composition for TikTok, vibrant colors, ultra detailed, photorealistic";
+        
+        // Adăugăm indicații negative pentru a evita artefacte nedorite
+        $negativePrompt = "low quality, blurry, watermark, text, bad anatomy, cut off, ugly, deformed";
+        
+        return "$enhancedPrompt --no $negativePrompt";
+    }
+
     public function generateImage(string $prompt)
     {
         try {
-            Log::info('Starting image generation', ['prompt' => $prompt]);
+            $enhancedPrompt = $this->enhancePrompt($prompt);
+            Log::info('Starting image generation', ['original_prompt' => $prompt, 'enhanced_prompt' => $enhancedPrompt]);
             
             // Generăm imaginea cu Replicate
             $prediction = Replicate::createModelPrediction(
@@ -25,14 +37,14 @@ class ImageGenerationService
                 'latest',
                 [
                     'input' => [
-                        'prompt' => $prompt,
-                        'go_fast' => true,
-                        'megapixels' => "1",
+                        'prompt' => $enhancedPrompt,
+                        'go_fast' => false, // Dezactivăm go_fast pentru calitate mai bună
+                        'megapixels' => "2", // Creștem rezoluția
                         'num_outputs' => 1,
                         'aspect_ratio' => "9:16",
                         'output_format' => "webp",
-                        'output_quality' => 80,
-                        'num_inference_steps' => 4
+                        'output_quality' => 95, // Creștem calitatea output-ului
+                        'num_inference_steps' => 20 // Creștem numărul de pași pentru rezultate mai bune
                     ]
                 ]
             );

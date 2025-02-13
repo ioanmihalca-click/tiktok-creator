@@ -96,14 +96,14 @@ class ScriptGenerationService
             'amuzant' => 'folosește umor și un ton relaxat',
             'educational' => 'explică într-un mod simplu și clar',
             'motivational' => 'inspiră și motivează audiența',
-            'storytelling' => 'spune o poveste captivantă'
+            'storytelling' => 'prezintă informația într-un mod profesional și structurat'
         ];
 
         $styleInfo = $stylePrompts[$style] ?? $stylePrompts['amuzant'];
 
         return "Creează un script TikTok în limba română despre '{$topic}'. 
                 Stil: {$styleInfo}. 
-                Durata totală: maxim 15 secunde.
-                Asigură-te că textul este scurt, captivant și natural în limba română.";
+                Durata totală: între 30 și 60 de secunde.
+                Asigură-te că textul este captivant și natural în limba română.";
     }
 }
