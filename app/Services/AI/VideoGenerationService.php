@@ -33,38 +33,29 @@ class VideoGenerationService
 
             if (!isset($script['total_duration']) || !is_numeric($script['total_duration'])) {
                 Log::warning('Missing or invalid total_duration in script. Using fallback.', ['script' => $script]);
-                $videoDuration = 15;
+                $videoDuration = 15; // Fallback duration
             } else {
                 $videoDuration = (float) $script['total_duration'];
             }
 
+            // UN SINGUR TRACK (pentru imagine, text suprapus și audio)
             $timeline = [
-                'soundtrack' => [
-                    'src'    => $videoProject->audio_url,
-                   // 'effect' => 'fadeInFadeOut'
-                ],
-                'background' => '#000000',
+               // 'soundtrack' => [
+               //     'src'    => $videoProject->audio_url,
+                    //'effect' => 'fadeInFadeOut' 
+              //  ],
+                'background' => '#000000', // Opțional
                 'tracks'     => [
-                    // 1. Track-ul cu HTML (text) *ÎNAINTE* de track-ul cu imaginea:
-                    [
-                        'clips' => $this->generateTextClips($script) //  Aici se generează clipurile HTML.
-                    ],
-                    // 2. Track-ul cu imaginea:
-                    [
-                        'clips' => [
-                            [
-                                'asset'  => [
-                                    'type' => 'image',
-                                    'src'  => $videoProject->image_url
-                                ],
-                                'start'  => 0,
-                                'length' => $videoDuration, // Folosește durata calculată.
-                                'fit'    => 'cover'
-                            ]
-                        ]
-                    ],
+                    [  // Un singur track
+                        'clips' => array_merge(
+                            $this->generateImageClip($videoProject, $videoDuration), // Imaginea PRIMA
+                            $this->generateTextClips($script),       // Textul suprapus
+                            $this->generateAudioClip($videoProject, $videoDuration)  //Audio-ul
+                        )
+                    ]
                 ]
             ];
+
 
             $output = [
                 'format'      => 'mp4',
@@ -72,14 +63,14 @@ class VideoGenerationService
                 'aspectRatio' => '9:16'
             ];
 
-            // Setăm timeout mare pentru Shotstack
-            $response = Http::timeout(60)->withHeaders([
+            $response = Http::timeout(120)->withHeaders([ // Timeout mai mare
                 'x-api-key'    => $this->apiKey,
                 'Content-Type' => 'application/json'
             ])->post($this->baseUrl . '/render', [
                 'timeline' => $timeline,
                 'output'   => $output
             ]);
+
 
             if (!$response->successful()) {
                 throw new Exception('Shotstack API error: ' . $response->body());
@@ -90,7 +81,7 @@ class VideoGenerationService
             Log::info('Video render started', [
                 'project_id' => $videoProject->id,
                 'render_id'  => $renderId,
-                'timeline'   => $timeline, // Pentru debugging, e util să loghezi timeline-ul complet.
+                'timeline'   => $timeline, // Loghează timeline-ul
                 'output'     => $output
             ]);
 
@@ -98,11 +89,12 @@ class VideoGenerationService
                 'success'   => true,
                 'render_id' => $renderId
             ];
+
         } catch (Exception $e) {
             Log::error('Video generation failed', [
                 'error'      => $e->getMessage(),
                 'project_id' => $videoProject->id,
-                'timeline'   => $timeline ?? null, // Loghează timeline-ul chiar și în caz de eroare.
+                'timeline'   => $timeline ?? null,
                 'output'     => $output ?? null
             ]);
 
@@ -112,10 +104,43 @@ class VideoGenerationService
             ];
         }
     }
+    private function generateImageClip($videoProject, $videoDuration)
+    {
+        return [
+            [
+                'asset'  => [
+                    'type' => 'image',
+                    'src'  => $videoProject->image_url
+                ],
+                'start'  => 0,
+                'length' => $videoDuration,
+                'fit'    => 'cover'
+            ]
+        ];
+    }
+    private function generateAudioClip($videoProject, $videoDuration){
+
+        if(!$videoProject->audio_url){
+            return []; // Returneaza un array gol daca nu exista audio
+        }
+
+        return [
+            [
+                'asset' => [
+                    'type' => 'audio',
+                    'src' => $videoProject->audio_url,
+                ],
+                'start' => 0,
+                'length' => $videoDuration,
+                //'effect' => 'fadeInFadeOut'
+            ]
+        ];
+    }
 
     private function generateTextClips($script)
     {
         $clips = [];
+        $currentTime = 0; // Timpul curent (începe de la 0)
 
         if (!isset($script['scenes']) || !is_array($script['scenes'])) {
             Log::warning('Invalid script format: Missing or invalid "scenes" array.', ['script' => $script]);
@@ -123,16 +148,15 @@ class VideoGenerationService
         }
 
         foreach ($script['scenes'] as $scene) {
-            if (!isset($scene['text'], $scene['start_time'], $scene['duration'], $scene['position'])) {
+            if (!isset($scene['text'], $scene['duration'])) {
                 Log::warning('Invalid scene format: Missing required fields.', ['scene' => $scene]);
                 continue;
             }
 
-            // 1. Word Wrapping.
             $words = explode(" ", $scene['text']);
             $lines = [];
             $currentLine = "";
-            $maxLineWidth = 25; // Reducem și mai mult, pentru a forța mai multe rânduri.
+            $maxLineWidth = 25;
 
             foreach ($words as $word) {
                 if (strlen($currentLine) + strlen($word) + 1 <= $maxLineWidth) {
@@ -144,9 +168,7 @@ class VideoGenerationService
             }
             $lines[] = $currentLine;
 
-            // 2. Construiește HTML-ul (cu Roboto, uppercase, și dimensiune mai mare).
             $html = '<div style="width: 100%; text-align: center; position: absolute; bottom: 20px;">';
-
             foreach ($lines as $line) {
                 $html .= '<p style="margin: 5px 0; padding: 10px; font-size: 40px; font-family: Roboto, sans-serif; color: white; background-color: rgba(0, 0, 0, 0.7); border-radius: 15px; display: inline-block; text-transform: uppercase;">' .
                     htmlspecialchars($line) .
@@ -154,29 +176,28 @@ class VideoGenerationService
             }
             $html .= '</div>';
 
-
-            // 3. Creează asset-ul HTML.
             $htmlAsset = [
                 'type'      => 'html',
                 'html'      => $html,
-                'width'     => 900,  //  Mărește lățimea.
-                'height'    => 500,   // Mărește înălțimea. Ajustează sau calculează dinamic.
-                'background' => 'transparent',
-                //Elimina mentiunea position
+                'width'     => 900,
+                'height'    => 500,
+                'background' => 'transparent'
             ];
 
-
-            // 4. Creează clipul.
             $clips[] = [
                 'asset'     => $htmlAsset,
-                'start'     => (float) $scene['start_time'],
-                'length'    => (float) $scene['duration'],
-                'transition' => ['in' => 'fade', 'out' => 'fade'],
+                'start'     => $currentTime,       // Timpul de start este timpul CURENT
+                'length'    => $scene['duration'], // Durata scenei
+                'transition' => ['in' => 'fade', 'out' => 'fade'], // Opțional
             ];
+
+            $currentTime += $scene['duration'];  // Incrementăm timpul curent cu durata scenei
         }
 
         return $clips;
     }
+
+
 
     public function checkStatus($renderId)
     {
