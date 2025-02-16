@@ -2,18 +2,78 @@
 
 namespace App\Services\AI;
 
-use Illuminate\Support\Str;
+use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Log;
-use HalilCosdu\Replicate\Facades\Replicate;
 use Illuminate\Support\Facades\Http;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ImageGenerationService
 {
+    public function generateImage(string $prompt)
+    {
+        try {
+            Log::info('Starting image generation with DALL-E', ['prompt' => $prompt]);
+
+            $result = OpenAI::images()->create([
+                'model' => 'dall-e-3',
+                'prompt' => $prompt,
+                'n' => 1,
+                'size' => '1024x1792',
+                'quality' => 'standard',
+                'style' => 'vivid',
+                'response_format' => 'url',
+            ]);
+
+            if (!isset($result->data[0]->url)) {
+                throw new \Exception('No image URL in DALL-E response');
+            }
+
+            $imageUrl = $result->data[0]->url;
+           
+            $imageContent = Http::timeout(60)->get($imageUrl)->body();
+            $tempFile = tempnam(sys_get_temp_dir(), 'bg_');
+            file_put_contents($tempFile, $imageContent);
+
+            try {
+                $uploadResult = Cloudinary::upload($tempFile, [
+                    'folder' => 'tiktok/backgrounds',
+                    'public_id' => 'bg_' . time(),
+                    'resource_type' => 'image'
+                ]);
+
+                Log::info('Image uploaded to Cloudinary', [
+                    'cloudinary_url' => $uploadResult->getSecurePath()
+                ]);
+
+                return [
+                    'success' => true,
+                    'image_url' => $uploadResult->getSecurePath(),
+                    'cloudinary_public_id' => $uploadResult->getPublicId()
+                ];
+            } finally {
+                if (file_exists($tempFile)) {
+                    unlink($tempFile); // Ștergem fișierul temporar indiferent de rezultat
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Image Generation Error', [
+                'error' => $e->getMessage(),
+                'prompt' => $prompt,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /* Implementarea anterioară cu Replicate
     protected string $modelOwner = 'black-forest-labs';
     protected string $modelName = 'flux-schnell';
 
-    public function generateImage(string $prompt)
+    public function generateImageWithReplicate(string $prompt)
     {
         try {
             Log::info('Starting image generation', ['prompt' => $prompt]);
@@ -65,7 +125,7 @@ class ImageGenerationService
                         'resource_type' => 'image'
                     ]);
 
-                    unlink($tempFile); // Ștergem fișierul temporar
+                    unlink($tempFile);
 
                     Log::info('Image uploaded to Cloudinary', [
                         'cloudinary_url' => $uploadResult->getSecurePath()
@@ -99,4 +159,5 @@ class ImageGenerationService
             ];
         }
     }
+    */
 }

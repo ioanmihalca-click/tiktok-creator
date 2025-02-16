@@ -14,7 +14,7 @@ class ScriptGenerationService
             Log::info('Starting script generation', ['topic' => $topic, 'style' => $style]);
 
             $result = OpenAI::chat()->create([
-                'model' => 'gpt-4o', // Foloseste modelul implicit, fara data
+                'model' => 'gpt-4o-2024-08-06', 
                 'messages' => [
                     [
                         'role' => 'system',

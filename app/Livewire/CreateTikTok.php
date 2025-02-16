@@ -98,35 +98,34 @@ class CreateTikTok extends Component
         NarrationService $narrationService,
         VideoGenerationService $videoService
     ) {
+         // Setăm un timp mai mare de execuție pentru această operațiune
+    ini_set('max_execution_time', '300'); // 5 minute
+    set_time_limit(300); // 5 minute
+
         $this->isProcessing = false; // Reset initial state
-
-        // Ideally, this value should be in a configuration file (e.g., config/app.php)
-        // ini_set('max_execution_time', config('app.max_execution_time', 120));
-        ini_set('max_execution_time', '120'); // Fallback to 120 seconds
-        set_time_limit(120);
-
+    
+        // Modificăm validarea să ceară doar topic și category
         $this->validate([
             'topic' => 'required|min:3',
-            'categorySlug' => 'required',
-            'title' => 'required|min:3' // Added title validation
+            'categorySlug' => 'required'
         ]);
-
+    
         try {
-            DB::beginTransaction(); // Start transaction
-
+            DB::beginTransaction();
+    
             // Obținem numele categoriei
             $categoryName = $categoryService->getCategoryBySlug($this->categorySlug);
             if (!$categoryName) {
                 throw new Exception("Category not found: " . $this->categorySlug);
             }
-
+    
             // 1. Generăm scriptul
             $this->script = $scriptService->generate($this->topic, $categoryName);
-
+    
             // 2. Generăm imaginea
             if (isset($this->script['background_prompt'])) {
                 $imageResult = $imageService->generateImage($this->script['background_prompt']);
-
+    
                 if ($imageResult['success']) {
                     $this->imageUrl = $imageResult['image_url'];
                     $imageCloudinaryId = $imageResult['cloudinary_public_id'];
@@ -134,13 +133,13 @@ class CreateTikTok extends Component
                     throw new Exception("Image generation failed: " . $imageResult['error']);
                 }
             }
-
+    
             // 3. Generăm nararea
             $fullNarration = '';
             foreach ($this->script['scenes'] as $scene) {
                 $fullNarration .= $scene['narration'] . " ";
             }
-
+    
             $narrationResult = $narrationService->generate($fullNarration);
             if ($narrationResult['status'] === 'success') {
                 $this->audioUrl = $narrationResult['audio_url'];
@@ -148,10 +147,10 @@ class CreateTikTok extends Component
             } else {
                 throw new Exception("Narration generation failed");
             }
-
-            // 4. Salvăm proiectul
+    
+            // 4. Salvăm proiectul folosind topic-ul ca titlu
             $project = Auth::user()->videoProjects()->create([
-                'title' => $this->title ?? $this->topic,  // Use $this->title
+                'title' => $this->topic,  // Folosim topic-ul ca titlu
                 'script' => $this->script,
                 'status' => 'processing',
                 'image_url' => $this->imageUrl,
@@ -159,32 +158,29 @@ class CreateTikTok extends Component
                 'audio_url' => $this->audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId ?? null
             ]);
-
+    
             // 5. Generăm videoclipul final
-            // Ideally, this should be dispatched to a queue:
-            // VideoGenerationJob::dispatch($project);
             $videoResult = $videoService->generate($project);
-
+    
             if ($videoResult['success']) {
                 $project->update([
                     'status' => 'rendering',
                     'render_id' => $videoResult['render_id']
                 ]);
-
+    
                 $this->render_id = $videoResult['render_id'];
                 $this->isProcessing = true;
-
+    
                 session()->flash('message', 'TikTok project created and rendering started!');
             } else {
-                $this->isProcessing = false;
                 throw new Exception("Video generation failed: " . $videoResult['error']);
             }
-
-            DB::commit(); // Commit transaction
-
+    
+            DB::commit();
+    
         } catch (Exception $e) {
             $this->isProcessing = false;
-            DB::rollBack(); // Rollback transaction on error
+            DB::rollBack();
             Log::error('TikTok generation failed', [
                 'error' => $e->getMessage(),
                 'topic' => $this->topic,
