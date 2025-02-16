@@ -12,7 +12,7 @@ class NarrationService
 {
     protected $apiKey;
     protected $baseUrl = 'https://api.elevenlabs.io/v1';
-    protected $defaultVoiceId = 'OlBp4oyr3FBAGEAtJOnU';
+    protected $defaultVoiceId = 'S98OhkhaxeAKHEbhoLi7';
 
     public function __construct()
     {
