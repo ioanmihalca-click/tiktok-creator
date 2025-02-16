@@ -15,7 +15,7 @@ use App\Services\AI\VideoGenerationService;
 use App\Services\AI\ScriptGenerationService;
 use Livewire\Attributes\Computed;
 
-#[\Livewire\Attributes\Layout('layouts.app')]
+
 class CreateTikTok extends Component
 {
     public ?string $title = null;
