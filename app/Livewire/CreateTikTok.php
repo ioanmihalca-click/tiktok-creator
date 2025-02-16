@@ -98,34 +98,39 @@ class CreateTikTok extends Component
         NarrationService $narrationService,
         VideoGenerationService $videoService
     ) {
-         // Setăm un timp mai mare de execuție pentru această operațiune
-    ini_set('max_execution_time', '300'); // 5 minute
-    set_time_limit(300); // 5 minute
+
+        // La început, resetăm starea video-ului
+        $this->videoUrl = null;
+        $this->isProcessing = false;
+
+        // Setăm un timp mai mare de execuție pentru această operațiune
+        ini_set('max_execution_time', '300'); // 5 minute
+        set_time_limit(300); // 5 minute
 
         $this->isProcessing = false; // Reset initial state
-    
+
         // Modificăm validarea să ceară doar topic și category
         $this->validate([
             'topic' => 'required|min:3',
             'categorySlug' => 'required'
         ]);
-    
+
         try {
             DB::beginTransaction();
-    
+
             // Obținem numele categoriei
             $categoryName = $categoryService->getCategoryBySlug($this->categorySlug);
             if (!$categoryName) {
                 throw new Exception("Category not found: " . $this->categorySlug);
             }
-    
+
             // 1. Generăm scriptul
             $this->script = $scriptService->generate($this->topic, $categoryName);
-    
+
             // 2. Generăm imaginea
             if (isset($this->script['background_prompt'])) {
                 $imageResult = $imageService->generateImage($this->script['background_prompt']);
-    
+
                 if ($imageResult['success']) {
                     $this->imageUrl = $imageResult['image_url'];
                     $imageCloudinaryId = $imageResult['cloudinary_public_id'];
@@ -133,13 +138,13 @@ class CreateTikTok extends Component
                     throw new Exception("Image generation failed: " . $imageResult['error']);
                 }
             }
-    
+
             // 3. Generăm nararea
             $fullNarration = '';
             foreach ($this->script['scenes'] as $scene) {
                 $fullNarration .= $scene['narration'] . " ";
             }
-    
+
             $narrationResult = $narrationService->generate($fullNarration);
             if ($narrationResult['status'] === 'success') {
                 $this->audioUrl = $narrationResult['audio_url'];
@@ -147,7 +152,7 @@ class CreateTikTok extends Component
             } else {
                 throw new Exception("Narration generation failed");
             }
-    
+
             // 4. Salvăm proiectul folosind topic-ul ca titlu
             $project = Auth::user()->videoProjects()->create([
                 'title' => $this->topic,  // Folosim topic-ul ca titlu
@@ -158,26 +163,26 @@ class CreateTikTok extends Component
                 'audio_url' => $this->audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId ?? null
             ]);
-    
+
             // 5. Generăm videoclipul final
             $videoResult = $videoService->generate($project);
-    
+
             if ($videoResult['success']) {
                 $project->update([
                     'status' => 'rendering',
                     'render_id' => $videoResult['render_id']
                 ]);
-    
+
                 $this->render_id = $videoResult['render_id'];
                 $this->isProcessing = true;
-    
-                session()->flash('message', 'TikTok project created and rendering started!');
+                $this->videoUrl = null; // Resetăm explicit URL-ul video-ului vechi
+
+                session()->flash('message', 'Proiectul TikTok a fost creat și randarea a început!');
             } else {
                 throw new Exception("Video generation failed: " . $videoResult['error']);
             }
-    
+
             DB::commit();
-    
         } catch (Exception $e) {
             $this->isProcessing = false;
             DB::rollBack();
@@ -196,30 +201,31 @@ class CreateTikTok extends Component
             $project = Auth::user()->videoProjects()
                 ->where('render_id', $this->render_id)
                 ->first();
-    
+
             if (!$project) {
                 $this->isProcessing = false;
                 return;
             }
-    
+
             $status = $videoService->checkStatus($project->render_id);
-    
+
             if ($status['success'] && $status['status'] === 'done') {
                 $project->update([
                     'status' => 'completed',
                     'video_url' => $status['url']
                 ]);
-    
+
                 $this->videoUrl = $status['url'];
                 $this->isProcessing = false;
-                session()->flash('message', 'Video is ready!');
+
+                // Forțăm un refresh al componentei
+                $this->dispatch('videoReady');
+
+                session()->flash('message', 'Videoclipul este gata!');
             } elseif (!$status['success'] || $status['status'] === 'failed') {
                 $project->update(['status' => 'failed']);
                 $this->isProcessing = false;
                 session()->flash('error', 'Video generation failed: ' . ($status['error'] ?? 'Unknown error'));
-            } elseif ($status['status'] !== 'rendering') {
-                // For any other non-rendering status, stop processing
-                $this->isProcessing = false;
             }
         } catch (Exception $e) {
             $this->isProcessing = false;
@@ -230,7 +236,6 @@ class CreateTikTok extends Component
             session()->flash('error', 'Error checking status: ' . $e->getMessage());
         }
     }
-
     public function render(CategoryService $categoryService)
     {
         return view('livewire.create-tik-tok', [

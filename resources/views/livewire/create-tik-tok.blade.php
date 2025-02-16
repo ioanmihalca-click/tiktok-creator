@@ -219,7 +219,7 @@
 
                 <!-- Video Status -->
                 @if($isProcessing)
-                <div wire:poll.10s="checkStatus">
+                <div wire:poll.5s="checkStatus">
                     <div class="p-6 bg-white shadow-sm rounded-xl">
                         <h2 class="flex items-center gap-2 mb-4 text-xl font-bold text-gray-900">
                             <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,3 +283,11 @@
         @endif
     </div>
 </div>
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('videoReady', () => {
+            // Forțăm un refresh al secțiunii video
+            Livewire.dispatch('refresh');
+        });
+    });
+</script>

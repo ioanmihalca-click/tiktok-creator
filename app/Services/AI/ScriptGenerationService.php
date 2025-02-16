@@ -2,34 +2,33 @@
 
 namespace App\Services\AI;
 
-use OpenAI\Laravel\Facades\OpenAI;
+use Anthropic\Laravel\Facades\Anthropic;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
 class ScriptGenerationService
 {
-    public function generate(string $topic, string $style = 'amuzant')
+    public function generate(string $topic, string $categoryName)
     {
         try {
-            Log::info('Starting script generation', ['topic' => $topic, 'style' => $style]);
+            Log::info('Starting script generation', ['topic' => $topic, 'category' => $categoryName]);
 
-            $result = OpenAI::chat()->create([
-                'model' => 'gpt-4o-2024-08-06', 
+            $result = Anthropic::messages()->create([
+                'model' => 'claude-3-5-sonnet-20241022',
+                'max_tokens' => 1024,
+                'system' => $this->getSystemPrompt(),
                 'messages' => [
                     [
-                        'role' => 'system',
-                        'content' => $this->getSystemPrompt()
-                    ],
-                    [
                         'role' => 'user',
-                        'content' => $this->getUserPrompt($topic, $style)
+                        'content' => "Creează un script TikTok în limba română despre '{$topic}' din categoria '{$categoryName}'. 
+                                    Durata totală: între 30 și 60 de secunde.
+                                    Asigură-te că textul este captivant și natural în limba română."
                     ]
                 ],
-                'response_format' => ['type' => 'json_object'],
-                'temperature' => 0.7, // Adăugat temperature
+                'temperature' => 0.7,
             ]);
 
-            $content = $result->choices[0]->message->content;
+            $content = $result->content[0]->text;
             Log::info('Script generated successfully', ['content' => $content]);
 
             $script = json_decode($content, true);
@@ -56,7 +55,7 @@ class ScriptGenerationService
             Log::error('Script generation failed', [
                 'error' => $e->getMessage(),
                 'topic' => $topic,
-                'style' => $style
+                'category' => $categoryName
             ]);
             throw new Exception("Generarea scriptului a eșuat: " . $e->getMessage());
         }
@@ -67,7 +66,12 @@ class ScriptGenerationService
         return <<<EOT
     Ești un creator de conținut expert în realizarea de scripturi virale pentru TikTok în limba română, specializat pe nișa ta. Scopul tău este să generezi scripturi captivante, amuzante (dacă e cazul) și relevante pentru publicul din România, care să încurajeze interacțiunea (like-uri, comentarii, distribuiri).
     
-    **FOARTE IMPORTANT: Durata totală a videoclipului trebuie să fie între 30 și 60 de secunde.**
+    **FOARTE IMPORTANT: Scriptul trebuie să încurajeze activ interacțiunea prin:
+                        - Întrebări care să stimuleze comentariile
+                        - Call-to-action pentru like-uri și share
+                        - Hook puternic în primele 3 secunde
+                        - Suspans care să țină utilizatorul până la final
+                        - Durata totală a videoclipului trebuie să fie între 30 și 60 de secunde.**
     
 
     Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea structură:
@@ -86,24 +90,7 @@ class ScriptGenerationService
         "style_notes": "note despre stil și aspect",
         "hashtags": ["#tag1", "#tag2"],
         "music_suggestion": "tip de muzică recomandată"
-
     }
     EOT;
-}
-    private function getUserPrompt(string $topic, string $style): string
-    {
-        $stylePrompts = [
-            'amuzant' => 'folosește umor și un ton relaxat',
-            'educational' => 'explică într-un mod simplu și clar',
-            'motivational' => 'inspiră și motivează audiența',
-            'storytelling' => 'prezintă informația într-un mod profesional și structurat'
-        ];
-
-        $styleInfo = $stylePrompts[$style] ?? $stylePrompts['amuzant'];
-
-        return "Creează un script TikTok în limba română despre '{$topic}'. 
-                Stil: {$styleInfo}. 
-                Durata totală: între 30 și 60 de secunde.
-                Asigură-te că textul este captivant și natural în limba română.";
     }
 }
