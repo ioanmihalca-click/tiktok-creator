@@ -45,7 +45,7 @@ class ScriptGenerationService
                 unset($scene['start_time']);      // Eliminăm start_time
                 // Estimăm durata bazată pe lungimea narației (ajustabil)
                 $words = str_word_count($scene['narration']);
-                $wordsPerSecond = 2.5; // Estimare: 2.5 cuvinte pe secundă (poți ajusta)
+                $wordsPerSecond = 2.3; // Estimare: 2.3 cuvinte pe secundă (poți ajusta)
                 $scene['duration'] = max(1, round($words / $wordsPerSecond)); // Minim 1 secundă
                 $totalDuration += $scene['duration'];
 

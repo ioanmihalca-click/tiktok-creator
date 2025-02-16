@@ -125,6 +125,7 @@ class CreateTikTok extends Component
             if ($narrationResult['status'] === 'success') {
                 $this->audioUrl = $narrationResult['audio_url'];
                 $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
+                $audioDuration = $narrationResult['audio_duration']; // Obținem durata
             } else {
                 throw new Exception("Narration generation failed");
             }
@@ -137,8 +138,10 @@ class CreateTikTok extends Component
                 'image_url' => $this->imageUrl,
                 'image_cloudinary_id' => $imageCloudinaryId ?? null,
                 'audio_url' => $this->audioUrl,
-                'audio_cloudinary_id' => $audioCloudinaryId ?? null
+                'audio_cloudinary_id' => $audioCloudinaryId ?? null,
+                'audio_duration' => $audioDuration ?? null // Foarte important!
             ]);
+
 
 
             $videoResult = $this->videoService->generate($project);

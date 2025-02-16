@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use getID3; 
 
 class NarrationService
 {
@@ -23,9 +24,9 @@ class NarrationService
     {
         try {
             Log::info('Starting narration generation', ['text' => $text]);
-    
+
             $voiceId = $voiceId ?? $this->defaultVoiceId;
-    
+
             // Setăm timeout mai mare pentru ElevenLabs
             $response = Http::timeout(60)->withHeaders([
                 'xi-api-key' => $this->apiKey,
@@ -40,37 +41,44 @@ class NarrationService
                     'use_speaker_boost' => true
                 ]
             ]);
-    
+
             if (!$response->successful()) {
                 throw new Exception('ElevenLabs API error: ' . $response->body());
             }
-    
+
             // Salvăm temporar audio-ul
             $tempFile = tempnam(sys_get_temp_dir(), 'narration_');
             file_put_contents($tempFile, $response->body());
-    
+
+            // OBȚINEM DURATA REALĂ:
+            $getID3 = new getID3;
+            $fileInfo = $getID3->analyze($tempFile);
+            $audioDuration = $fileInfo['playtime_seconds']; // Durata în secunde
+
+
             // Setăm timeout mai mare pentru Cloudinary
             Config::set('cloudinary.upload_timeout', 60);
-            
+
             // Încărcăm pe Cloudinary
             $uploadResult = Cloudinary::uploadFile($tempFile, [
                 'folder' => 'tiktok/narrations',
                 'public_id' => 'narration_' . time(),
                 'resource_type' => 'video' // pentru fișiere audio
             ]);
-    
+
             unlink($tempFile); // Ștergem fișierul temporar
-    
+
             Log::info('Narration uploaded to Cloudinary', [
                 'cloudinary_url' => $uploadResult->getSecurePath()
             ]);
-    
+
             return [
                 'status' => 'success',
                 'audio_url' => $uploadResult->getSecurePath(),
-                'cloudinary_public_id' => $uploadResult->getPublicId()
+                'cloudinary_public_id' => $uploadResult->getPublicId(),
+                'audio_duration' => $audioDuration // Returnăm și durata!
             ];
-    
+
         } catch (Exception $e) {
             Log::error('Narration generation failed', [
                 'error' => $e->getMessage(),

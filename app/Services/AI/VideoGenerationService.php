@@ -31,19 +31,16 @@ class VideoGenerationService
                 $script = $videoProject->script;
             }
 
-            if (!isset($script['total_duration']) || !is_numeric($script['total_duration'])) {
-                Log::warning('Missing or invalid total_duration in script. Using fallback.', ['script' => $script]);
-                $videoDuration = 15; // Fallback duration
-            } else {
-                $videoDuration = (float) $script['total_duration'];
-            }
+            // Folosim durata audio REALĂ, dacă există; altfel, fallback (cu marjă, dacă nu folosim getID3):
+            $videoDuration = $videoProject->audio_duration ?? (float) ($script['total_duration'] ?? 15) + 2;
+
 
             // UN SINGUR TRACK (pentru imagine, text suprapus și audio)
             $timeline = [
                // 'soundtrack' => [
-               //     'src'    => $videoProject->audio_url,
-                    //'effect' => 'fadeInFadeOut' 
-              //  ],
+                //    'src'    => $videoProject->audio_url,
+                 //   'effect' => 'fadeInFadeOut' // Opțional
+          //      ],
                 'background' => '#000000', // Opțional
                 'tracks'     => [
                     [  // Un singur track
@@ -113,8 +110,9 @@ class VideoGenerationService
                     'src'  => $videoProject->image_url
                 ],
                 'start'  => 0,
-                'length' => $videoDuration,
-                'fit'    => 'cover'
+                'length' => $videoDuration, // Folosește durata EXACTĂ!
+                'fit'    => 'cover',
+                'effect' => 'zoomIn' // Exemplu de efect PERMIS pe clip.  Elimină dacă nu vrei.
             ]
         ];
     }
@@ -131,8 +129,8 @@ class VideoGenerationService
                     'src' => $videoProject->audio_url,
                 ],
                 'start' => 0,
-                'length' => $videoDuration,
-                //'effect' => 'fadeInFadeOut'
+                'length' => $videoDuration, // Folosește durata EXACTĂ!
+                // NU mai punem effect aici
             ]
         ];
     }
@@ -188,7 +186,7 @@ class VideoGenerationService
                 'asset'     => $htmlAsset,
                 'start'     => $currentTime,       // Timpul de start este timpul CURENT
                 'length'    => $scene['duration'], // Durata scenei
-                'transition' => ['in' => 'fade', 'out' => 'fade'], // Opțional
+                'transition' => ['in' => 'fade', 'out' => 'fade'], // Opțional: tranziții, NU effect
             ];
 
             $currentTime += $scene['duration'];  // Incrementăm timpul curent cu durata scenei
