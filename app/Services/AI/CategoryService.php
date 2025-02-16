@@ -251,4 +251,32 @@ class CategoryService
 
         return null;
     }
+
+    public function getCategoryFullPath(string $slug): ?string
+    {
+        return $this->findCategoryPath($this->categories, $slug);
+    }
+
+    private function findCategoryPath(array $categories, string $slug, array $path = []): ?string
+    {
+        foreach ($categories as $currentSlug => $category) {
+            $currentPath = [...$path];
+            if (isset($category['name'])) {
+                $currentPath[] = $category['name'];
+            }
+
+            if ($currentSlug === $slug) {
+                return implode('/', $currentPath);
+            }
+
+            if (isset($category['subcategories'])) {
+                $found = $this->findCategoryPath($category['subcategories'], $slug, $currentPath);
+                if ($found !== null) {
+                    return $found;
+                }
+            }
+        }
+
+        return null;
+    }
 }

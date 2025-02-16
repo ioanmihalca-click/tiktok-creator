@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Log;
 
 class ScriptGenerationService
 {
-    public function generate(string $topic, string $categoryName)
+    public function generate(string $fullCategoryPath) // Modificat: primește calea completă a categoriei
     {
         try {
-            Log::info('Starting script generation', ['topic' => $topic, 'category' => $categoryName]);
+            Log::info('Starting script generation', ['category' => $fullCategoryPath]); // Modificat: loghează doar categoria
 
             $result = Anthropic::messages()->create([
                 'model' => 'claude-3-5-sonnet-20241022',
@@ -20,7 +20,8 @@ class ScriptGenerationService
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => "Creează un script TikTok în limba română despre '{$topic}' din categoria '{$categoryName}'. 
+                        // Modificat: prompt-ul folosește doar calea completă a categoriei
+                        'content' => "Creează un script TikTok în limba română pentru categoria: '{$fullCategoryPath}'.
                                     Durata totală: între 30 și 60 de secunde.
                                     Asigură-te că textul este captivant și natural în limba română."
                     ]
@@ -38,7 +39,7 @@ class ScriptGenerationService
                 throw new Exception('Format de script invalid: lipsește array-ul "scenes".');
             }
 
-            // Calculează durata totală:
+            // Calculează durata totală (acest cod rămâne neschimbat):
             $totalDuration = 0;
             if (isset($script['scenes']) && is_array($script['scenes'])) {
                 foreach ($script['scenes'] as $scene) {
@@ -54,14 +55,13 @@ class ScriptGenerationService
         } catch (Exception $e) {
             Log::error('Script generation failed', [
                 'error' => $e->getMessage(),
-                'topic' => $topic,
-                'category' => $categoryName
+                'category' => $fullCategoryPath // Modificat: loghează doar categoria
             ]);
             throw new Exception("Generarea scriptului a eșuat: " . $e->getMessage());
         }
     }
-
-    private function getSystemPrompt(): string
+  //Restul codului este neschimbat
+   private function getSystemPrompt(): string
     {
         return <<<EOT
     Ești un creator de conținut expert în realizarea de scripturi virale pentru TikTok în limba română, specializat pe nișa ta. Scopul tău este să generezi scripturi captivante, amuzante (dacă e cazul) și relevante pentru publicul din România, care să încurajeze interacțiunea (like-uri, comentarii, distribuiri).

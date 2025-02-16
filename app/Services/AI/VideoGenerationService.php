@@ -41,7 +41,7 @@ class VideoGenerationService
             $timeline = [
                 'soundtrack' => [
                     'src'    => $videoProject->audio_url,
-                    'effect' => 'fadeInFadeOut'
+                   // 'effect' => 'fadeInFadeOut'
                 ],
                 'background' => '#000000',
                 'tracks'     => [

@@ -19,7 +19,7 @@ use Livewire\Attributes\Computed;
 class CreateTikTok extends Component
 {
     public ?string $title = null;
-    public ?string $topic = null;
+    //public ?string $topic = null;
     public string $categorySlug = 'romantice';
     public array $categories = [];
     public string $status = 'draft';
@@ -29,19 +29,19 @@ class CreateTikTok extends Component
     public ?string $videoUrl = null;
     public ?string $render_id = null;
     public bool $isProcessing = false;
-    public bool $isGeneratingTopic = false;
+    //public bool $isGeneratingTopic = false;
 
     public function mount(CategoryService $categoryService)
     {
         $this->categories = $categoryService->getCategories();
-
+        
         try {
             if (Auth::check()) {
                 $lastProject = Auth::user()->videoProjects()
                     ->whereNotNull('render_id')
                     ->latest()
                     ->first();
-
+    
                 if ($lastProject) {
                     $this->render_id = $lastProject->render_id;
                     $this->videoUrl = $lastProject->video_url;
@@ -51,6 +51,12 @@ class CreateTikTok extends Component
         } catch (Exception $e) {
             Log::error('Error in CreateTikTok mount:', ['error' => $e->getMessage()]);
         }
+    }
+    
+   
+    public function getCategoryFullName(CategoryService $categoryService): ?string
+    {
+        return $categoryService->getCategoryFullPath($this->categorySlug);
     }
 
     public function getCategories(): array
@@ -64,32 +70,32 @@ class CreateTikTok extends Component
         return $this->categories;
     }
 
-    public function generateTopic(
-        CategoryService $categoryService,
-        TopicGenerationService $topicService
-    ) {
-        try {
-            $this->isGeneratingTopic = true;
+    // public function generateTopic(
+    //     CategoryService $categoryService,
+    //     TopicGenerationService $topicService
+    // ) {
+    //     try {
+    //         $this->isGeneratingTopic = true;
 
-            // Use a local variable, no need to call the service method twice
-            $categoryName = $categoryService->getCategoryBySlug($this->categorySlug);
-            if (!$categoryName) {
-                throw new Exception("Category not found");
-            }
+    //         // Use a local variable, no need to call the service method twice
+    //         $categoryName = $categoryService->getCategoryBySlug($this->categorySlug);
+    //         if (!$categoryName) {
+    //             throw new Exception("Category not found");
+    //         }
 
-            $this->topic = $topicService->generateTopic($categoryName);
+    //         $this->topic = $topicService->generateTopic($categoryName);
 
-            session()->flash('message', 'Topic generated successfully!');
-        } catch (Exception $e) {
-            Log::error('Topic generation failed', [
-                'error' => $e->getMessage(),
-                'category' => $this->categorySlug
-            ]);
-            session()->flash('error', 'Failed to generate topic: ' . $e->getMessage());
-        } finally {
-            $this->isGeneratingTopic = false;
-        }
-    }
+    //         session()->flash('message', 'Topic generated successfully!');
+    //     } catch (Exception $e) {
+    //         Log::error('Topic generation failed', [
+    //             'error' => $e->getMessage(),
+    //             'category' => $this->categorySlug
+    //         ]);
+    //         session()->flash('error', 'Failed to generate topic: ' . $e->getMessage());
+    //     } finally {
+    //         $this->isGeneratingTopic = false;
+    //     }
+    // }
 
     public function generate(
         CategoryService $categoryService,
@@ -111,7 +117,7 @@ class CreateTikTok extends Component
 
         // Modificăm validarea să ceară doar topic și category
         $this->validate([
-            'topic' => 'required|min:3',
+            //'topic' => 'required|min:3',
             'categorySlug' => 'required'
         ]);
 
@@ -125,7 +131,7 @@ class CreateTikTok extends Component
             }
 
             // 1. Generăm scriptul
-            $this->script = $scriptService->generate($this->topic, $categoryName);
+            $this->script = $scriptService->generate($categoryName);
 
             // 2. Generăm imaginea
             if (isset($this->script['background_prompt'])) {
@@ -153,9 +159,9 @@ class CreateTikTok extends Component
                 throw new Exception("Narration generation failed");
             }
 
-            // 4. Salvăm proiectul folosind topic-ul ca titlu
+            // 4. Salvăm proiectul 
             $project = Auth::user()->videoProjects()->create([
-                'title' => $this->topic,  // Folosim topic-ul ca titlu
+                'title' => $this->title ?? $categoryName . " TikTok", // Titlu implicit
                 'script' => $this->script,
                 'status' => 'processing',
                 'image_url' => $this->imageUrl,
@@ -188,7 +194,7 @@ class CreateTikTok extends Component
             DB::rollBack();
             Log::error('TikTok generation failed', [
                 'error' => $e->getMessage(),
-                'topic' => $this->topic,
+                //'topic' => $this->topic,
                 'category' => $this->categorySlug
             ]);
             session()->flash('error', 'Error: ' . $e->getMessage());
