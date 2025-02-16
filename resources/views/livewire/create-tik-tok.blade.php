@@ -125,7 +125,7 @@
             @enderror
         </div>
 
-           <!-- Notifications -->
+        <!-- Notifications -->
         @if (session()->has('message'))
             <div class="p-4 mb-6 transition-all duration-300 bg-green-100 border-l-4 border-green-500 rounded-r-lg">
                 <div class="flex">
@@ -186,19 +186,26 @@
         </button>
     </div>
 
-    <!-- Preview Section -->
-    {{-- Opțional: Checkbox pentru a ascunde previzualizările --}}
-    {{--
-    <div class="mt-4 text-right">
-        <label class="inline-flex items-center">
-            <input type="checkbox" x-data="{ showPreviews: true }" x-model="showPreviews" class="form-checkbox">
-            <span class="ml-2 text-sm text-gray-700">Ascunde previzualizări</span>
-        </label>
+    <!-- Loading Message -->
+    <div wire:loading wire:target="generate" class="flex flex-col items-center justify-center p-4 text-center">
+        <p class="text-sm text-gray-600">
+            Procesul de creație este în desfășurare. În acest moment:
+        </p>
+        <div class="mt-2 space-y-2">
+            <div class="text-blue-600">🪄 Se compune scenariul pentru TikTok-ul tău</div>
+            <div class="text-purple-600">🎙️ Se pregătește nararea audio</div>
+            <div class="text-pink-600">🎨 Se creează elementele vizuale</div>
+        </div>
+        <p class="mt-3 text-sm text-gray-500">
+            Vă mulțumim pentru răbdare! Rezultatul va merita așteptarea.
+        </p>
     </div>
-    --}}
+
+    <!-- Preview Section -->
+
 
     @if ($script || $audioUrl || $imageUrl || $videoUrl || $isProcessing)
-        <div class="max-w-4xl p-6 mx-auto mt-8 space-y-8" > {{--  x-show="showPreviews"  --}}
+        <div class="max-w-4xl p-6 mx-auto mt-8 space-y-8"> {{--  x-show="showPreviews"  --}}
             <!-- Script Preview -->
             @if ($script)
                 <div x-data="{ open: false }" class="p-6 bg-white shadow-sm rounded-xl">
@@ -347,7 +354,7 @@
 
             <!-- Final Video -->
             @if ($videoUrl)
-                <div class="p-6 mx-auto bg-white shadow-sm rounded-xl">
+                <div class="max-w-lg p-6 mx-auto bg-white shadow-sm rounded-xl">
                     <h2 class="flex items-center gap-2 mb-4 text-xl font-bold text-gray-900">
                         <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
