@@ -58,9 +58,9 @@
             </div>
 
             <!-- Featured Videos Section -->
-            <div class="mt-24">
+            {{-- <div class="mt-24">
                 <h3 class="mb-12 text-2xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-                    Cele Mai Bune Creații
+                     Creații
                 </h3>
 
                 <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -71,8 +71,8 @@
                             <video 
                                 class="object-cover w-full h-full"
                                 controls
-                                poster="{{ asset('path/to/thumbnail.jpg') }}">
-                                <source src="{{ asset('path/to/video.mp4') }}" type="video/mp4">
+                                >
+                                <source src="{{ asset('assets/featuredVideos/featuredVideo1.mp4') }}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
@@ -85,11 +85,20 @@
                     <!-- Add more video cards here -->
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Footer -->
         <footer class="py-8 mt-16 text-sm text-center text-gray-400 border-t border-gray-800">
-            <p>&copy; {{ date('Y') }} TikTok Maker AI. Toate drepturile rezervate.</p>
+            <p>&copy; {{ date('Y') }} TikTok Creator. Toate drepturile rezervate.</p>
+            <p class="mt-2">
+                Aplicație dezvoltată de 
+                <a href="https://clickstudios-digital.com" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="text-purple-400 transition-colors duration-200 hover:text-purple-300">
+                    Click Studios Digital
+                </a>
+            </p>
         </footer>
     </div>
 </body>
