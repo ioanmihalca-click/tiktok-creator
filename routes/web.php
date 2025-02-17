@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     // Rutele pentru TikTok
     Route::get('/tiktoks', TikTokList::class)->name('tiktoks.index');
     Route::get('/tiktoks/create', CreateTikTok::class)->name('tiktoks.create');
+    Route::get('/tiktoks/list', TikTokList::class)->name('tiktoks.list');
 });
 
 require __DIR__.'/auth.php';
