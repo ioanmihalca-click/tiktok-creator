@@ -45,10 +45,10 @@ class VideoGenerationService
                 'tracks'     => [
                     [  // Un singur track
                         'clips' => array_merge(
-                            $this->generateImageClip($videoProject, $videoDuration), // Imaginea PRIMA
+                            $this->generateLogoClip($videoDuration), // LOGO-ul PRIMUL!
+                            $this->generateImageClip($videoProject, $videoDuration), // Imaginea
                             $this->generateTextClips($script),       // Textul suprapus
-                            $this->generateAudioClip($videoProject, $videoDuration),  //Audio-ul
-                            $this->generateLogoClip($videoDuration) // LOGO-ul - adăugat aici!
+                            $this->generateAudioClip($videoProject, $videoDuration)  //Audio-ul
                         )
                     ]
                 ]
