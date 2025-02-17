@@ -35,7 +35,7 @@ class VideoGenerationService
             $videoDuration = $videoProject->audio_duration ?? (float) ($script['total_duration'] ?? 15) + 2;
 
 
-            // UN SINGUR TRACK (pentru imagine, text suprapus și audio)
+            // UN SINGUR TRACK (pentru imagine, text suprapus, audio ȘI logo)
             $timeline = [
                // 'soundtrack' => [
                 //    'src'    => $videoProject->audio_url,
@@ -47,7 +47,8 @@ class VideoGenerationService
                         'clips' => array_merge(
                             $this->generateImageClip($videoProject, $videoDuration), // Imaginea PRIMA
                             $this->generateTextClips($script),       // Textul suprapus
-                            $this->generateAudioClip($videoProject, $videoDuration)  //Audio-ul
+                            $this->generateAudioClip($videoProject, $videoDuration),  //Audio-ul
+                            $this->generateLogoClip($videoDuration) // LOGO-ul - adăugat aici!
                         )
                     ]
                 ]
@@ -195,6 +196,32 @@ class VideoGenerationService
         return $clips;
     }
 
+    /**
+     * Generează clipul pentru logo.
+     *
+     * @param float $videoDuration Durata totală a videoclipului.
+     * @return array
+     */
+    private function generateLogoClip($videoDuration)
+    {
+        return [
+            [
+                'asset' => [
+                    'type'  => 'image',
+                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1739809176/logo-transparent_ogowm1.webp', // URL-ul logo-ului
+                ],
+                'start'  => 0,
+                'length' => $videoDuration,  // Logo-ul este afișat pe toată durata videoclipului
+                'fit'    => 'contain',       // Se asigură că logo-ul este vizibil în întregime, FĂRĂ crop
+                'position' => 'bottomRight',  // Poziționat în colțul din dreapta jos
+                'offset' => [                // Ajustare fină a poziției (opțional)
+                    'x' => -0.02,  // Mic offset negativ pentru a-l aduce ÎN CADRU (dreapta)
+                    'y' => -0.02   // Mic offset negativ pentru a-l aduce ÎN CADRU (jos)
+                ],
+                'opacity' => 0.8            //  Vizibilitate bună, dar discret (ajustează dacă e nevoie)
+            ]
+        ];
+    }
 
 
     public function checkStatus($renderId)

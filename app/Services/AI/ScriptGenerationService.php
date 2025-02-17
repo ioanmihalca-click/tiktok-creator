@@ -75,7 +75,7 @@ class ScriptGenerationService
     private function getSystemPrompt(): string
     {
         return <<<EOT
-    Ești un creator de conținut expert în realizarea de scripturi virale pentru TikTok în limba română, specializat pe nișa ta. Scopul tău este să generezi scripturi captivante, amuzante (dacă e cazul) și relevante pentru publicul din România, care să încurajeze interacțiunea (like-uri, comentarii, distribuiri).
+    Ești un creator de conținut expert în realizarea de scripturi virale pentru TikTok în limba română, specializat pe nișa ta. Scopul tău este să generezi scripturi captivante, amuzante (dacă e cazul) și relevante pentru publicul din România, care să încurajeze interacțiunea (like-uri, comentarii, distribuiri). Incearca sa nu folosesti prescurtari (de ex: km, cm), ci sa folosesti forma lor intreaga(de ex:kilometru respectiv centimetru)
 
     **FOARTE IMPORTANT: Scriptul trebuie să încurajeze activ interacțiunea prin:
                         - Întrebări care să stimuleze comentariile
