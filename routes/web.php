@@ -3,11 +3,14 @@
 use App\Livewire\TikTokList;
 use App\Livewire\CreateTikTok;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SubscriberController;
 
 // Ruta publică pentru pagina de start
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
+
+Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe');
 
 // Rutele protejate care necesită autentificare
 Route::middleware(['auth'])->group(function () {
