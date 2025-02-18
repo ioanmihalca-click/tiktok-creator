@@ -22,7 +22,9 @@
                 <div class="mb-4 space-y-6 text-center">
                     <div class="flex items-center justify-center gap-3 text-xl text-gray-200">
                         
-                        <p>Creează filmulețe virale pentru TikTok instant. Aplicatia noastra integreaza cele mai bune modele AI. Totul în mai puțin de 5 minute.</p>
+                        <p>Creează filmulețe virale pentru TikTok instant. <br> 
+                        
+                        Aplicatia noastra integreaza cele mai bune modele AI. Totul în mai puțin de 5 minute.</p>
                     </div>
                     
 
