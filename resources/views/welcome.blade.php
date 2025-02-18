@@ -24,7 +24,9 @@
                         
                         <p>Creează filmulețe virale pentru TikTok instant. <br> 
                         
-                        Aplicatia noastra integreaza cele mai bune modele AI. Totul în mai puțin de 5 minute.</p>
+                        Aplicatia noastra integreaza cele mai bune modele AI. <br>
+                        
+                        Totul în mai puțin de 5 minute.</p>
                     </div>
                     
 
