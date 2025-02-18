@@ -35,20 +35,17 @@ class VideoGenerationService
             $videoDuration = $videoProject->audio_duration ?? (float) ($script['total_duration'] ?? 15) + 2;
 
 
-            // UN SINGUR TRACK (pentru imagine, text suprapus, audio ȘI logo)
             $timeline = [
-               // 'soundtrack' => [
-                //    'src'    => $videoProject->audio_url,
-                 //   'effect' => 'fadeInFadeOut' // Opțional
-          //      ],
-                'background' => '#000000', // Opțional
+                'background' => '#000000', // Opțional, culoarea de fundal a videoclipului
                 'tracks'     => [
-                    [  // Un singur track
+                    [  // Track 1: Logo-ul (watermark-ul) - va fi afișat DEASUPRA
+                        'clips' => $this->generateLogoClip($videoDuration)
+                    ],
+                    [  // Track 2: Imaginea, textul și audio-ul - vor fi afișate SUB logo
                         'clips' => array_merge(
-                            $this->generateLogoClip($videoDuration), // LOGO-ul PRIMUL!
-                            $this->generateImageClip($videoProject, $videoDuration), // Imaginea
-                            $this->generateTextClips($script),       // Textul suprapus
-                            $this->generateAudioClip($videoProject, $videoDuration)  //Audio-ul
+                            $this->generateImageClip($videoProject, $videoDuration),
+                            $this->generateTextClips($script),
+                            $this->generateAudioClip($videoProject, $videoDuration)
                         )
                     ]
                 ]
@@ -111,9 +108,9 @@ class VideoGenerationService
                     'src'  => $videoProject->image_url
                 ],
                 'start'  => 0,
-                'length' => $videoDuration, // Folosește durata EXACTĂ!
-                'fit'    => 'cover',
-                'effect' => 'zoomIn' // Exemplu de efect PERMIS pe clip.  Elimină dacă nu vrei.
+                'length' => $videoDuration, // Durata exactă a videoclipului
+                'fit'    => 'cover',        // Acoperă întregul cadru (crop dacă e necesar)
+                'effect' => 'zoomIn'      // Efect de zoom (opțional)
             ]
         ];
     }
@@ -130,7 +127,7 @@ class VideoGenerationService
                     'src' => $videoProject->audio_url,
                 ],
                 'start' => 0,
-                'length' => $videoDuration, // Folosește durata EXACTĂ!
+                'length' => $videoDuration, // Durata exactă a videoclipului
                 // NU mai punem effect aici
             ]
         ];
@@ -185,19 +182,19 @@ class VideoGenerationService
 
             $clips[] = [
                 'asset'     => $htmlAsset,
-                'start'     => $currentTime,       // Timpul de start este timpul CURENT
+                'start'     => $currentTime,       // Timpul de start al scenei curente
                 'length'    => $scene['duration'], // Durata scenei
-                'transition' => ['in' => 'fade', 'out' => 'fade'], // Opțional: tranziții, NU effect
+                'transition' => ['in' => 'fade', 'out' => 'fade'], // Tranziții fade (opțional)
             ];
 
-            $currentTime += $scene['duration'];  // Incrementăm timpul curent cu durata scenei
+            $currentTime += $scene['duration'];  // Trecem la următoarea scenă
         }
 
         return $clips;
     }
 
     /**
-     * Generează clipul pentru logo.
+     * Generează clipul pentru logo (watermark).
      *
      * @param float $videoDuration Durata totală a videoclipului.
      * @return array
@@ -208,17 +205,14 @@ class VideoGenerationService
             [
                 'asset' => [
                     'type'  => 'image',
-                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1739809176/logo-transparent_ogowm1.webp', // URL-ul logo-ului
+                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1739911905/logo-transparent_xiqqe0.png', // URL-ul logo-ului
                 ],
-                'start'  => 0,
-                'length' => $videoDuration,  // Logo-ul este afișat pe toată durata videoclipului
-                'fit'    => 'contain',       // Se asigură că logo-ul este vizibil în întregime, FĂRĂ crop
-                'position' => 'bottomRight',  // Poziționat în colțul din dreapta jos
-                'offset' => [                // Ajustare fină a poziției (opțional)
-                    'x' => -0.02,  // Mic offset negativ pentru a-l aduce ÎN CADRU (dreapta)
-                    'y' => -0.02   // Mic offset negativ pentru a-l aduce ÎN CADRU (jos)
-                ],
-                'opacity' => 0.8            //  Vizibilitate bună, dar discret (ajustează dacă e nevoie)
+                'start'  => 0,               // Începe de la începutul videoclipului
+                'length' => $videoDuration,  // Se afișează pe toată durata
+                'fit'    => 'contain',       // Logo-ul este afișat complet, fără crop
+                'position' => 'top',         // Centrat sus
+                'opacity' => 0.5,            // Opacitate 50%
+                'scale'  => 0.7
             ]
         ];
     }
