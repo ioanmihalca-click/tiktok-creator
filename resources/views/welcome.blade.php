@@ -1,36 +1,49 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TikTok Maker AI</title>
+    <title>TikTok Creator AI</title>
+
+    <link rel="icon" type="image/png" href="{{ asset('assets/favicon/favicon-96x96.png') }}" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/favicon/favicon.svg') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/favicon/apple-touch-icon.png') }}">
+    <meta name="apple-mobile-web-app-title" content="TikTok-Creator">
+    <link rel="manifest" href="{{ asset('assets/favicon/site.webmanifest') }}">
+
+
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body class="antialiased text-white bg-gradient-to-br from-gray-900 to-gray-800">
     <div class="min-h-screen">
         <!-- Hero Section with Logo and Newsletter -->
         <div class="container px-4 py-16 mx-auto text-center">
             <div class="max-w-xl mx-auto mb-12">
-                <img src="{{ asset('assets/logo-transparent.webp') }}" alt="TikTok Maker AI Logo" class="h-32 mx-auto mb-8">
-                
-                <h2 class="mb-6 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+                <img src="{{ asset('assets/logo-transparent.webp') }}" alt="TikTok Maker AI Logo"
+                    class="h-32 mx-auto mb-8">
+
+                <h2
+                    class="mb-6 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                     Aplicația va fi disponibilă în curând!
                 </h2>
-                
+
                 <div class="mb-4 space-y-6 text-center">
                     <div class="flex items-center justify-center gap-3 text-xl text-gray-200">
-                        
-                        <p>Creează filmulețe virale pentru TikTok instant. <br> 
-                        
-                        Aplicatia noastra integreaza cele mai bune modele AI. <br>
-                        
-                        Totul în mai puțin de 5 minute.</p>
-                    </div>
-                    
 
-                   
+                        <p>Creează filmulețe virale pentru TikTok instant. <br>
+
+                            Aplicatia noastra integreaza cele mai bune modele AI. <br>
+
+                            Totul în mai puțin de 5 minute.</p>
+                    </div>
+
+
+
                 </div>
 
                 <!-- Newsletter Form -->
@@ -49,11 +62,11 @@
                         @csrf
                         <div>
                             <label for="email" class="sr-only">Email address</label>
-                            <input type="email" name="email" id="email" required 
-                                class="w-full px-4 py-3 text-gray-900 placeholder-gray-500 bg-white rounded-lg" 
+                            <input type="email" name="email" id="email" required
+                                class="w-full px-4 py-3 text-gray-900 placeholder-gray-500 bg-white rounded-lg"
                                 placeholder="Introdu adresa ta de email">
                         </div>
-                        <button type="submit" 
+                        <button type="submit"
                             class="w-full px-6 py-3 text-white transition-colors duration-200 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700">
                             Anunță-mă când e gata!
                         </button>
@@ -91,19 +104,18 @@
             </div>
         </div> --}}
 
-        <!-- Footer -->
-        <footer class="py-8 mt-16 text-sm text-center text-gray-400 border-t border-gray-800">
-            <p>&copy; {{ date('Y') }} TikTok Creator. Toate drepturile rezervate.</p>
-            <p class="mt-2">
-                Aplicație dezvoltată de 
-                <a href="https://clickstudios-digital.com" 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
-                   class="text-purple-400 transition-colors duration-200 hover:text-purple-300">
-                    Click Studios Digital
-                </a>
-            </p>
-        </footer>
-    </div>
+            <!-- Footer -->
+            <footer class="py-8 mt-16 text-sm text-center text-gray-400 border-t border-gray-800">
+                <p>&copy; {{ date('Y') }} TikTok Creator. Toate drepturile rezervate.</p>
+                <p class="mt-2">
+                    Aplicație dezvoltată de
+                    <a href="https://clickstudios-digital.com" target="_blank" rel="noopener noreferrer"
+                        class="text-purple-400 transition-colors duration-200 hover:text-purple-300">
+                        Click Studios Digital
+                    </a>
+                </p>
+            </footer>
+        </div>
 </body>
+
 </html>
