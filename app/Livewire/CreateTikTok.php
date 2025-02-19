@@ -28,17 +28,6 @@ class CreateTikTok extends Component
     public ?string $render_id = null;
     public bool $isProcessing = false;
 
-    #[Locked]
-    public string $processStep = 'idle'; // New property
-    
-    #[Locked]
-    public array $processSteps = [
-        'idle' => 'Waiting to start',
-        'script' => 'Creating script',
-        'image' => 'Generating visuals',
-        'audio' => 'Creating narration',
-        'video' => 'Preparing final video'
-    ];
 
     // Constructor Injection
     private CategoryService $categoryService;
@@ -97,7 +86,7 @@ class CreateTikTok extends Component
     {
         $this->videoUrl = null;
         $this->isProcessing = true;
-        $this->processStep = 'script';
+    
 
         ini_set('max_execution_time', '300');
         set_time_limit(300);
@@ -121,7 +110,7 @@ class CreateTikTok extends Component
             }
             
             // Generate image
-            $this->processStep = 'image';
+       
             if (isset($this->script['background_prompt'])) {
                 $imageResult = $this->imageService->generateImage($this->script['background_prompt']);
                 if (!$imageResult['success']) {
@@ -132,7 +121,7 @@ class CreateTikTok extends Component
             }
 
             // Generate audio
-            $this->processStep = 'audio';
+           
             $fullNarration = '';
             foreach ($this->script['scenes'] as $scene) {
                 $fullNarration .= $scene['narration'] . " ";
@@ -148,7 +137,7 @@ class CreateTikTok extends Component
             $audioDuration = $narrationResult['audio_duration'];
 
             // Create project and generate video
-            $this->processStep = 'video';
+         
             $project = Auth::user()->videoProjects()->create([
                 'title' => $this->title ?? $categoryName . " TikTok",
                 'script' => $this->script,
@@ -177,7 +166,7 @@ class CreateTikTok extends Component
             
         } catch (Exception $e) {
             $this->isProcessing = false;
-            $this->processStep = 'idle';
+       
             DB::rollBack();
             Log::error('TikTok generation failed', [
                 'error' => $e->getMessage(),

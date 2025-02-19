@@ -410,16 +410,5 @@
         });
     </script>
 
-    @if($isProcessing)
-        <div class="processing-status">
-            <h3> Se creaza videoclipui TikTok</h3>
-            <div class="steps">
-                @foreach($processSteps as $step => $label)
-                    <div class="step {{ $processStep === $step ? 'active' : ($processStep === 'idle' ? '' : 'completed') }}">
-                        {{ $label }}
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @endif
+  
 </div>
