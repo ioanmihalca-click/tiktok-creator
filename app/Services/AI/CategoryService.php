@@ -31,7 +31,7 @@ class CategoryService
                     'ai-tools' => ['name' => 'Unelte AI', 'description' => 'Tutoriale despre utilizarea uneltelor AI.'],
                 ],
             ],
-    
+
             'stiri-scurte' => [
                 'name' => 'Știri Scurte',
                 'description' => 'Prezintă știri concise și captivante. Folosește un script informativ, o imagine relevantă și text cu titlul și sursa știrii.',
@@ -45,8 +45,8 @@ class CategoryService
                     'tech' => ['name' => 'Tech', 'description' => 'Știri despre tehnologie.'],
                 ],
             ],
-    
-           'challenge-uri' => [
+
+            'challenge-uri' => [
                 'name' => 'Challenge-uri Adaptate',
                 'description' => 'Participă la provocări video care se potrivesc cu formatul aplicației (imagine + text).',
                 // 'script_type' => 'instructiuni/descriere',
@@ -78,7 +78,7 @@ class CategoryService
                     ]
                 ]
             ],
-    
+
             'recenzii' => [
                 'name' => 'Recenzii Scurte',
                 'description' => 'Prezintă-ți părerea despre cărți, filme, produse, etc., într-un format concis.',
@@ -92,8 +92,8 @@ class CategoryService
                     'recenzii-jocuri' => ['name' => 'De jocuri', 'description' => 'Recenzii de jocuri.'],
                 ]
             ],
-    
-             'liste' => [
+
+            'liste' => [
                 'name' => 'Liste (Top-uri)',
                 'description' => 'Creează videoclipuri cu liste (Top 5, Top 10, etc.).',
                 // 'script_type' => 'informativ',
@@ -105,7 +105,7 @@ class CategoryService
                     'top-3-destinatii' => ['name' => 'Top 3 Destinații', 'description' => 'Top 3 destinații de călătorie preferate.'],
                 ],
             ],
-              'educatie-informare' => [
+            'educatie-informare' => [
                 'name' => 'Educație și Informare',
                 'description' => 'Prezintă informații educative și utile.',
                 // 'script_type' => 'informativ',  // General
@@ -154,7 +154,7 @@ class CategoryService
                             'lectii-limbi' => ['name' => 'De limbi străine', 'description' => 'Mini-lecții de limbi străine.']
                         ]
                     ],
-                     'meditatii' => [
+                    'meditatii' => [
                         'name' => 'Meditații Ghidate',
                         'description' => 'Oferă meditații ghidate pentru relaxare și bunăstare.',
                         // 'script_type' => 'instructiuni',
@@ -176,7 +176,7 @@ class CategoryService
                         'subcategories' => [
                             'profesor' => ['name' => 'Profesor', 'description' => 'Prezentarea meseriei de profesor.'],
                             'medic' => ['name' => 'Medic', 'description' => 'Prezentarea meseriei de medic.'],
-                             'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
+                            'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
                             'sofer' => ['name' => 'Șofer', 'description' => 'Prezentarea meseriei de șofer.'],
                             'vanzator' => ['name' => 'Vânzător', 'description' => 'Prezentarea meseriei de vânzător.'],
                             'mecanic' => ['name' => 'Mecanic Auto', 'description' => 'Prezentarea meseriei de mecanic auto.'],
@@ -188,7 +188,7 @@ class CategoryService
                     ],
                 ]
             ],
-    
+
             'emotii-sentimente' => [
                 'name' => 'Emoții și Sentimente',
                 'description' => 'Exprimă emoții și sentimente prin videoclipuri.',
@@ -239,9 +239,9 @@ class CategoryService
                     'mesaje-amuzante' => [
                         'name' => 'Mesaje Amuzante/Hazlii',
                         'description' => 'Mesaje pentru a aduce zâmbetul pe buze.',
-                         // 'script_type' => 'gluma',  // Mutat in comentariu
-                         // 'image_type' => 'amuzanta/contrast', // Mutat in comentariu
-                         // 'text_type' => 'gluma',  // Mutat in comentariu
+                        // 'script_type' => 'gluma',  // Mutat in comentariu
+                        // 'image_type' => 'amuzanta/contrast', // Mutat in comentariu
+                        // 'text_type' => 'gluma',  // Mutat in comentariu
                         'subcategories' => [
                             'glume-scurte' => ['name' => 'Glume scurte', 'description' => 'Glume scurte și amuzante.'],
                             'bancuri' => ['name' => 'Bancuri', 'description' => 'Bancuri.'],
@@ -252,7 +252,7 @@ class CategoryService
                     ]
                 ]
             ],
-    
+
             'spiritualitate-religie' => [
                 'name' => 'Spiritualitate și Religie',
                 'description' => 'Conținut legat de spiritualitate și religie.',
@@ -284,7 +284,7 @@ class CategoryService
                     ],
                 ]
             ],
-    
+
             'citate-intelepciune' => [
                 'name' => 'Citate și Înțelepciune',
                 'description' => 'Citate celebre, proverbe și aforisme.',
@@ -322,13 +322,10 @@ class CategoryService
                     ]
                 ]
             ],
-    
+
             'divertisment' => [
                 'name' => 'Divertisment',
                 'description' => 'Conținut pentru divertisment și relaxare.',
-                // 'script_type' => 'narativ/gluma',  // Depinde de subcategorie
-                // 'image_type' => 'ilustrativa/amuzanta', // Depinde
-                // 'text_type' => 'dialog/naratiune/gluma', // Depinde
                 'subcategories' => [
                     'povesti-scurte' => [
                         'name' => 'Povești Scurte',
@@ -337,24 +334,33 @@ class CategoryService
                             'povesti-groaza' => ['name' => 'De groază', 'description' => 'Povești de groază.'],
                             'povesti-dragoste' => ['name' => 'De dragoste', 'description' => 'Povești de dragoste.'],
                             'povesti-sf' => ['name' => 'SF', 'description' => 'Povești științifico-fantastice.'],
-                            'fabule' => ['name' => 'Fabule', 'description' => 'Fabule cu morală.']
+                            'fabule' => ['name' => 'Fabule', 'description' => 'Fabule cu morală.'],
+                            'microfictiune' => ['name' => 'Microficțiune', 'description' => 'Povești foarte scurte.'],
+                            'personale' => ['name' => 'Experiențe Personale', 'description' => 'Povești personale.']
+                        ]
+                    ],
+                    'glume' => [
+                        'name' => 'Glume și Umor',
+                        'description' => 'Conținut amuzant și distractiv.',
+                        'subcategories' => [
+                            'glume-scurte' => ['name' => 'Glume scurte', 'description' => 'Glume scurte și amuzante.'],
+                            'bancuri' => ['name' => 'Bancuri', 'description' => 'Bancuri.'],
+                            'povesti-amuzante' => ['name' => 'Povești amuzante', 'description' => 'Povești amuzante.'],
+                            'citate-amuzante' => ['name' => 'Citate amuzante', 'description' => 'Citate amuzante.'],
+                            'meme-uri-romanesti' => ['name' => 'Meme-uri Românești', 'description' => 'Meme-uri românești.']
+                        ]
+                    ],
+                    'poezii' => [
+                        'name' => 'Poezii',
+                        'description' => 'Poezii scurte și lungi.',
+                        'subcategories' => [
+                            'poezii-scurte' => ['name' => 'Poezii scurte', 'description' => 'Poezii scurte.'],
+                            'poezii-lungi' => ['name' => 'Poezii lungi', 'description' => 'Poezii lungi.']
                         ]
                     ]
                 ]
             ],
-    
-            'poezii' => [
-                'name' => 'Poezii',
-                'description' => 'Poezii scurte și lungi.',
-                // 'script_type' => 'versuri',
-                // 'image_type' => 'ilustrativa/abstracta',
-                // 'text_type' => 'versuri/titlu',
-                'subcategories' => [
-                     'poezii-scurte' => ['name' => 'Poezii scurte', 'description' => 'Poezii scurte.'],
-                     'poezii-lungi' => ['name' => 'Poezii lungi', 'description' => 'Poezii lungi.']
-                ],
-            ],
-    
+
             'ocazii-speciale' => [
                 'name' => 'Ocazii Speciale',
                 'description' => 'Mesaje pentru ocazii speciale.',
@@ -383,8 +389,8 @@ class CategoryService
                     ]
                 ]
             ],
-    
-          'lifehacks-rapide' => [
+
+            'lifehacks-rapide' => [
                 'name' => 'Life Hacks',
                 'description' => 'Prezintă trucuri și sfaturi utile pentru viața de zi cu zi.',
                 // 'script_type' => 'instructiuni',
@@ -397,7 +403,7 @@ class CategoryService
                     'calatorii' => ['name' => 'Călătorii', 'description' => 'Life hacks pentru călătorii.'],
                 ],
             ],
-    
+
             'lifehacks-ro' => [
                 'name' => 'Life Hacks Local',
                 'description' => 'Trucuri utile, cu specific românesc.',
@@ -425,7 +431,7 @@ class CategoryService
                     'sfaturi-calatorie-ro' => ['name' => 'Sfaturi Călătorie RO', 'description' => 'Sfaturi pentru călătorii în România.'],
                 ]
             ],
-    
+
             'business-content' => [
                 'name' => 'Marketing Digital',
                 'description' => 'Conținut pentru promovarea afacerilor.',
@@ -460,22 +466,19 @@ class CategoryService
                 // 'image_type' => 'ilustrativa/arhivă/personală',
                 // 'text_type' => 'titlu/date/explicatii/versuri',
                 'subcategories' => [
-                    'fenomene-internet' =>[
+                    'fenomene-internet' => [
                         'name' => 'Fenomene Internet',
                         'description' => 'Fenomene de pe internetul românesc.',
                         'subcategories' => [
                             'virale-romanesti' => ['name' => 'Clipuri Virale Românești', 'description' => 'Clipuri video virale din România.'],
-                             'meme-uri-romanesti' => ['name' => 'Meme-uri Românești', 'description' => 'Meme-uri românești.'],
+                            'meme-uri-romanesti' => ['name' => 'Meme-uri Românești', 'description' => 'Meme-uri românești.'],
                         ]
                     ]
                 ]
             ],
-            'explicatii' => [ // Redenumit la singular, pentru consistență
+            'explicatii' => [
                 'name' => 'Explicații (Știai că...?)',
                 'description' => 'Prezintă informații interesante într-un format concis.',
-                // 'script_type' => 'informativ',
-                // 'image_type' => 'ilustrativa',
-                // 'text_type' => 'titlu/date',
                 'subcategories' => [
                     'stiinta' => ['name' => 'Știință', 'description' => 'Explicații despre știință.'],
                     'istorie' => ['name' => 'Istorie', 'description' => 'Explicații despre istorie.'],
@@ -483,40 +486,13 @@ class CategoryService
                     'finante' => ['name' => 'Finanțe Personale', 'description' => 'Explicații despre finanțe personale.'],
                 ],
             ],
-             'glume-vizuale' => [
-                'name' => 'Glume Vizuale',
-                'description' => 'Creează videoclipuri amuzante cu glume scurte.',
-                // 'script_type' => 'gluma',
-                // 'image_type' => 'amuzanta/contrast',
-                // 'text_type' => 'gluma',
-                'subcategories' => [
-                    'scurte' => ['name' => 'Glume Scurte', 'description' => 'Glume scurte.'],
-                    'vizuale' => ['name' => 'Glume Vizuale', 'description' => 'Glume care se bazează mult pe imagine.'],
-                    'romanesti' => ['name' => 'Glume Românești', 'description' => 'Glume cu specific românesc.'],
-                ],
-            ],
-            'povestiri-scurte' => [
-                'name' => 'Povești Scurte',
-                'description' => 'Spune povești captivante în format video.',
-                // 'script_type' => 'narativ',
-                // 'image_type' => 'ilustrativa',
-                // 'text_type' => 'dialog/naratiune',
-                'subcategories' => [
-                    'microfictiune' => ['name' => 'Microficțiune', 'description' => 'Povești foarte scurte.'],
-                    'fabule' => ['name' => 'Fabule (cu morală)', 'description' => 'Fabule cu morală.'],
-                    'personale' => ['name' => 'Experiențe Personale', 'description' => 'Povești personale.'],
-                ]
-            ],
-            'prezentari-meserii' =>[
+            'prezentari-meserii' => [
                 'name' => 'Prezentări Meserii',
                 'description' => 'Prezintă diferite meserii într-un format atractiv.',
-                // 'script_type' => 'informativ/descriere',
-                // 'image_type' => 'persoana/unelte/loc-de-munca',
-                // 'text_type' => 'titlu/descriere/date',
                 'subcategories' => [
                     'profesor' => ['name' => 'Profesor', 'description' => 'Prezentarea meseriei de profesor.'],
                     'medic' => ['name' => 'Medic', 'description' => 'Prezentarea meseriei de medic.'],
-                     'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
+                    'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
                     'sofer' => ['name' => 'Șofer', 'description' => 'Prezentarea meseriei de șofer.'],
                     'vanzator' => ['name' => 'Vânzător', 'description' => 'Prezentarea meseriei de vânzător.'],
                     'mecanic' => ['name' => 'Mecanic Auto', 'description' => 'Prezentarea meseriei de mecanic auto.'],
@@ -526,7 +502,6 @@ class CategoryService
                     'florar' => ['name' => 'Florar', 'description' => 'Prezentarea meseriei de florar.'],
                 ]
             ]
-    
         ];
     }
 
