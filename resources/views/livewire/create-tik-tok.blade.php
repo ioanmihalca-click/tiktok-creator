@@ -2,69 +2,78 @@
     <div class="max-w-5xl p-6 mx-auto">
         <!-- Header -->
         <div class="mb-12 text-center">
-           
-            <h1 class="mb-3 text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
+
+            <h1
+                class="mb-3 text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
                 TikTok Creator
             </h1>
             <p class="text-lg text-gray-400">Generează videoclipuri TikTok cu AI în câțiva pași simpli</p>
         </div>
 
+        <!-- Notifications -->
+        <div class="absolute inset-x-0 top-0 z-50 space-y-4">
+            @if (session()->has('message'))
+                <div
+                    class="max-w-lg p-4 mx-auto transition-all duration-300 transform rounded-lg bg-green-900/50 backdrop-blur-sm animate-fade-in-down">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p>{{ session('message') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if (session()->has('error'))
+                <div
+                    class="max-w-lg p-4 mx-auto transition-all duration-300 transform rounded-lg bg-red-900/50 backdrop-blur-sm animate-fade-in-down">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p>{{ session('error') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+
+
         <!-- Main Content Container -->
         <div class="relative">
-            <!-- Notifications -->
-            <div class="absolute inset-x-0 top-0 z-50 space-y-4">
-                @if (session()->has('message'))
-                    <div class="max-w-lg p-4 mx-auto transition-all duration-300 transform rounded-lg bg-green-900/50 backdrop-blur-sm animate-fade-in-down">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p>{{ session('message') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                @if (session()->has('error'))
-                    <div class="max-w-lg p-4 mx-auto transition-all duration-300 transform rounded-lg bg-red-900/50 backdrop-blur-sm animate-fade-in-down">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <div class="ml-3">
-                                <p>{{ session('error') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
 
             <!-- Category Selection Cards -->
-            <div class="p-8 transition-all duration-300 border rounded-2xl bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/[0.07]">
+            <div
+                class="p-8 transition-all duration-300 border rounded-2xl bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/[0.07]">
                 <div class="flex items-center justify-between mb-6">
                     <label class="text-lg font-medium text-gray-200">
                         <span class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
                             Alege Categoria
                         </span>
                     </label>
-                    
+
                     <div class="text-sm text-gray-400">
-                        @if($selectedVideoType)
+                        @if ($selectedVideoType)
                             <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-500/20">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
                                 </svg>
                                 {{ $selectedVideoType['name'] }}
                             </span>
@@ -72,24 +81,25 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" 
-                    x-data="{ 
-                        selectedCategory: @entangle('categorySlug'),
-                        setCategory(slug) {
-                            this.selectedCategory = slug;
-                            $wire.setCategory(slug);
-                        }
-                    }">
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" x-data="{
+                    selectedCategory: @entangle('categorySlug'),
+                    setCategory(slug) {
+                        this.selectedCategory = slug;
+                        $wire.setCategory(slug);
+                    }
+                }">
                     @foreach ($categories as $mainSlug => $mainCategory)
 
                         @if (isset($mainCategory['name']) && isset($mainCategory['subcategories']))
                             <div class="{{ $mainSlug === 'meserii' ? 'lg:col-span-3 order-last' : '' }}">
                                 <!-- Main Category Card -->
-                                <div class="overflow-hidden transition-all duration-300 border rounded-xl bg-white/5 border-white/10 hover:border-purple-500/30">
+                                <div
+                                    class="overflow-hidden transition-all duration-300 border rounded-xl bg-white/5 border-white/10 hover:border-purple-500/30">
                                     <!-- Card Header -->
-                                    <div class="p-4 border-b bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
+                                    <div
+                                        class="p-4 border-b bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
                                         <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-200">
-                                            @if(isset($mainCategory['icon']))
+                                            @if (isset($mainCategory['icon']))
                                                 <span class="p-1 rounded-lg bg-white/10">
                                                     {!! $mainCategory['icon'] !!}
                                                 </span>
@@ -105,25 +115,27 @@
                                                 <!-- Main dropdown button -->
                                                 <button @click="open = !open"
                                                     class="flex items-center justify-between w-full p-3 text-left transition-all duration-200 rounded-lg bg-white/5 hover:bg-white/10 group">
-                                                    <span class="text-sm font-medium text-gray-300 group-hover:text-purple-400">
+                                                    <span
+                                                        class="text-sm font-medium text-gray-300 group-hover:text-purple-400">
                                                         Vezi toate meseriile
                                                     </span>
                                                     <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:text-purple-400"
-                                                        :class="{ 'rotate-180': open }" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
+                                                        :class="{ 'rotate-180': open }" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             stroke-width="2" d="M19 9l-7 7-7-7" />
                                                     </svg>
                                                 </button>
 
                                                 <!-- Dropdown content -->
-                                                <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                                                <div x-show="open"
+                                                    x-transition:enter="transition ease-out duration-200"
                                                     x-transition:enter-start="opacity-0 -translate-y-2"
                                                     x-transition:enter-end="opacity-100 translate-y-0" class="mt-2">
-                                                    <div class="grid grid-cols-2 gap-1 p-2 rounded-lg bg-white/5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+                                                    <div
+                                                        class="grid grid-cols-2 gap-1 p-2 rounded-lg bg-white/5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                                                         @foreach ($mainCategory['subcategories'] as $subSlug => $subCategory)
-                                                            <button 
-                                                                @click="setCategory('{{ $subSlug }}')"
+                                                            <button @click="setCategory('{{ $subSlug }}')"
                                                                 class="p-2 text-sm font-medium text-left text-gray-300 transition-all duration-200 rounded-lg hover:bg-white/10"
                                                                 :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $subSlug }}', 'text-gray-300': selectedCategory !== '{{ $subSlug }}' }">
                                                                 {{ $subCategory['name'] }}
@@ -167,8 +179,7 @@
                                                                     @endforeach
                                                                 </div>
                                                             @else
-                                                                <button
-                                                                    @click="setCategory('{{ $subSlug }}')"
+                                                                <button @click="setCategory('{{ $subSlug }}')"
                                                                     class="w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 hover:bg-white/5"
                                                                     :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $subSlug }}', 'text-gray-300': selectedCategory !== '{{ $subSlug }}' }">
                                                                     {{ $subCategory['name'] }}
@@ -188,8 +199,9 @@
             </div>
 
             <!-- Video Type Information (if selected) -->
-            @if($selectedVideoType)
-                <div class="p-6 mt-6 transition-all duration-300 border rounded-xl bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
+            @if ($selectedVideoType)
+                <div
+                    class="p-6 mt-6 transition-all duration-300 border rounded-xl bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
                     <div class="grid gap-6 md:grid-cols-2">
                         <div>
                             <h3 class="mb-2 text-xl font-semibold text-gray-200">{{ $selectedVideoType['name'] }}</h3>
@@ -211,11 +223,9 @@
 
             <!-- Generate Button & Loading State -->
             <div class="relative mt-8">
-                <button type="button" wire:click="generate" 
+                <button type="button" wire:click="generate"
                     class="relative w-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-                    wire:loading.attr="disabled" 
-                    wire:target="generate" 
-                    wire:loading.class="opacity-75">
+                    wire:loading.attr="disabled" wire:target="generate" wire:loading.class="opacity-75">
                     <span wire:loading.remove wire:target="generate" class="flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -242,12 +252,41 @@
                     class="max-w-2xl p-4 mx-auto mt-4 rounded-lg bg-white/5 backdrop-blur-sm">
                     <div class="flex flex-col items-center justify-center p-4 text-center">
                         <p class="text-sm text-gray-300">
-                            Procesul de creație este în desfășurare. În acest moment:
+                            {{ $currentStep }}
                         </p>
                         <div class="mt-2 space-y-2">
-                            <div class="text-blue-400">✨ Se compune scenariul pentru TikTok-ul tău</div>
-                            <div class="text-purple-400">🎙️ Se pregătește nararea audio</div>
-                            <div class="text-pink-400">🎨 Se creează elementele vizuale</div>
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-4 h-4 {{ in_array('script', $completedSteps) ? 'bg-green-500' : 'bg-blue-400' }} rounded-full animate-pulse">
+                                </div>
+                                <span
+                                    class="text-{{ in_array('script', $completedSteps) ? 'green' : 'blue' }}-400">Generare
+                                    script</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-4 h-4 {{ in_array('image', $completedSteps) ? 'bg-green-500' : 'bg-purple-400' }} rounded-full animate-pulse [animation-delay:0.2s]">
+                                </div>
+                                <span
+                                    class="text-{{ in_array('image', $completedSteps) ? 'green' : 'purple' }}-400">Generare
+                                    imagine</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-4 h-4 {{ in_array('audio', $completedSteps) ? 'bg-green-500' : 'bg-pink-400' }} rounded-full animate-pulse [animation-delay:0.4s]">
+                                </div>
+                                <span
+                                    class="text-{{ in_array('audio', $completedSteps) ? 'green' : 'pink' }}-400">Generare
+                                    narare</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div
+                                    class="w-4 h-4 {{ in_array('video_init', $completedSteps) ? 'bg-green-500' : 'bg-yellow-400' }} rounded-full animate-pulse [animation-delay:0.6s]">
+                                </div>
+                                <span
+                                    class="text-{{ in_array('video_init', $completedSteps) ? 'green' : 'yellow' }}-400">Inițializare
+                                    video</span>
+                            </div>
                         </div>
                         <p class="mt-3 text-sm text-gray-400">
                             Vă mulțumim pentru răbdare! Rezultatul va merita așteptarea.
@@ -373,7 +412,8 @@
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center gap-3">
                                                     <div class="flex items-center gap-2">
-                                                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                                                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse">
+                                                        </div>
                                                         <div
                                                             class="w-2 h-2 bg-purple-500 rounded-full animate-pulse [animation-delay:0.2s]">
                                                         </div>
@@ -381,7 +421,8 @@
                                                             class="w-2 h-2 bg-pink-500 rounded-full animate-pulse [animation-delay:0.4s]">
                                                         </div>
                                                     </div>
-                                                    <span class="font-medium text-purple-400">Videoclipul tău este în curs
+                                                    <span class="font-medium text-purple-400">Videoclipul tău este în
+                                                        curs
                                                         de
                                                         procesare...</span>
                                                 </div>
@@ -428,7 +469,8 @@
                                 <div class="flex justify-center mt-4">
                                     <a href="{{ $videoUrl }}" target="_blank"
                                         class="inline-flex items-center gap-2 px-6 py-3 text-white transition-colors duration-150 bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                         </svg>
@@ -449,18 +491,27 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             100% {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         .animate-fade-in-down {
             animation: fade-in-down 0.3s ease-out;
         }
+
         @keyframes progress {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
         }
+
         .animate-progress {
             animation: progress 2s linear infinite;
         }
@@ -470,6 +521,13 @@
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('videoReady', () => {
                 //Livewire.dispatch('refresh'); // Nu mai este nevoie, se face auto prin poll
+            });
+
+            Livewire.on('processingStarted', () => {
+                window.scrollTo({
+                    top: document.querySelector('.min-h-screen').scrollHeight,
+                    behavior: 'smooth'
+                });
             });
         });
     </script>
