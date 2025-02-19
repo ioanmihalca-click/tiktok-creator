@@ -69,13 +69,13 @@
                     </label>
 
                     <div class="text-sm text-gray-400">
-                        @if ($selectedVideoType)
+                        @if ($categorySlug)
                             <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-500/20">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
-                                {{ $selectedVideoType['name'] }}
+                                {{ $categorySlug }}
                             </span>
                         @endif
                     </div>
@@ -197,29 +197,6 @@
                     @endforeach
                 </div>
             </div>
-
-            <!-- Video Type Information (if selected) -->
-            @if ($selectedVideoType)
-                <div
-                    class="p-6 mt-6 transition-all duration-300 border rounded-xl bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
-                    <div class="grid gap-6 md:grid-cols-2">
-                        <div>
-                            <h3 class="mb-2 text-xl font-semibold text-gray-200">{{ $selectedVideoType['name'] }}</h3>
-                            <p class="text-gray-400">{{ $selectedVideoType['description'] }}</p>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 rounded-lg bg-white/5">
-                                <span class="block mb-1 text-sm font-medium text-purple-400">Format</span>
-                                <span class="text-gray-300">{{ $selectedVideoType['script_type'] }}</span>
-                            </div>
-                            <div class="p-4 rounded-lg bg-white/5">
-                                <span class="block mb-1 text-sm font-medium text-purple-400">Stil</span>
-                                <span class="text-gray-300">{{ $selectedVideoType['image_type'] }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endif
 
             <!-- Generate Button & Loading State -->
             <div class="relative mt-8">

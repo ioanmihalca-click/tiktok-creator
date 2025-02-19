@@ -23,7 +23,6 @@ class CreateTikTok extends Component
     public ?string $videoUrl = null;
     public ?string $render_id = null;
     public bool $isProcessing = false;
-    public ?array $selectedVideoType = null;
     public string $currentStep = '';
     public array $completedSteps = [];
 
@@ -237,26 +236,12 @@ class CreateTikTok extends Component
 
     public function updatedCategorySlug($value)
     {
-        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing', 'selectedVideoType']);
+        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing']);
     }
 
     public function setCategory($slug)
     {
         $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing']);
         $this->categorySlug = $slug;
-
-        // Get the category details to determine the video type
-        $category = $this->categoryService->getCategoryBySlug($slug);
-        if ($category && isset($category['script_type'])) {
-            $this->selectedVideoType = [
-                'name' => $category['name'],
-                'description' => $category['description'] ?? 'Generează conținut video specific pentru această categorie.',
-                'script_type' => $category['script_type'],
-                'image_type' => $category['image_type'],
-                'text_type' => $category['text_type']
-            ];
-        } else {
-            $this->selectedVideoType = null;
-        }
     }
 }
