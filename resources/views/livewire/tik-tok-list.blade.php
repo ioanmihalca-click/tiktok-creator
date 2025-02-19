@@ -18,10 +18,10 @@
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             @foreach ($videoProjects as $project)
                 <div class="transition-shadow duration-200 bg-white rounded-lg shadow-md hover:shadow-lg">
-                    @if($project->output_path)
+                    @if($project->video_url)
                         <div class="overflow-hidden rounded-t-lg aspect-w-9 aspect-h-16">
                             <video controls class="object-cover w-full">
-                                <source src="{{ Storage::url($project->output_path) }}" type="video/mp4">
+                                <source src="{{ $project->video_url }}" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
                         </div>
@@ -53,8 +53,8 @@
                         </div>
 
                         <div class="flex gap-2 mt-4">
-                            @if($project->status === 'completed' && $project->output_path)
-                                <a href="{{ Storage::url($project->output_path) }}" download 
+                            @if($project->status === 'completed' && $project->video_url)
+                                <a href="{{ $project->video_url }}" download 
                                    class="inline-flex items-center justify-center flex-1 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
