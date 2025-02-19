@@ -28,6 +28,18 @@ class CreateTikTok extends Component
     public ?string $render_id = null;
     public bool $isProcessing = false;
 
+    #[Locked]
+    public string $processStep = 'idle'; // New property
+    
+    #[Locked]
+    public array $processSteps = [
+        'idle' => 'Waiting to start',
+        'script' => 'Creating script',
+        'image' => 'Generating visuals',
+        'audio' => 'Creating narration',
+        'video' => 'Preparing final video'
+    ];
+
     // Constructor Injection
     private CategoryService $categoryService;
     private ScriptGenerationService $scriptService;
@@ -84,12 +96,11 @@ class CreateTikTok extends Component
     public function generate()
     {
         $this->videoUrl = null;
-        $this->isProcessing = false;
+        $this->isProcessing = true;
+        $this->processStep = 'script';
 
         ini_set('max_execution_time', '300');
         set_time_limit(300);
-
-        $this->isProcessing = false;
 
         $this->validate([
             'categorySlug' => 'required'
@@ -98,40 +109,46 @@ class CreateTikTok extends Component
         try {
             DB::beginTransaction();
 
-            $categoryName = $this->categoryService->getCategoryFullPath($this->categorySlug);  // Use full path
+            $categoryName = $this->categoryService->getCategoryFullPath($this->categorySlug);
             if (!$categoryName) {
                 throw new Exception("Category not found: " . $this->categorySlug);
             }
 
-            $this->script = $this->scriptService->generate($categoryName); // Use full path
-
+            // Generate script
+            $this->script = $this->scriptService->generate($categoryName);
+            if (!$this->script) {
+                throw new Exception("Script generation failed");
+            }
+            
+            // Generate image
+            $this->processStep = 'image';
             if (isset($this->script['background_prompt'])) {
                 $imageResult = $this->imageService->generateImage($this->script['background_prompt']);
-
-                if ($imageResult['success']) {
-                    $this->imageUrl = $imageResult['image_url'];
-                    $imageCloudinaryId = $imageResult['cloudinary_public_id'];
-                } else {
-                    throw new Exception("Image generation failed: " . $imageResult['error']);
+                if (!$imageResult['success']) {
+                    throw new Exception("Image generation failed: " . ($imageResult['error'] ?? 'Unknown error'));
                 }
+                $this->imageUrl = $imageResult['image_url'];
+                $imageCloudinaryId = $imageResult['cloudinary_public_id'];
             }
 
-
+            // Generate audio
+            $this->processStep = 'audio';
             $fullNarration = '';
             foreach ($this->script['scenes'] as $scene) {
                 $fullNarration .= $scene['narration'] . " ";
             }
 
             $narrationResult = $this->narrationService->generate($fullNarration);
-            if ($narrationResult['status'] === 'success') {
-                $this->audioUrl = $narrationResult['audio_url'];
-                $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
-                $audioDuration = $narrationResult['audio_duration']; // Obținem durata
-            } else {
+            if ($narrationResult['status'] !== 'success') {
                 throw new Exception("Narration generation failed");
             }
+            
+            $this->audioUrl = $narrationResult['audio_url'];
+            $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
+            $audioDuration = $narrationResult['audio_duration'];
 
-
+            // Create project and generate video
+            $this->processStep = 'video';
             $project = Auth::user()->videoProjects()->create([
                 'title' => $this->title ?? $categoryName . " TikTok",
                 'script' => $this->script,
@@ -140,34 +157,31 @@ class CreateTikTok extends Component
                 'image_cloudinary_id' => $imageCloudinaryId ?? null,
                 'audio_url' => $this->audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId ?? null,
-                'audio_duration' => $audioDuration ?? null // Foarte important!
+                'audio_duration' => $audioDuration ?? null
             ]);
 
-
-
             $videoResult = $this->videoService->generate($project);
-
-            if ($videoResult['success']) {
-                $project->update([
-                    'status' => 'rendering',
-                    'render_id' => $videoResult['render_id']
-                ]);
-
-                $this->render_id = $videoResult['render_id'];
-                $this->isProcessing = true;
-                $this->videoUrl = null;
-
-                session()->flash('message', 'Proiectul TikTok a fost creat și randarea a început!');
-            } else {
-                throw new Exception("Video generation failed: " . $videoResult['error']);
+            if (!$videoResult['success']) {
+                throw new Exception("Video generation failed: " . ($videoResult['error'] ?? 'Unknown error'));
             }
 
+            $project->update([
+                'status' => 'rendering',
+                'render_id' => $videoResult['render_id']
+            ]);
+
+            $this->render_id = $videoResult['render_id'];
             DB::commit();
+            
+            session()->flash('message', 'Video creation started successfully!');
+            
         } catch (Exception $e) {
             $this->isProcessing = false;
+            $this->processStep = 'idle';
             DB::rollBack();
             Log::error('TikTok generation failed', [
                 'error' => $e->getMessage(),
+                'step' => $this->processStep,
                 'category' => $this->categorySlug
             ]);
             session()->flash('error', 'Error: ' . $e->getMessage());
