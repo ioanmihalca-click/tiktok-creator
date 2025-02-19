@@ -12,15 +12,11 @@ use App\Services\AI\NarrationService;
 use App\Services\AI\ImageGenerationService;
 use App\Services\AI\VideoGenerationService;
 use App\Services\AI\ScriptGenerationService;
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\Locked;
 
 class CreateTikTok extends Component
 {
     public ?string $title = null;
-    public string $categorySlug = 'romantice';
-    public array $categories = [];
-    public string $status = 'draft';
+    public string $categorySlug = '';
     public ?array $script = null;
     public ?string $imageUrl = null;
     public ?string $audioUrl = null;
@@ -28,14 +24,11 @@ class CreateTikTok extends Component
     public ?string $render_id = null;
     public bool $isProcessing = false;
 
-
-    // Constructor Injection
     private CategoryService $categoryService;
     private ScriptGenerationService $scriptService;
     private ImageGenerationService $imageService;
     private NarrationService $narrationService;
     private VideoGenerationService $videoService;
-
 
     public function boot(
         CategoryService $categoryService,
@@ -51,11 +44,8 @@ class CreateTikTok extends Component
         $this->videoService = $videoService;
     }
 
-
     public function mount()
     {
-        $this->categories = $this->categoryService->getCategories();
-
         try {
             if (Auth::check()) {
                 $lastProject = Auth::user()->videoProjects()
@@ -73,14 +63,6 @@ class CreateTikTok extends Component
             Log::error('Error in CreateTikTok mount:', ['error' => $e->getMessage()]);
         }
     }
-
-
-    #[Computed]
-    public function getAvailableCategories(): array
-    {
-        return $this->categories;
-    }
-
 
     public function generate()
     {
@@ -221,7 +203,7 @@ class CreateTikTok extends Component
     public function render()
     {
         return view('livewire.create-tik-tok', [
-            'categories' => $this->getAvailableCategories()
+            'categories' => $this->categoryService->getCategories()
         ]);
     }
 

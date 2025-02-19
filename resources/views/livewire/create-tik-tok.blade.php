@@ -63,10 +63,6 @@
                         $wire.setCategory(slug);
                     }
                 }">
-                @php
-                    $categories = $this->getAvailableCategories(); // Apelăm METODA
-                @endphp
-
                 @foreach ($categories as $mainSlug => $mainCategory)
 
                     @if (isset($mainCategory['name']) && isset($mainCategory['subcategories']))
