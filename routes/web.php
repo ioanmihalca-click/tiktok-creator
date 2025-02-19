@@ -4,6 +4,7 @@ use App\Livewire\TikTokList;
 use App\Livewire\CreateTikTok;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SubscriberController;
+use App\Http\Controllers\VideoDownloadController;
 
 // Ruta publică pentru pagina de start
 Route::get('/', function () {
@@ -28,6 +29,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/tiktoks', TikTokList::class)->name('tiktoks.index');
     Route::get('/tiktoks/create', CreateTikTok::class)->name('tiktoks.create');
     Route::get('/tiktoks/list', TikTokList::class)->name('tiktoks.list');
+
+    Route::get('/video/download/{id}', [VideoDownloadController::class, 'download'])->name('video.download');
 });
 
 require __DIR__.'/auth.php';
