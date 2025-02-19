@@ -16,185 +16,9 @@ class CategoryService
     private function initializeCategories(): void
     {
         $this->categories = [
-            'tutoriale' => [
-                'name' => 'Tutoriale (Cum să...)',
-                'description' => 'Creează videoclipuri instructive, pas cu pas.  Folosește un script cu instrucțiuni clare, o imagine care demonstrează procesul și text care explică pașii.', // Descriere detaliată
-                // 'script_type' => 'instructiuni',  // Mutat în comentariu
-                // 'image_type' => 'demonstratie',    // Mutat în comentariu
-                // 'text_type' => 'pasi/explicatii',  // Mutat în comentariu
-                'subcategories' => [
-                    'tech' => ['name' => 'Tech', 'description' => 'Tutoriale despre tehnologie (ex: telefoane, calculatoare, gadget-uri).'],
-                    'diy' => ['name' => 'DIY', 'description' => 'Tutoriale despre proiecte de tip "Do It Yourself".'],
-                    'beauty' => ['name' => 'Beauty', 'description' => 'Tutoriale despre machiaj, îngrijirea pielii, etc.'],
-                    'cooking' => ['name' => 'Gătit', 'description' => 'Tutoriale despre gătit (rețete).'],
-                    'software' => ['name' => 'Software', 'description' => 'Tutoriale despre utilizarea programelor.'],
-                    'ai-tools' => ['name' => 'Unelte AI', 'description' => 'Tutoriale despre utilizarea uneltelor AI.'],
-                ],
-            ],
-
-            'stiri-scurte' => [
-                'name' => 'Știri Scurte',
-                'description' => 'Prezintă știri concise și captivante. Folosește un script informativ, o imagine relevantă și text cu titlul și sursa știrii.',
-                // 'script_type' => 'informativ',
-                // 'image_type' => 'relevanta',
-                // 'text_type' => 'titlu/sursa',
-                'subcategories' => [
-                    'locale' => ['name' => 'Locale', 'description' => 'Știri locale.'],
-                    'nationale' => ['name' => 'Naționale', 'description' => 'Știri naționale.'],
-                    'internationale' => ['name' => 'Internaționale', 'description' => 'Știri internaționale.'],
-                    'tech' => ['name' => 'Tech', 'description' => 'Știri despre tehnologie.'],
-                ],
-            ],
-
-            'challenge-uri' => [
-                'name' => 'Challenge-uri Adaptate',
-                'description' => 'Participă la provocări video care se potrivesc cu formatul aplicației (imagine + text).',
-                // 'script_type' => 'instructiuni/descriere',
-                // 'image_type' => 'ilustrativa/demonstratie',
-                // 'text_type' => 'titlu/hashtag/reguli',
-                'subcategories' => [
-                    'photo-challenges' => [
-                        'name' => 'Provocări Foto',
-                        'description' => 'Provocări care implică crearea de fotografii.',
-                        'subcategories' => [
-                            'outfit-challenge' => ['name' => 'Outfit of the Day', 'description' => 'Prezintă-ți ținuta zilei.'],
-                            'before-after' => ['name' => 'Înainte și După', 'description' => 'Arată transformări (ex: renovări, machiaj, etc.).'],
-                            'flat-lay' => ['name' => 'Flat Lay Challenge', 'description' => 'Creează o compoziție cu obiecte așezate pe o suprafață plană.'],
-                            'peisaje-urbane' => ['name' => 'Peisaje Urbane', 'description' => 'Fotografiază peisaje urbane interesante.'],
-                            'natura-moarta'  => ['name' => 'Natură Moartă', 'description' => 'Fotografiază compoziții cu obiecte inanimate.'],
-                            'portrete-creative' => ['name' => 'Portrete Creative', 'description' => 'Realizează portrete creative.'],
-                        ]
-                    ],
-                    'text-challenges' => [
-                        'name' => 'Provocări Text',
-                        'description' => 'Provocări care implică scrierea de texte.',
-                        'subcategories' => [
-                            'quote-challenge' => ['name' => 'Citatul Zilei', 'description' => 'Alege un citat și creează un videoclip inspirat de acesta.'],
-                            'gratitude-challenge' => ['name' => 'Jurnal de Recunoștință', 'description' => 'Exprimă-ți recunoștința pentru ceva.'],
-                            'story-challenge' => ['name' => 'Poveste în 3 Propoziții', 'description' => 'Spune o poveste în doar trei propoziții.'],
-                            'haiku-challenge' => ['name' => 'Haiku Challenge', 'description' => 'Scrie un haiku (poem scurt de 3 versuri).'],
-                            'acrostih-challenge' => ['name' => 'Acrostih Challenge', 'description' => 'Scrie un acrostih (poezie în care prima literă a fiecărui vers formează un cuvânt).'],
-                        ]
-                    ]
-                ]
-            ],
-
-            'recenzii' => [
-                'name' => 'Recenzii Scurte',
-                'description' => 'Prezintă-ți părerea despre cărți, filme, produse, etc., într-un format concis.',
-                // 'script_type' => 'opinie',
-                // 'image_type' => 'produs/coperta/etc.',
-                // 'text_type' => 'pro-contra/rating',
-                'subcategories' => [
-                    'recenzii-carti' => ['name' => 'De cărți', 'description' => 'Recenzii de cărți.'],
-                    'recenzii-filme' => ['name' => 'De filme', 'description' => 'Recenzii de filme.'],
-                    'recenzii-produse' => ['name' => 'De produse', 'description' => 'Recenzii de produse.'],
-                    'recenzii-jocuri' => ['name' => 'De jocuri', 'description' => 'Recenzii de jocuri.'],
-                ]
-            ],
-
-            'liste' => [
-                'name' => 'Liste (Top-uri)',
-                'description' => 'Creează videoclipuri cu liste (Top 5, Top 10, etc.).',
-                // 'script_type' => 'informativ',
-                // 'image_type' => 'colaj/ilustrativa',
-                // 'text_type' => 'titlu/numar/descriere',
-                'subcategories' => [
-                    'top-5-filme' => ['name' => 'Top 5 Filme', 'description' => 'Top 5 filme preferate.'],
-                    'top-10-carti' => ['name' => 'Top 10 Cărți', 'description' => 'Top 10 cărți preferate.'],
-                    'top-3-destinatii' => ['name' => 'Top 3 Destinații', 'description' => 'Top 3 destinații de călătorie preferate.'],
-                ],
-            ],
-            'educatie-informare' => [
-                'name' => 'Educație și Informare',
-                'description' => 'Prezintă informații educative și utile.',
-                // 'script_type' => 'informativ',  // General
-                // 'image_type' => 'ilustrativa',   // General
-                // 'text_type' => 'titlu/date/explicatii', // General
-                'subcategories' => [
-                    'curiozitati' => [
-                        'name' => 'Curiozități',
-                        'description' => 'Prezintă informații interesante și neobișnuite.',
-                        // 'script_type' => 'informativ',
-                        // 'image_type' => 'ilustrativa',
-                        // 'text_type' => 'titlu/date',
-                        'subcategories' => [
-                            'curiozitati-stiinta' => ['name' => 'Despre știință', 'description' => 'Curiozități despre știință.'],
-                            'curiozitati-istorie' => ['name' => 'Despre istorie', 'description' => 'Curiozități despre istorie.'],
-                            'curiozitati-geografie' => ['name' => 'Despre geografie', 'description' => 'Curiozități despre geografie.'],
-                            'curiozitati-animale' => ['name' => 'Despre animale', 'description' => 'Curiozități despre animale.'],
-                            'curiozitati-corp' => ['name' => 'Despre corpul uman', 'description' => 'Curiozități despre corpul uman.'],
-                            'curiozitati-tehnologie' => ['name' => 'Despre tehnologie', 'description' => 'Curiozități despre tehnologie.']
-                        ]
-                    ],
-                    'sfaturi-utile' => [
-                        'name' => 'Sfaturi Utile',
-                        'description' => 'Oferă sfaturi practice în diverse domenii.',
-                        // 'script_type' => 'instructiuni',
-                        // 'image_type' => 'demonstratie',
-                        // 'text_type' => 'pasi/explicatii',
-                        'subcategories' => [
-                            'sfaturi-studiu' => ['name' => 'Pentru studiu', 'description' => 'Sfaturi pentru a învăța mai eficient.'],
-                            'sfaturi-gatit' => ['name' => 'Pentru gătit', 'description' => 'Sfaturi pentru gătit.'],
-                            'sfaturi-organizare' => ['name' => 'Pentru organizare', 'description' => 'Sfaturi pentru organizare.'],
-                            'sfaturi-calatorii' => ['name' => 'Pentru călătorii', 'description' => 'Sfaturi pentru călătorii.'],
-                            'sfaturi-ingrijire' => ['name' => 'Pentru îngrijirea personală', 'description' => 'Sfaturi pentru îngrijirea personală.'],
-                            'sfaturi-economie' => ['name' => 'Pentru economisirea banilor', 'description' => 'Sfaturi pentru a economisi bani.']
-                        ]
-                    ],
-                    'mini-lectii' => [
-                        'name' => 'Mini-Lecții',
-                        'description' => 'Prezintă lecții scurte pe diverse teme.',
-                        // 'script_type' => 'instructiuni',
-                        // 'image_type' => 'ilustrativa/demonstratie',
-                        // 'text_type' => 'pasi/explicatii',
-                        'subcategories' => [
-                            'lectii-gramatica' => ['name' => 'De gramatică', 'description' => 'Mini-lecții de gramatică.'],
-                            'lectii-cultura' => ['name' => 'De cultură generală', 'description' => 'Mini-lecții de cultură generală.'],
-                            'lectii-limbi' => ['name' => 'De limbi străine', 'description' => 'Mini-lecții de limbi străine.']
-                        ]
-                    ],
-                    'meditatii' => [
-                        'name' => 'Meditații Ghidate',
-                        'description' => 'Oferă meditații ghidate pentru relaxare și bunăstare.',
-                        // 'script_type' => 'instructiuni',
-                        // 'image_type' => 'relaxantă/spirituală',
-                        // 'text_type' => 'pași/afirmații',
-                        'subcategories' => [
-                            'meditatie-relaxare' => ['name' => 'Pentru relaxare', 'description' => 'Meditații pentru relaxare.'],
-                            'meditatie-stres' => ['name' => 'Pentru reducerea stresului', 'description' => 'Meditații pentru reducerea stresului.'],
-                            'meditatie-somn' => ['name' => 'Pentru somn', 'description' => 'Meditații pentru un somn mai bun.'],
-                            'meditatie-scurte' => ['name' => 'Scurte', 'description' => 'Meditații scurte.'],
-                        ]
-                    ],
-                    'prezentari-meserii' => [
-                        'name' => 'Prezentări Meserii',
-                        'description' => 'Prezintă diferite meserii într-un format atractiv.',
-                        // 'script_type' => 'informativ/descriere',
-                        // 'image_type' => 'persoana/unelte/loc-de-munca',
-                        // 'text_type' => 'titlu/descriere/date',
-                        'subcategories' => [
-                            'profesor' => ['name' => 'Profesor', 'description' => 'Prezentarea meseriei de profesor.'],
-                            'medic' => ['name' => 'Medic', 'description' => 'Prezentarea meseriei de medic.'],
-                            'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
-                            'sofer' => ['name' => 'Șofer', 'description' => 'Prezentarea meseriei de șofer.'],
-                            'vanzator' => ['name' => 'Vânzător', 'description' => 'Prezentarea meseriei de vânzător.'],
-                            'mecanic' => ['name' => 'Mecanic Auto', 'description' => 'Prezentarea meseriei de mecanic auto.'],
-                            'constructor' => ['name' => 'Constructor', 'description' => 'Prezentarea meseriei de constructor.'],
-                            'fotograf' => ['name' => 'Fotograf', 'description' => 'Prezentarea meseriei de fotograf.'],
-                            'designer-grafic' => ['name' => 'Designer Grafic', 'description' => 'Prezentarea meseriei de designer grafic.'],
-                            'florar' => ['name' => 'Florar', 'description' => 'Prezentarea meseriei de florar.'],
-                        ]
-                    ],
-                ]
-            ],
-
             'emotii-sentimente' => [
                 'name' => 'Emoții și Sentimente',
                 'description' => 'Exprimă emoții și sentimente prin videoclipuri.',
-                // 'script_type' => 'citat/narativ/versuri',
-                // 'image_type' => 'personală/ilustrativă',
-                // 'text_type'  => 'citat/autor/dedicație/versuri',
                 'subcategories' => [
                     'declaratii-dragoste' => [
                         'name' => 'Declarații de Dragoste',
@@ -239,9 +63,6 @@ class CategoryService
                     'mesaje-amuzante' => [
                         'name' => 'Mesaje Amuzante/Hazlii',
                         'description' => 'Mesaje pentru a aduce zâmbetul pe buze.',
-                        // 'script_type' => 'gluma',  // Mutat in comentariu
-                        // 'image_type' => 'amuzanta/contrast', // Mutat in comentariu
-                        // 'text_type' => 'gluma',  // Mutat in comentariu
                         'subcategories' => [
                             'glume-scurte' => ['name' => 'Glume scurte', 'description' => 'Glume scurte și amuzante.'],
                             'bancuri' => ['name' => 'Bancuri', 'description' => 'Bancuri.'],
@@ -256,9 +77,6 @@ class CategoryService
             'spiritualitate-religie' => [
                 'name' => 'Spiritualitate și Religie',
                 'description' => 'Conținut legat de spiritualitate și religie.',
-                // 'script_type' => 'citat/narativ/versuri',
-                // 'image_type' => 'religioasă/spirituală/ilustrativă',
-                // 'text_type' => 'citat/autor/verset/rugăciune',
                 'subcategories' => [
                     'rugaciuni' => [
                         'name' => 'Rugăciuni',
@@ -288,9 +106,6 @@ class CategoryService
             'citate-intelepciune' => [
                 'name' => 'Citate și Înțelepciune',
                 'description' => 'Citate celebre, proverbe și aforisme.',
-                // 'script_type' => 'citat',
-                // 'image_type' => 'inspiratoare/abstractă',
-                // 'text_type' => 'citat/autor',
                 'subcategories' => [
                     'citate-celebre' => [
                         'name' => 'Citate Celebre',
@@ -361,12 +176,99 @@ class CategoryService
                 ]
             ],
 
+            'educatie-informare' => [
+                'name' => 'Educație și Informare',
+                'description' => 'Prezintă informații educative și utile.',
+                'subcategories' => [
+                    'curiozitati' => [
+                        'name' => 'Curiozități',
+                        'description' => 'Prezintă informații interesante și neobișnuite.',
+                        'subcategories' => [
+                            'curiozitati-stiinta' => ['name' => 'Despre știință', 'description' => 'Curiozități despre știință.'],
+                            'curiozitati-istorie' => ['name' => 'Despre istorie', 'description' => 'Curiozități despre istorie.'],
+                            'curiozitati-geografie' => ['name' => 'Despre geografie', 'description' => 'Curiozități despre geografie.'],
+                            'curiozitati-animale' => ['name' => 'Despre animale', 'description' => 'Curiozități despre animale.'],
+                            'curiozitati-corp' => ['name' => 'Despre corpul uman', 'description' => 'Curiozități despre corpul uman.'],
+                            'curiozitati-tehnologie' => ['name' => 'Despre tehnologie', 'description' => 'Curiozități despre tehnologie.']
+                        ]
+                    ],
+                    'sfaturi-utile' => [
+                        'name' => 'Sfaturi Utile',
+                        'description' => 'Oferă sfaturi practice în diverse domenii.',
+                        'subcategories' => [
+                            'sfaturi-studiu' => ['name' => 'Pentru studiu', 'description' => 'Sfaturi pentru a învăța mai eficient.'],
+                            'sfaturi-gatit' => ['name' => 'Pentru gătit', 'description' => 'Sfaturi pentru gătit.'],
+                            'sfaturi-organizare' => ['name' => 'Pentru organizare', 'description' => 'Sfaturi pentru organizare.'],
+                            'sfaturi-calatorii' => ['name' => 'Pentru călătorii', 'description' => 'Sfaturi pentru călătorii.'],
+                            'sfaturi-ingrijire' => ['name' => 'Pentru îngrijirea personală', 'description' => 'Sfaturi pentru îngrijirea personală.'],
+                            'sfaturi-economie' => ['name' => 'Pentru economisirea banilor', 'description' => 'Sfaturi pentru a economisi bani.']
+                        ]
+                    ],
+                    'mini-lectii' => [
+                        'name' => 'Mini-Lecții',
+                        'description' => 'Prezintă lecții scurte pe diverse teme.',
+                        'subcategories' => [
+                            'lectii-gramatica' => ['name' => 'De gramatică', 'description' => 'Mini-lecții de gramatică.'],
+                            'lectii-cultura' => ['name' => 'De cultură generală', 'description' => 'Mini-lecții de cultură generală.'],
+                            'lectii-limbi' => ['name' => 'De limbi străine', 'description' => 'Mini-lecții de limbi străine.']
+                        ]
+                    ],
+                    'meditatii' => [
+                        'name' => 'Meditații Ghidate',
+                        'description' => 'Oferă meditații ghidate pentru relaxare și bunăstare.',
+                        'subcategories' => [
+                            'meditatie-relaxare' => ['name' => 'Pentru relaxare', 'description' => 'Meditații pentru relaxare.'],
+                            'meditatie-stres' => ['name' => 'Pentru reducerea stresului', 'description' => 'Meditații pentru reducerea stresului.'],
+                            'meditatie-somn' => ['name' => 'Pentru somn', 'description' => 'Meditații pentru un somn mai bun.'],
+                            'meditatie-scurte' => ['name' => 'Scurte', 'description' => 'Meditații scurte.'],
+                        ]
+                    ],
+                    'prezentari-meserii' => [
+                        'name' => 'Prezentări Meserii',
+                        'description' => 'Prezintă diferite meserii într-un format atractiv.',
+                        'subcategories' => [
+                            'profesor' => ['name' => 'Profesor', 'description' => 'Prezentarea meseriei de profesor.'],
+                            'medic' => ['name' => 'Medic', 'description' => 'Prezentarea meseriei de medic.'],
+                            'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
+                            'sofer' => ['name' => 'Șofer', 'description' => 'Prezentarea meseriei de șofer.'],
+                            'vanzator' => ['name' => 'Vânzător', 'description' => 'Prezentarea meseriei de vânzător.'],
+                            'mecanic' => ['name' => 'Mecanic Auto', 'description' => 'Prezentarea meseriei de mecanic auto.'],
+                            'constructor' => ['name' => 'Constructor', 'description' => 'Prezentarea meseriei de constructor.'],
+                            'fotograf' => ['name' => 'Fotograf', 'description' => 'Prezentarea meseriei de fotograf.'],
+                            'designer-grafic' => ['name' => 'Designer Grafic', 'description' => 'Prezentarea meseriei de designer grafic.'],
+                            'florar' => ['name' => 'Florar', 'description' => 'Prezentarea meseriei de florar.'],
+                        ]
+                    ],
+                ]
+            ],
+
+            'explicatii' => [
+                'name' => 'Explicații (Știai că...?)',
+                'description' => 'Prezintă informații interesante într-un format concis.',
+                'subcategories' => [
+                    'stiinta' => ['name' => 'Știință', 'description' => 'Explicații despre știință.'],
+                    'istorie' => ['name' => 'Istorie', 'description' => 'Explicații despre istorie.'],
+                    'cultura' => ['name' => 'Cultură Generală', 'description' => 'Explicații despre cultură generală.'],
+                    'finante' => ['name' => 'Finanțe Personale', 'description' => 'Explicații despre finanțe personale.'],
+                ],
+            ],
+
+            'tutoriale' => [
+                'name' => 'Tutoriale (Cum să...)',
+                'description' => 'Creează videoclipuri instructive, pas cu pas.  Folosește un script cu instrucțiuni clare, o imagine care demonstrează procesul și text care explică pașii.',
+                'subcategories' => [
+                    'tech' => ['name' => 'Tech', 'description' => 'Tutoriale despre tehnologie (ex: telefoane, calculatoare, gadget-uri).'],
+                    'diy' => ['name' => 'DIY', 'description' => 'Tutoriale despre proiecte de tip "Do It Yourself".'],
+                    'beauty' => ['name' => 'Beauty', 'description' => 'Tutoriale despre machiaj, îngrijirea pielii, etc.'],
+                    'cooking' => ['name' => 'Gătit', 'description' => 'Tutoriale despre gătit (rețete).'],
+                    'software' => ['name' => 'Software', 'description' => 'Tutoriale despre utilizarea programelor.'],
+                    'ai-tools' => ['name' => 'Unelte AI', 'description' => 'Tutoriale despre utilizarea uneltelor AI.'],
+                ],
+            ],
+
             'ocazii-speciale' => [
                 'name' => 'Ocazii Speciale',
                 'description' => 'Mesaje pentru ocazii speciale.',
-                // 'script_type' => 'citat/narativ',
-                // 'image_type' => 'festivă/personală',
-                // 'text_type' => 'mesaj/dedicație',
                 'subcategories' => [
                     'sarbatori' => [
                         'name' => 'Mesaje de Sărbători',
@@ -393,9 +295,6 @@ class CategoryService
             'lifehacks-rapide' => [
                 'name' => 'Life Hacks',
                 'description' => 'Prezintă trucuri și sfaturi utile pentru viața de zi cu zi.',
-                // 'script_type' => 'instructiuni',
-                // 'image_type' => 'demonstratie',
-                // 'text_type' => 'pasi/explicatii',
                 'subcategories' => [
                     'casa' => ['name' => 'Pentru Casă', 'description' => 'Life hacks pentru casă.'],
                     'bucatarie' => ['name' => 'Bucătărie', 'description' => 'Life hacks pentru bucătărie.'],
@@ -404,40 +303,71 @@ class CategoryService
                 ],
             ],
 
-            'lifehacks-ro' => [
-                'name' => 'Life Hacks Local',
-                'description' => 'Trucuri utile, cu specific românesc.',
-                // 'script_type' => 'instructiuni',
-                // 'image_type' => 'demonstratie',
-                // 'text_type' => 'pasi/explicatii',
+            'stiri-scurte' => [
+                'name' => 'Știri Scurte',
+                'description' => 'Prezintă știri concise și captivante. Folosește un script informativ, o imagine relevantă și text cu titlul și sursa știrii.',
                 'subcategories' => [
-                    'economie-casnica' => [
-                        'name' => 'Economie Casnică',
-                        'description' => 'Life hacks pentru economie casnică.',
+                    'locale' => ['name' => 'Locale', 'description' => 'Știri locale.'],
+                    'nationale' => ['name' => 'Naționale', 'description' => 'Știri naționale.'],
+                    'internationale' => ['name' => 'Internaționale', 'description' => 'Știri internaționale.'],
+                    'tech' => ['name' => 'Tech', 'description' => 'Știri despre tehnologie.'],
+                ],
+            ],
+
+            'challenge-uri' => [
+                'name' => 'Challenge-uri Adaptate',
+                'description' => 'Participă la provocări video care se potrivesc cu formatul aplicației (imagine + text).',
+                'subcategories' => [
+                    'photo-challenges' => [
+                        'name' => 'Provocări Foto',
+                        'description' => 'Provocări care implică crearea de fotografii.',
                         'subcategories' => [
-                            'retete-buget' => ['name' => 'Rețete cu Buget Redus', 'description' => 'Rețete cu buget redus.'],
-                            'diy-cu-reciclare' => ['name' => 'DIY cu Materiale Reciclate', 'description' => 'Proiecte DIY cu materiale reciclate.']
+                            'outfit-challenge' => ['name' => 'Outfit of the Day', 'description' => 'Prezintă-ți ținuta zilei.'],
+                            'before-after' => ['name' => 'Înainte și După', 'description' => 'Arată transformări (ex: renovări, machiaj, etc.).'],
+                            'flat-lay' => ['name' => 'Flat Lay Challenge', 'description' => 'Creează o compoziție cu obiecte așezate pe o suprafață plană.'],
+                            'peisaje-urbane' => ['name' => 'Peisaje Urbane', 'description' => 'Fotografiază peisaje urbane interesante.'],
+                            'natura-moarta'  => ['name' => 'Natură Moartă', 'description' => 'Fotografiază compoziții cu obiecte inanimate.'],
+                            'portrete-creative' => ['name' => 'Portrete Creative', 'description' => 'Realizează portrete creative.'],
                         ]
                     ],
-                    'tech-hacks' => [
-                        'name' => 'Hack-uri Tehnologice',
-                        'description' => 'Life hacks pentru tehnologie.',
+                    'text-challenges' => [
+                        'name' => 'Provocări Text',
+                        'description' => 'Provocări care implică scrierea de texte.',
                         'subcategories' => [
-                            'aplicatii-utile' => ['name' => 'Aplicații Necunoscute Utile', 'description' => 'Aplicații utile, mai puțin cunoscute.'],
-                            'setari-secrete' => ['name' => 'Setări Secrete pe Telefon', 'description' => 'Setări secrete pe telefon.'],
-                            'trucuri-pc' => ['name' => 'Trucuri PC', 'description' => 'Trucuri pentru PC.'],
+                            'quote-challenge' => ['name' => 'Citatul Zilei', 'description' => 'Alege un citat și creează un videoclip inspirat de acesta.'],
+                            'gratitude-challenge' => ['name' => 'Jurnal de Recunoștință', 'description' => 'Exprimă-ți recunoștința pentru ceva.'],
+                            'story-challenge' => ['name' => 'Poveste în 3 Propoziții', 'description' => 'Spune o poveste în doar trei propoziții.'],
+                            'haiku-challenge' => ['name' => 'Haiku Challenge', 'description' => 'Scrie un haiku (poem scurt de 3 versuri).'],
+                            'acrostih-challenge' => ['name' => 'Acrostih Challenge', 'description' => 'Scrie un acrostih (poezie în care prima literă a fiecărui vers formează un cuvânt).'],
                         ]
-                    ],
-                    'sfaturi-calatorie-ro' => ['name' => 'Sfaturi Călătorie RO', 'description' => 'Sfaturi pentru călătorii în România.'],
+                    ]
                 ]
+            ],
+
+            'recenzii' => [
+                'name' => 'Recenzii Scurte',
+                'description' => 'Prezintă-ți părerea despre cărți, filme, produse, etc., într-un format concis.',
+                'subcategories' => [
+                    'recenzii-carti' => ['name' => 'De cărți', 'description' => 'Recenzii de cărți.'],
+                    'recenzii-filme' => ['name' => 'De filme', 'description' => 'Recenzii de filme.'],
+                    'recenzii-produse' => ['name' => 'De produse', 'description' => 'Recenzii de produse.'],
+                    'recenzii-jocuri' => ['name' => 'De jocuri', 'description' => 'Recenzii de jocuri.'],
+                ]
+            ],
+
+            'liste' => [
+                'name' => 'Liste (Top-uri)',
+                'description' => 'Creează videoclipuri cu liste (Top 5, Top 10, etc.).',
+                'subcategories' => [
+                    'top-5-filme' => ['name' => 'Top 5 Filme', 'description' => 'Top 5 filme preferate.'],
+                    'top-10-carti' => ['name' => 'Top 10 Cărți', 'description' => 'Top 10 cărți preferate.'],
+                    'top-3-destinatii' => ['name' => 'Top 3 Destinații', 'description' => 'Top 3 destinații de călătorie preferate.'],
+                ],
             ],
 
             'business-content' => [
                 'name' => 'Marketing Digital',
                 'description' => 'Conținut pentru promovarea afacerilor.',
-                // 'script_type' => 'informativ/opinie',
-                // 'image_type' => 'grafice/ilustratii',
-                // 'text_type' => 'titlu/date/sfaturi',
                 'subcategories' => [
                     'idei-promovare' => [
                         'name' => 'Strategii de Promovare',
@@ -459,12 +389,10 @@ class CategoryService
                     ]
                 ]
             ],
+
             'cultura-pop-ro' => [
                 'name' => 'Cultură Pop RO',
                 'description' => 'Conținut despre cultura populară românească.',
-                // 'script_type' => 'informativ/opinie/narativ',
-                // 'image_type' => 'ilustrativa/arhivă/personală',
-                // 'text_type' => 'titlu/date/explicatii/versuri',
                 'subcategories' => [
                     'fenomene-internet' => [
                         'name' => 'Fenomene Internet',
@@ -474,32 +402,6 @@ class CategoryService
                             'meme-uri-romanesti' => ['name' => 'Meme-uri Românești', 'description' => 'Meme-uri românești.'],
                         ]
                     ]
-                ]
-            ],
-            'explicatii' => [
-                'name' => 'Explicații (Știai că...?)',
-                'description' => 'Prezintă informații interesante într-un format concis.',
-                'subcategories' => [
-                    'stiinta' => ['name' => 'Știință', 'description' => 'Explicații despre știință.'],
-                    'istorie' => ['name' => 'Istorie', 'description' => 'Explicații despre istorie.'],
-                    'cultura' => ['name' => 'Cultură Generală', 'description' => 'Explicații despre cultură generală.'],
-                    'finante' => ['name' => 'Finanțe Personale', 'description' => 'Explicații despre finanțe personale.'],
-                ],
-            ],
-            'prezentari-meserii' => [
-                'name' => 'Prezentări Meserii',
-                'description' => 'Prezintă diferite meserii într-un format atractiv.',
-                'subcategories' => [
-                    'profesor' => ['name' => 'Profesor', 'description' => 'Prezentarea meseriei de profesor.'],
-                    'medic' => ['name' => 'Medic', 'description' => 'Prezentarea meseriei de medic.'],
-                    'bucatar' => ['name' => 'Bucătar', 'description' => 'Prezentarea meseriei de bucătar.'],
-                    'sofer' => ['name' => 'Șofer', 'description' => 'Prezentarea meseriei de șofer.'],
-                    'vanzator' => ['name' => 'Vânzător', 'description' => 'Prezentarea meseriei de vânzător.'],
-                    'mecanic' => ['name' => 'Mecanic Auto', 'description' => 'Prezentarea meseriei de mecanic auto.'],
-                    'constructor' => ['name' => 'Constructor', 'description' => 'Prezentarea meseriei de constructor.'],
-                    'fotograf' => ['name' => 'Fotograf', 'description' => 'Prezentarea meseriei de fotograf.'],
-                    'designer-grafic' => ['name' => 'Designer Grafic', 'description' => 'Prezentarea meseriei de designer grafic.'],
-                    'florar' => ['name' => 'Florar', 'description' => 'Prezentarea meseriei de florar.'],
                 ]
             ]
         ];
