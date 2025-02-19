@@ -13,6 +13,7 @@ use App\Services\AI\ImageGenerationService;
 use App\Services\AI\VideoGenerationService;
 use App\Services\AI\ScriptGenerationService;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 
 class CreateTikTok extends Component
 {
@@ -216,6 +217,19 @@ class CreateTikTok extends Component
 
     public function render()
     {
-        return view('livewire.create-tik-tok'); // No need to pass categories again
+        return view('livewire.create-tik-tok', [
+            'categories' => $this->getAvailableCategories()
+        ]);
+    }
+
+    public function updatedCategorySlug($value)
+    {
+        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing']);
+    }
+
+    public function setCategory($slug)
+    {
+        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing']);
+        $this->categorySlug = $slug;
     }
 }

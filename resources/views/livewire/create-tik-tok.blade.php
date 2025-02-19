@@ -55,7 +55,14 @@
                 </span>
             </label>
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" 
+                x-data="{ 
+                    selectedCategory: @entangle('categorySlug'),
+                    setCategory(slug) {
+                        this.selectedCategory = slug;
+                        $wire.setCategory(slug);
+                    }
+                }">
                 @php
                     $categories = $this->getAvailableCategories(); // Apelăm METODA
                 @endphp
@@ -97,8 +104,10 @@
                                                 <div
                                                     class="grid grid-cols-2 gap-1 p-2 rounded-lg bg-gray-50 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                                                     @foreach ($mainCategory['subcategories'] as $subSlug => $subCategory)
-                                                        <button wire:click="$set('categorySlug', '{{ $subSlug }}')"
-                                                            class="p-2 text-sm font-medium text-left transition-all duration-200 rounded-lg hover:bg-purple-50 {{ $categorySlug === $subSlug ? 'bg-purple-100 text-purple-700' : 'text-gray-600' }}">
+                                                        <button 
+                                                            @click="setCategory('{{ $subSlug }}')"
+                                                            class="p-2 text-sm font-medium text-left transition-all duration-200 rounded-lg hover:bg-purple-50"
+                                                            :class="{ 'bg-purple-100 text-purple-700': selectedCategory === '{{ $subSlug }}', 'text-gray-600': selectedCategory !== '{{ $subSlug }}' }">
                                                             {{ $subCategory['name'] }}
                                                         </button>
                                                     @endforeach
@@ -132,16 +141,18 @@
                                                                 class="mt-1">
                                                                 @foreach ($subCategory['subcategories'] as $subSubSlug => $subSubCat)
                                                                     <button
-                                                                        wire:click="$set('categorySlug', '{{ $subSubSlug }}')"
-                                                                        class="w-full p-3 text-sm text-left transition-all duration-200 hover:bg-purple-50 {{ $categorySlug === $subSubSlug ? 'bg-purple-100 text-purple-700' : 'text-gray-600' }}">
+                                                                        @click="setCategory('{{ $subSubSlug }}')"
+                                                                        class="w-full p-3 text-sm text-left transition-all duration-200 hover:bg-purple-50"
+                                                                        :class="{ 'bg-purple-100 text-purple-700': selectedCategory === '{{ $subSubSlug }}', 'text-gray-600': selectedCategory !== '{{ $subSubSlug }}' }">
                                                                         {{ $subSubCat['name'] }}
                                                                     </button>
                                                                 @endforeach
                                                             </div>
                                                         @else
                                                             <button
-                                                                wire:click="$set('categorySlug', '{{ $subSlug }}')"
-                                                                class="w-full p-3 text-sm text-left transition-all duration-200 hover:bg-purple-50 {{ $categorySlug === $subSlug ? 'bg-purple-100 text-purple-700' : 'text-gray-600' }}">
+                                                                @click="setCategory('{{ $subSlug }}')"
+                                                                class="w-full p-3 text-sm text-left transition-all duration-200 hover:bg-purple-50"
+                                                                :class="{ 'bg-purple-100 text-purple-700': selectedCategory === '{{ $subSlug }}', 'text-gray-600': selectedCategory !== '{{ $subSlug }}' }">
                                                                 {{ $subCategory['name'] }}
                                                             </button>
                                                         @endif
