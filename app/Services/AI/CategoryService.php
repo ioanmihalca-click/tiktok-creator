@@ -242,16 +242,6 @@ class CategoryService
                 ]
             ],
 
-            'explicatii' => [
-                'name' => 'Explicații (Știai că...?)',
-                'description' => 'Prezintă informații interesante într-un format concis.',
-                'subcategories' => [
-                    'stiinta' => ['name' => 'Știință', 'description' => 'Explicații despre știință.'],
-                    'istorie' => ['name' => 'Istorie', 'description' => 'Explicații despre istorie.'],
-                    'cultura' => ['name' => 'Cultură Generală', 'description' => 'Explicații despre cultură generală.'],
-                    'finante' => ['name' => 'Finanțe Personale', 'description' => 'Explicații despre finanțe personale.'],
-                ],
-            ],
 
             'tutoriale' => [
                 'name' => 'Tutoriale (Cum să...)',
