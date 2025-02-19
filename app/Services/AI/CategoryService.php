@@ -380,20 +380,7 @@ class CategoryService
                 ]
             ],
 
-            'cultura-pop-ro' => [
-                'name' => 'Cultură Pop RO',
-                'description' => 'Conținut despre cultura populară românească.',
-                'subcategories' => [
-                    'fenomene-internet' => [
-                        'name' => 'Fenomene Internet',
-                        'description' => 'Fenomene de pe internetul românesc.',
-                        'subcategories' => [
-                            'virale-romanesti' => ['name' => 'Clipuri Virale Românești', 'description' => 'Clipuri video virale din România.'],
-                            'meme-uri-romanesti' => ['name' => 'Meme-uri Românești', 'description' => 'Meme-uri românești.'],
-                        ]
-                    ]
-                ]
-            ]
+         
         ];
     }
 
