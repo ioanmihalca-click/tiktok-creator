@@ -280,93 +280,39 @@ class CategoryService
 
         // MESERII -  Mutare / Modificare:  Mutăm la "Educație și Informare" ca "Prezentări Meserii"
         'prezentari-meserii' => [
-            'name' => 'Prezentări Meserii', // Modificat numele
-            'script_type' => 'informativ/descriere',      // Adăugat script_type
-            'image_type' => 'persoana/unelte/loc-de-munca', // Adăugat image_type
-            'text_type' => 'titlu/descriere/date',       // Adăugat text_type
+            'name' => 'Prezentări Meserii',
+            'script_type' => 'informativ/descriere',
+            'image_type' => 'persoana/unelte/loc-de-munca',
+            'text_type' => 'titlu/descriere/date',
             'subcategories' => [
-                'pescar' => ['name' => 'Pescar', 'subcategories' => []],
-                'zidar' => ['name' => 'Zidar', 'subcategories' => []],
-                'sofer' => ['name' => 'Șofer', 'subcategories' => []],
-                'programator' => ['name' => 'Programator', 'subcategories' => []],
-                'medic' => ['name' => 'Medic', 'subcategories' => []],
-                'profesor' => ['name' => 'Profesor', 'subcategories' => []],
-                'inginer' => ['name' => 'Inginer', 'subcategories' => []],
-                'bucatar' => ['name' => 'Bucătar', 'subcategories' => []],
-                'mecanic' => ['name' => 'Mecanic', 'subcategories' => []],
-                'artist' => ['name' => 'Artist', 'subcategories' => []],
-                'agricultor' => ['name' => 'Agricultor', 'subcategories' => []],
-                'arhitect' => ['name' => 'Arhitect', 'subcategories' => []],
-                'asistent-medical' => ['name' => 'Asistent medical', 'subcategories' => []],
-                'avocat' => ['name' => 'Avocat', 'subcategories' => []],
-                'barman' => ['name' => 'Barman', 'subcategories' => []],
-                'bibliotecar' => ['name' => 'Bibliotecar', 'subcategories' => []],
-                'biolog' => ['name' => 'Biolog', 'subcategories' => []],
-                'brutar' => ['name' => 'Brutar', 'subcategories' => []],
-                'cameraman' => ['name' => 'Cameraman', 'subcategories' => []],
-                'cantaret' => ['name' => 'Cântăreț', 'subcategories' => []],
-                'casier' => ['name' => 'Casier', 'subcategories' => []],
-                'chimist' => ['name' => 'Chimist', 'subcategories' => []],
-                'contabil' => ['name' => 'Contabil', 'subcategories' => []],
-                'controlor-trafic-aerian' => ['name' => 'Controlor trafic aerian', 'subcategories' => []],
-                'cosmetician' => ['name' => 'Cosmetician', 'subcategories' => []],
-                'croitor' => ['name' => 'Croitor', 'subcategories' => []],
-                'dansator' => ['name' => 'Dansator', 'subcategories' => []],
-                'detectiv' => ['name' => 'Detectiv', 'subcategories' => []],
-                'diplomat' => ['name' => 'Diplomat', 'subcategories' => []],
-                'designer-grafic' => ['name' => 'Designer grafic', 'subcategories' => []],
-                'electrician' => ['name' => 'Electrician', 'subcategories' => []],
-                'economist' => ['name' => 'Economist', 'subcategories' => []],
-                'editor' => ['name' => 'Editor', 'subcategories' => []],
-                'expert-marketing' => ['name' => 'Expert marketing', 'subcategories' => []],
-                'farmacist' => ['name' => 'Farmacist', 'subcategories' => []],
-                'fotograf' => ['name' => 'Fotograf', 'subcategories' => []],
-                'frizer' => ['name' => 'Frizer', 'subcategories' => []],
-                'fizioterapeut' => ['name' => 'Fizioterapeut', 'subcategories' => []],
-                'functionar-public' => ['name' => 'Funcționar public', 'subcategories' => []],
-                'grefier' => ['name' => 'Grefier', 'subcategories' => []],
-                'ghid-turistic' => ['name' => 'Ghid turistic', 'subcategories' => []],
-                'grafician' => ['name' => 'Grafician', 'subcategories' => []],
-                'instalator' => ['name' => 'Instalator', 'subcategories' => []],
-                'invatator' => ['name' => 'Învățător', 'subcategories' => []],
-                'judecator' => ['name' => 'Judecător', 'subcategories' => []],
-                'jurnalist' => ['name' => 'Jurnalist', 'subcategories' => []],
-                'lacatus' => ['name' => 'Lăcătuș', 'subcategories' => []],
-                'librar' => ['name' => 'Librar', 'subcategories' => []],
-                'lucrator-comercial' => ['name' => 'Lucrător comercial', 'subcategories' => []],
-                'manager' => ['name' => 'Manager', 'subcategories' => []],
-                'manichiurist' => ['name' => 'Manichiurist', 'subcategories' => []],
-                'marinar' => ['name' => 'Marinar', 'subcategories' => []],
-                'matematician' => ['name' => 'Matematician', 'subcategories' => []],
-                'maseur' => ['name' => 'Maseur', 'subcategories' => []],
-                'model' => ['name' => 'Model', 'subcategories' => []],
-                'muzician' => ['name' => 'Muzician', 'subcategories' => []],
-                'notar' => ['name' => 'Notar', 'subcategories' => []],
-                'ofițer-poliție' => ['name' => 'Ofițer de poliție', 'subcategories' => []],
-                'operator-call-center' => ['name' => 'Operator call center', 'subcategories' => []],
-                'optician' => ['name' => 'Optician', 'subcategories' => []],
-                'patiser' => ['name' => 'Patiser', 'subcategories' => []],
-                'pilot' => ['name' => 'Pilot', 'subcategories' => []],
-                'pompier' => ['name' => 'Pompier', 'subcategories' => []],
-                'politist' => ['name' => 'Polițist', 'subcategories' => []],
-                'preot' => ['name' => 'Preot', 'subcategories' => []],
-                'psiholog' => ['name' => 'Psiholog', 'subcategories' => []],
-                'receptioner' => ['name' => 'Recepționer', 'subcategories' => []],
-                'regizor' => ['name' => 'Regizor', 'subcategories' => []],
-                'salvamar' => ['name' => 'Salvamar', 'subcategories' => []],
-                'scafandru' => ['name' => 'Scafandru', 'subcategories' => []],
-                'scenarist' => ['name' => 'Scenarist', 'subcategories' => []],
-                'sculptor' => ['name' => 'Sculptor', 'subcategories' => []],
-                'secretar' => ['name' => 'Secretar/ă', 'subcategories' => []],
-                'specialist-seo' => ['name' => 'Specialist SEO', 'subcategories' => []],
-                'sportiv' => ['name' => 'Sportiv', 'subcategories' => []],
-                'stewardesa' => ['name' => 'Însoțitor de bord/Stewardesă', 'subcategories' => []],
-                'sudor' => ['name' => 'Sudor', 'subcategories' => []],
-                'tamplar' => ['name' => 'Tâmplar', 'subcategories' => []],
-                'traducator' => ['name' => 'Traducător', 'subcategories' => []],
-                'vanzator' => ['name' => 'Vânzător', 'subcategories' => []],
-                'veterinar' => ['name' => 'Veterinar', 'subcategories' => []],
-                'zugrav' => ['name' => 'Zugrav', 'subcategories' => []],
+                'profesor' => [
+                    'name' => 'Profesor',
+                    'subcategories' => []
+                ],
+                'medic' => [
+                    'name' => 'Medic',
+                    'subcategories' => []
+                ],
+                'bucatar' => [
+                    'name' => 'Bucătar',
+                    'subcategories' => []
+                ],
+                'sofer' => [
+                    'name' => 'Șofer',
+                    'subcategories' => []
+                ],
+                'vanzator' => [
+                    'name' => 'Vânzător',
+                    'subcategories' => []
+                ],
+                'mecanic' => [
+                    'name' => 'Mecanic Auto',
+                    'subcategories' => []
+                ],
+                'constructor' => [
+                    'name' => 'Constructor',
+                    'subcategories' => []
+                ]
             ]
         ],
 
@@ -534,36 +480,28 @@ class CategoryService
             ],
         ],
          'challenge-uri' => [ // Provocari *care se pot face cu script+imagine+text*
-            'name' => 'Challenge-uri Virale',
-            'description' => 'Participă la cele mai noi provocări TikTok!',
-             'script_type' => 'instructiuni/descriere', // Adaptat
-            'image_type' => 'ilustrativa/demonstratie', // Adaptat
-            'text_type' => 'titlu/hashtag/reguli',  // Adaptat
+            'name' => 'Challenge-uri Adaptate',
+            'description' => 'Challenge-uri care se pot face cu imagini și text.',
+            'script_type' => 'instructiuni/descriere',
+            'image_type' => 'ilustrativa/demonstratie',
+            'text_type' => 'titlu/hashtag/reguli',
             'subcategories' => [
-                'dansuri-trend' => [ // Nu se potrivesc *direct*, eliminăm
-                    'name' => 'Dansuri Trend',
-                    'description' => 'Învață și recreează cele mai populare coregrafii.',
+                'photo-challenges' => [
+                    'name' => 'Provocări Foto',
                     'subcategories' => [
-                        'dansuri-cuplu' => ['name' => 'Dansuri pentru Cupluri', 'subcategories' => []],
-                        'dansuri-meme' => ['name' => 'Dansuri cu Meme-uri', 'subcategories' => []]
+                        'outfit-challenge' => ['name' => 'Outfit of the Day', 'subcategories' => []],
+                        'before-after' => ['name' => 'Înainte și După', 'subcategories' => []],
+                        'flat-lay' => ['name' => 'Flat Lay Challenge', 'subcategories' => []]
                     ]
                 ],
-                'provocari-creative' => [  // Păstrăm ce se potrivește
-                    'name' => 'Provocări Creative',
-                    'description' => 'Arată-ți creativitatea cu aceste provocări unice!',
+                'text-challenges' => [
+                    'name' => 'Provocări Text',
                     'subcategories' => [
-                        'transition-challenge' => ['name' => 'Transition Challenge', 'subcategories' => []], // Necesită funcționalitate de tranziții, eliminăm deocamdată
-                        'capcut-templates' => ['name' => 'CapCut Templates', 'subcategories' => []] // Nu se potrivește *direct*, eliminăm deocamdată
+                        'quote-challenge' => ['name' => 'Citatul Zilei', 'subcategories' => []],
+                        'gratitude-challenge' => ['name' => 'Jurnal de Recunoștință', 'subcategories' => []],
+                        'story-challenge' => ['name' => 'Poveste în 3 Propoziții', 'subcategories' => []]
                     ]
-                ],
-                'provocari-audio' => [ // Nu se potrivesc *direct*, eliminăm deocamdată
-                    'name' => 'Provocări Audio',
-                    'description' => 'Folosește sunete populare pentru a crea videoclipuri amuzante.',
-                    'subcategories' => []
-                ],
-                 'creative-foto' => ['name' => 'Foto', 'subcategories' => []],
-                 'creative-scriere' => ['name' => 'Scriere', 'subcategories' => []],
-                 'creative-desen' => ['name' => 'Desen', 'subcategories' => []], //Daca se pot integra cumva
+                ]
             ]
         ],
 
