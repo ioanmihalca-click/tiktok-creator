@@ -9,6 +9,7 @@
         "php": "^8.2",
         "cloudinary-labs/cloudinary-laravel": "^2.2",
         "filament/filament": "^3.2",
+        "filament/spatie-laravel-translatable-plugin": "^3.2",
         "google/cloud-text-to-speech": "^2.0",
         "halilcosdu/laravel-replicate": "^1.0",
         "james-heinrich/getid3": "^1.9",
