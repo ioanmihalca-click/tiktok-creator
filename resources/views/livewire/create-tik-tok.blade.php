@@ -1,4 +1,9 @@
 <div>
+    <!-- Add this at the top of the file for debugging -->
+    @php
+        \Log::info('Categories in view:', ['categories' => $categories]);
+    @endphp
+
     <div class="min-h-screen text-white bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <div class="max-w-5xl p-6 mx-auto">
             <!-- Header -->
@@ -89,115 +94,67 @@
                             $wire.setCategory(slug);
                         }
                     }">
-                        @foreach ($categories as $mainSlug => $mainCategory)
+                        @foreach ($categories as $category)
+                            <div
+                                class="overflow-hidden transition-all duration-300 border rounded-xl bg-white/5 border-white/10 hover:border-purple-500/30">
+                                <!-- Card Header -->
+                                <div
+                                    class="p-4 border-b bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
+                                    <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-200">
+                                        {{ $category->name }}
+                                    </h3>
+                                    @if ($category->description)
+                                        <p class="mt-1 text-sm text-gray-400">{{ $category->description }}</p>
+                                    @endif
+                                </div>
 
-                            @if (isset($mainCategory['name']) && isset($mainCategory['subcategories']))
-                                <div class="{{ $mainSlug === 'meserii' ? 'lg:col-span-3 order-last' : '' }}">
-                                    <!-- Main Category Card -->
-                                    <div
-                                        class="overflow-hidden transition-all duration-300 border rounded-xl bg-white/5 border-white/10 hover:border-purple-500/30">
-                                        <!-- Card Header -->
-                                        <div
-                                            class="p-4 border-b bg-gradient-to-r from-purple-900/30 to-blue-900/30 border-white/10">
-                                            <h3 class="flex items-center gap-3 text-lg font-semibold text-gray-200">
-                                                @if (isset($mainCategory['icon']))
-                                                    <span class="p-1 rounded-lg bg-white/10">
-                                                        {!! $mainCategory['icon'] !!}
+                                <!-- Card Content -->
+                                <div class="p-4">
+                                    <div class="space-y-2">
+                                        @foreach ($category->children as $subCategory)
+                                            <div x-data="{ open: false }" class="overflow-hidden rounded-lg">
+                                                <button @click="open = !open"
+                                                    class="flex items-center justify-between w-full p-3 text-left transition-all duration-200 rounded-lg bg-white/5 hover:bg-white/10 group">
+                                                    <span
+                                                        class="text-sm font-medium text-gray-300 group-hover:text-purple-400">
+                                                        {{ $subCategory->name }}
                                                     </span>
-                                                @endif
-                                                {{ $mainCategory['name'] }}
-                                            </h3>
-                                        </div>
-
-                                        <!-- Card Content -->
-                                        <div class="p-4">
-                                            @if ($mainSlug === 'meserii')
-                                                <div x-data="{ open: false }">
-                                                    <!-- Main dropdown button -->
-                                                    <button @click="open = !open"
-                                                        class="flex items-center justify-between w-full p-3 text-left transition-all duration-200 rounded-lg bg-white/5 hover:bg-white/10 group">
-                                                        <span
-                                                            class="text-sm font-medium text-gray-300 group-hover:text-purple-400">
-                                                            Vezi toate meseriile
-                                                        </span>
+                                                    @if ($subCategory->children->count() > 0)
                                                         <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:text-purple-400"
                                                             :class="{ 'rotate-180': open }" fill="none"
                                                             stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                                 stroke-width="2" d="M19 9l-7 7-7-7" />
                                                         </svg>
-                                                    </button>
+                                                    @endif
+                                                </button>
 
-                                                    <!-- Dropdown content -->
+                                                @if ($subCategory->children->count() > 0)
                                                     <div x-show="open"
                                                         x-transition:enter="transition ease-out duration-200"
                                                         x-transition:enter-start="opacity-0 -translate-y-2"
                                                         x-transition:enter-end="opacity-100 translate-y-0"
-                                                        class="mt-2">
-                                                        <div
-                                                            class="grid grid-cols-2 gap-1 p-2 rounded-lg bg-white/5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                                                            @foreach ($mainCategory['subcategories'] as $subSlug => $subCategory)
-                                                                <button @click="setCategory('{{ $subSlug }}')"
-                                                                    class="p-2 text-sm font-medium text-left text-gray-300 transition-all duration-200 rounded-lg hover:bg-white/10"
-                                                                    :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $subSlug }}', 'text-gray-300': selectedCategory !== '{{ $subSlug }}' }">
-                                                                    {{ $subCategory['name'] }}
-                                                                </button>
-                                                            @endforeach
-                                                        </div>
+                                                        class="mt-1">
+                                                        @foreach ($subCategory->children as $childCategory)
+                                                            <button @click="setCategory('{{ $childCategory->slug }}')"
+                                                                class="w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 hover:bg-white/5"
+                                                                :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $childCategory->slug }}', 'text-gray-300': selectedCategory !== '{{ $childCategory->slug }}' }">
+                                                                {{ $childCategory->name }}
+                                                            </button>
+                                                        @endforeach
                                                     </div>
-                                                </div>
-                                            @else
-                                                <div class="space-y-2">
-                                                    @foreach ($mainCategory['subcategories'] as $subSlug => $subCategory)
-                                                        @if (isset($subCategory['name']))
-                                                            <div x-data="{ open: false }"
-                                                                class="overflow-hidden rounded-lg">
-                                                                <button @click="open = !open"
-                                                                    class="flex items-center justify-between w-full p-3 text-left transition-all duration-200 rounded-lg bg-white/5 hover:bg-white/10 group">
-                                                                    <span
-                                                                        class="text-sm font-medium text-gray-300 group-hover:text-purple-400">
-                                                                        {{ $subCategory['name'] }}
-                                                                    </span>
-                                                                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:text-purple-400"
-                                                                        :class="{ 'rotate-180': open }" fill="none"
-                                                                        stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round"
-                                                                            stroke-linejoin="round" stroke-width="2"
-                                                                            d="M19 9l-7 7-7-7" />
-                                                                    </svg>
-                                                                </button>
-
-                                                                @if (isset($subCategory['subcategories']) && !empty($subCategory['subcategories']))
-                                                                    <div x-show="open"
-                                                                        x-transition:enter="transition ease-out duration-200"
-                                                                        x-transition:enter-start="opacity-0 -translate-y-2"
-                                                                        x-transition:enter-end="opacity-100 translate-y-0"
-                                                                        class="mt-1">
-                                                                        @foreach ($subCategory['subcategories'] as $subSubSlug => $subSubCat)
-                                                                            <button
-                                                                                @click="setCategory('{{ $subSubSlug }}')"
-                                                                                class="w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 hover:bg-white/5"
-                                                                                :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $subSubSlug }}', 'text-gray-300': selectedCategory !== '{{ $subSubSlug }}' }">
-                                                                                {{ $subSubCat['name'] }}
-                                                                            </button>
-                                                                        @endforeach
-                                                                    </div>
-                                                                @else
-                                                                    <button @click="setCategory('{{ $subSlug }}')"
-                                                                        class="w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 hover:bg-white/5"
-                                                                        :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $subSlug }}', 'text-gray-300': selectedCategory !== '{{ $subSlug }}' }">
-                                                                        {{ $subCategory['name'] }}
-                                                                    </button>
-                                                                @endif
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
-                                                </div>
-                                            @endif
-                                        </div>
+                                                @else
+                                                    <button @click="setCategory('{{ $subCategory->slug }}')"
+                                                        class="w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 hover:bg-white/5"
+                                                        :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $subCategory->slug }}', 'text-gray-300': selectedCategory !== '{{ $subCategory->slug }}' }">
+                                                        {{ $subCategory->name }}
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            @endif
+                            </div>
                         @endforeach
                     </div>
                 </div>
@@ -207,8 +164,7 @@
                     <button type="button" wire:click="generate"
                         class="relative w-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                         wire:loading.attr="disabled" wire:target="generate" wire:loading.class="opacity-75">
-                        <span wire:loading.remove wire:target="generate"
-                            class="flex items-center justify-center gap-2">
+                        <span wire:loading.remove wire:target="generate" class="flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
@@ -279,7 +235,6 @@
                                 @endif
 
                                 <!-- Final Video -->
-
                                 @if ($videoUrl)
                                     <div class="max-w-lg p-6 mx-auto bg-white/5 backdrop-blur-sm rounded-xl">
                                         <div class="mb-6 text-center">
@@ -305,19 +260,16 @@
                                         </div>
 
                                         <div class="flex justify-center mt-4">
-                                            <div
-                                                class="inline-flex items-center gap-3 px-4 py-3 text-gray-400 transition-all duration-200 border rounded-lg border-white/10 bg-white/5 backdrop-blur-sm">
-                                                <svg class="text-purple-400 w-7 h-7" fill="none"
-                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                            <a href="{{ $videoUrl }}" target="_blank"
+                                                class="inline-flex items-center gap-2 px-6 py-3 text-white transition-colors duration-150 bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
-                                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                                                 </svg>
-                                                <span class="text-sm">
-                                                    Pentru a descărca videoclipul, apasă pe cele trei puncte din player
-                                                    și selectează "Download"
-                                                </span>
-                                            </div>
+                                                Descarcă Video
+                                            </a>
                                         </div>
                                     </div>
                                 @endif

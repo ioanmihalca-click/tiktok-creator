@@ -26,7 +26,6 @@ class CreateTikTok extends Component
     public string $currentStep = '';
     public array $completedSteps = [];
 
-
     private CategoryService $categoryService;
     private ScriptGenerationService $scriptService;
     private ImageGenerationService $imageService;
@@ -59,7 +58,6 @@ class CreateTikTok extends Component
                 if ($lastProject) {
                     $this->render_id = $lastProject->render_id;
                     $this->videoUrl = $lastProject->video_url;
-
                     $this->isProcessing = $lastProject->status === 'rendering';
                 }
             }
@@ -158,8 +156,6 @@ class CreateTikTok extends Component
                 'audio_duration' => $audioDuration ?? null
             ]);
 
-
-
             $videoResult = $this->videoService->generate($project);
             if (!$videoResult['success']) {
                 throw new Exception("Video generation failed: " . ($videoResult['error'] ?? 'Unknown error'));
@@ -211,7 +207,6 @@ class CreateTikTok extends Component
                 ]);
 
                 $this->videoUrl = $status['url'];
-
                 $this->isProcessing = false;
 
                 $this->dispatch('videoReady');
@@ -234,8 +229,11 @@ class CreateTikTok extends Component
 
     public function render()
     {
+        $categories = $this->categoryService->getCategories();
+        \Log::info('Categories in render:', ['categories' => $categories->count()]);
+
         return view('livewire.create-tik-tok', [
-            'categories' => $this->categoryService->getCategories()
+            'categories' => $categories
         ]);
     }
 
