@@ -25,8 +25,8 @@
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+<body class="antialiased bg-[#0A0A0F] text-white min-h-screen selection:bg-purple-500/30 selection:text-white">
+    <div class="min-h-screen">
         <livewire:layout.navigation />
 
         <body>
