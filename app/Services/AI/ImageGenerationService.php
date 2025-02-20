@@ -2,34 +2,55 @@
 
 namespace App\Services\AI;
 
-use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ImageGenerationService
 {
+    protected string $togetherApiKey;
+    protected string $togetherApiUrl = 'https://api.together.xyz/v1/images/generations';
+
+    public function __construct()
+    {
+        $this->togetherApiKey = config('services.together.api_key');
+    }
+
     public function generateImage(string $prompt)
     {
         try {
-            Log::info('Starting image generation with DALL-E', ['prompt' => $prompt]);
+            Log::info('Starting image generation with Together AI Flux Schnell', ['prompt' => $prompt]);
 
-            $result = OpenAI::images()->create([
-                'model' => 'dall-e-3',
+            // Facem request către Together AI API
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->togetherApiKey,
+                'Content-Type' => 'application/json',
+            ])->post($this->togetherApiUrl, [
+                'model' => 'black-forest-labs/FLUX.1-schnell-Free',
                 'prompt' => $prompt,
+                'width' => 1008,  // Max allowed height while maintaining 9:16 ratio
+                'height' => 1792,  // Maximum allowed height
+                'steps' => 4,
                 'n' => 1,
-                'size' => '1024x1792',
-                'quality' => 'standard',
-                'style' => 'vivid',
-                'response_format' => 'url',
+                'response_format' => 'url', // folosim url în loc de b64_json pentru simplitate
+                'go_fast' => true,
+                'output_format' => 'jpeg',
+                'output_quality' => 80
             ]);
 
-            if (!isset($result->data[0]->url)) {
-                throw new \Exception('No image URL in DALL-E response');
+            if (!$response->successful()) {
+                throw new \Exception('Together API Error: ' . $response->body());
             }
 
-            $imageUrl = $result->data[0]->url;
-           
+            $result = $response->json();
+
+            if (!isset($result['data'][0]['url'])) {
+                throw new \Exception('No image URL in Together AI response');
+            }
+
+            $imageUrl = $result['data'][0]['url'];
+
+            // Descărcăm imaginea și o încărcăm pe Cloudinary
             $imageContent = Http::timeout(60)->get($imageUrl)->body();
             $tempFile = tempnam(sys_get_temp_dir(), 'bg_');
             file_put_contents($tempFile, $imageContent);
@@ -52,11 +73,11 @@ class ImageGenerationService
                 ];
             } finally {
                 if (file_exists($tempFile)) {
-                    unlink($tempFile); // Ștergem fișierul temporar indiferent de rezultat
+                    unlink($tempFile);
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Image Generation Error', [
+            Log::error('Together AI Image Generation Error', [
                 'error' => $e->getMessage(),
                 'prompt' => $prompt,
                 'trace' => $e->getTraceAsString()

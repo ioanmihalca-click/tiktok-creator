@@ -33,4 +33,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/video/download/{id}', [VideoDownloadController::class, 'download'])->name('video.download');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

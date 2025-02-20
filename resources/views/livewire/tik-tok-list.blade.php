@@ -63,7 +63,7 @@
                                         @foreach ($project->script['hashtags'] as $hashtag)
                                             <span
                                                 class="px-2 py-1 text-xs font-medium text-purple-400 rounded-full bg-purple-900/50">
-                                                #{{ $hashtag }}
+                                                {{ $hashtag }}
                                             </span>
                                         @endforeach
                                     </div>

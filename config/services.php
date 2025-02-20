@@ -29,4 +29,8 @@ return [
     'shotstack' => [
         'key' => env('SHOTSTACK_API_KEY'),
     ],
+
+    'together' => [
+        'api_key' => env('TOGETHER_API_KEY'),
+    ],
 ];
