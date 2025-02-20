@@ -304,9 +304,9 @@
                                         </div>
 
                                         <div class="flex justify-center mt-4">
-                                            <a href="{{ $videoUrl }}" target="_blank"
-                                                class="inline-flex items-center gap-2 px-6 py-3 text-white transition-colors duration-150 bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            <a href="{{ $project_id ? route('video.download', $project_id) : $videoUrl }}"
+                                                class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white transition-colors duration-200 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"

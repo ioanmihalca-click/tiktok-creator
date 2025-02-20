@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use App\Models\VideoProject;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class VideoDownloadController extends Controller
 {
@@ -19,19 +20,19 @@ class VideoDownloadController extends Controller
         }
 
         $videoContent = Http::timeout(60)->get($video->video_url);
-        
+
         if (!$videoContent->successful()) {
             return back()->with('error', 'Could not download video.');
         }
 
-        $filename = slug($video->title) . '.mp4';
-        
+        $filename = Str::slug($video->title) . '.mp4';
+
         return response($videoContent->body())
             ->header('Content-Type', 'video/mp4')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Content-Length', strlen($videoContent->body()))
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
-}
-
-function slug($string) {
-    return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
 }
