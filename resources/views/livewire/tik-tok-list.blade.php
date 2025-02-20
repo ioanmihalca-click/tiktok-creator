@@ -79,22 +79,20 @@
 
                             <div class="flex gap-2 mt-4">
                                 @if ($project->status === 'completed' && $project->video_url)
-                                    <a href="{{ route('video.download', $project->id) }}"
-                                        class="inline-flex items-center justify-center flex-1 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                                    <div
+                                        class="inline-flex items-center gap-3 px-4 py-3 text-gray-400 transition-all duration-200 border rounded-lg border-white/10 bg-white/5 backdrop-blur-sm">
+                                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        Descarcă Video
-                                    </a>
-                                @else
-                                    <div class="flex-1"></div>
+                                        <span class="text-sm">
+                                            Pentru a descărca videoclipul, apasă pe cele trei puncte din player și
+                                            selectează "Download"
+                                        </span>
+                                    </div>
                                 @endif
-                                <button wire:click="deleteVideo({{ $project->id }})"
-                                    class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-red-400 transition-colors duration-200 rounded-lg bg-red-900/50 hover:bg-red-900/75">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
+
                             </div>
                         </div>
                     </div>

@@ -25,7 +25,7 @@ class CreateTikTok extends Component
     public bool $isProcessing = false;
     public string $currentStep = '';
     public array $completedSteps = [];
-    public ?int $project_id = null;
+
 
     private CategoryService $categoryService;
     private ScriptGenerationService $scriptService;
@@ -59,7 +59,7 @@ class CreateTikTok extends Component
                 if ($lastProject) {
                     $this->render_id = $lastProject->render_id;
                     $this->videoUrl = $lastProject->video_url;
-                    $this->project_id = $lastProject->id;
+
                     $this->isProcessing = $lastProject->status === 'rendering';
                 }
             }
@@ -158,7 +158,7 @@ class CreateTikTok extends Component
                 'audio_duration' => $audioDuration ?? null
             ]);
 
-            $this->project_id = $project->id;
+
 
             $videoResult = $this->videoService->generate($project);
             if (!$videoResult['success']) {
@@ -211,7 +211,7 @@ class CreateTikTok extends Component
                 ]);
 
                 $this->videoUrl = $status['url'];
-                $this->project_id = $project->id;
+
                 $this->isProcessing = false;
 
                 $this->dispatch('videoReady');

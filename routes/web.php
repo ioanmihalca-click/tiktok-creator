@@ -26,11 +26,9 @@ Route::middleware(['auth'])->group(function () {
     })->name('profile');
 
     // Rutele pentru TikTok
-    Route::get('/tiktoks', TikTokList::class)->name('tiktoks.index');
+
     Route::get('/tiktoks/create', CreateTikTok::class)->name('tiktoks.create');
     Route::get('/tiktoks/list', TikTokList::class)->name('tiktoks.list');
-
-    Route::get('/video/download/{id}', [VideoDownloadController::class, 'download'])->name('video.download');
 });
 
 require __DIR__ . '/auth.php';
