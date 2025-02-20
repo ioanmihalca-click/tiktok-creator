@@ -11,8 +11,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::post('/subscribe', [SubscriberController::class, 'store'])->name('subscribe');
-
 // Rutele protejate care necesită autentificare
 Route::middleware(['auth'])->group(function () {
     // Dashboard-ul după autentificare

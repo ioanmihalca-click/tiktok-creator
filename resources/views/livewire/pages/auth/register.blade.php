@@ -8,8 +8,7 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.guest')] class extends Component
-{
+new #[Layout('layouts.guest')] class extends Component {
     public string $name = '';
     public string $email = '';
     public string $password = '';
@@ -22,13 +21,13 @@ new #[Layout('layouts.guest')] class extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
-        event(new Registered($user = User::create($validated)));
+        event(new Registered(($user = User::create($validated))));
 
         Auth::login($user);
 
@@ -36,53 +35,59 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div>
-    <form wire:submit="register">
+<div class="p-8 border rounded-2xl bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-sm border-white/10">
+    <h2
+        class="mb-6 text-2xl font-bold text-center text-transparent bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text">
+        {{ __('Înregistrare') }}
+    </h2>
+
+    <form wire:submit="register" class="space-y-6">
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required autofocus autocomplete="name" />
+            <x-input-label for="name" :value="__('Nume')" class="text-gray-300" />
+            <x-text-input wire:model="name" id="name"
+                class="w-full px-4 py-3 mt-1 text-white transition-all duration-200 border bg-white/5 border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                type="text" name="name" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email" required autocomplete="username" />
+        <div>
+            <x-input-label for="email" :value="__('Email')" class="text-gray-300" />
+            <x-text-input wire:model="email" id="email"
+                class="w-full px-4 py-3 mt-1 text-white transition-all duration-200 border bg-white/5 border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                type="email" name="email" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
+        <div>
+            <x-input-label for="password" :value="__('Parola')" class="text-gray-300" />
+            <x-text-input wire:model="password" id="password"
+                class="w-full px-4 py-3 mt-1 text-white transition-all duration-200 border bg-white/5 border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                type="password" name="password" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
+        <div>
+            <x-input-label for="password_confirmation" :value="__('Confirmă Parola')" class="text-gray-300" />
+            <x-text-input wire:model="password_confirmation" id="password_confirmation"
+                class="w-full px-4 py-3 mt-1 text-white transition-all duration-200 border bg-white/5 border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                type="password" name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}" wire:navigate>
-                {{ __('Already registered?') }}
+        <div class="flex items-center justify-end">
+            <a class="text-sm text-purple-400 transition-colors duration-200 hover:text-purple-300"
+                href="{{ route('login') }}" wire:navigate>
+                {{ __('Ai deja cont?') }}
             </a>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
+            <button type="submit"
+                class="ms-4 px-6 py-3 font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 transform hover:scale-[1.02] focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#0A0A0F]">
+                {{ __('Înregistrare') }}
+            </button>
         </div>
     </form>
 </div>
