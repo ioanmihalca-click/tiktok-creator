@@ -47,7 +47,12 @@ class Category extends Model
 
     public function getFullPathAttribute(): string
     {
-        return $this->ancestorsAndSelf()->pluck('name')->join(' > ');
+        try {
+            $category = self::where('slug', $this->slug)->firstOrFail();
+            return $category->ancestorsAndSelf($category->id)->pluck('name')->join(' > ');
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public function scopeActive($query)

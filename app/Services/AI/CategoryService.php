@@ -21,13 +21,23 @@ class CategoryService
         return Category::where('slug', $slug)->first();
     }
 
-    public function getCategoryFullPath(string $slug): string
+    public function getCategoryFullPath(string $slug): ?string
     {
         try {
             $category = Category::where('slug', $slug)->firstOrFail();
-            return $category->ancestorsAndSelf()->pluck('name')->join(' > ');
-        } catch (NodeNotFoundException $e) {
-            throw new Exception("Categoria nu a fost găsită: " . $slug);
+
+            // Get ancestors and self
+            $path = $category->ancestorsAndSelf($category->id)
+                ->pluck('name')
+                ->implode(' > ');
+
+            return $path;
+        } catch (\Exception $e) {
+            \Log::error('Error getting category path:', [
+                'slug' => $slug,
+                'error' => $e->getMessage()
+            ]);
+            return null;
         }
     }
 
