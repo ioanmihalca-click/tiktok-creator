@@ -259,17 +259,17 @@
                                             </video>
                                         </div>
 
-                                        <div class="flex justify-center mt-4">
-                                            <a href="{{ $videoUrl }}" target="_blank"
-                                                class="inline-flex items-center gap-2 px-6 py-3 text-white transition-colors duration-150 bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                                </svg>
-                                                Descarcă Video
-                                            </a>
+                                        <div
+                                            class="inline-flex items-center gap-3 px-4 py-3 mt-3 text-gray-400 transition-all duration-200 border rounded-lg border-white/10 bg-white/5 backdrop-blur-sm">
+                                            <svg class="text-purple-400 w-7 h-7" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span class="text-sm">
+                                                Pentru a descărca videoclipul, apasă pe cele trei puncte din player și
+                                                selectează "Download"
+                                            </span>
                                         </div>
                                     </div>
                                 @endif
