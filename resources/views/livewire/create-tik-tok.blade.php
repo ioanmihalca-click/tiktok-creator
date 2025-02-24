@@ -19,37 +19,51 @@
             <!-- Notifications -->
             <div class="absolute inset-x-0 top-0 z-50 space-y-4">
                 @if (session()->has('message'))
-                    <div
+                    <div x-data="{ show: true }" x-show="show"
                         class="max-w-lg p-4 mx-auto transition-all duration-300 transform rounded-lg bg-green-900/50 backdrop-blur-sm animate-fade-in-down">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                        <div class="flex justify-between">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p>{{ session('message') }}</p>
+                                </div>
                             </div>
-                            <div class="ml-3">
-                                <p>{{ session('message') }}</p>
-                            </div>
+                            <svg @click="show = false" class="w-5 h-5 text-green-200 cursor-pointer hover:text-white"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </div>
                     </div>
                 @endif
 
                 @if (session()->has('error'))
-                    <div
+                    <div x-data="{ show: true }" x-show="show"
                         class="max-w-lg p-4 mx-auto transition-all duration-300 transform rounded-lg bg-red-900/50 backdrop-blur-sm animate-fade-in-down">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                        <div class="flex justify-between">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p>{{ session('error') }}</p>
+                                </div>
                             </div>
-                            <div class="ml-3">
-                                <p>{{ session('error') }}</p>
-                            </div>
+                            <svg @click="show = false" class="w-5 h-5 text-red-200 cursor-pointer hover:text-white"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </div>
                     </div>
                 @endif
@@ -164,7 +178,8 @@
                     <button type="button" wire:click="generate"
                         class="relative w-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
                         wire:loading.attr="disabled" wire:target="generate" wire:loading.class="opacity-75">
-                        <span wire:loading.remove wire:target="generate" class="flex items-center justify-center gap-2">
+                        <span wire:loading.remove wire:target="generate"
+                            class="flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />

@@ -22,7 +22,7 @@ class ScriptGenerationService
                         'role' => 'user',
                         // Modificat: prompt-ul folosește doar calea completă a categoriei
                         'content' => "Creează un script TikTok în limba română pentru categoria: '{$fullCategoryPath}'.
-                                    Durata totală: între 30 și 60 de secunde.
+                                    Durata totală: între 15-30 secunde (maxim 45 secunde doar dacă subiectul necesită).
                                     Asigură-te că textul este captivant și natural în limba română."
                     ]
                 ],
@@ -82,7 +82,7 @@ class ScriptGenerationService
                         - Call-to-action pentru like-uri și share
                         - Hook puternic în primele 3 secunde
                         - Suspans care să țină utilizatorul până la final
-                        - Durata totală a videoclipului trebuie să fie între 30 și 60 de secunde.**
+                        - Durata totală: 15-30 secunde (maxim 45 secunde pentru topics complexe)**
 
     Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea structură:
     {
