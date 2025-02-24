@@ -28,16 +28,16 @@
 
     <div class="relative min-h-screen">
         <!-- Hero Section -->
-        <div class="container max-w-6xl px-4 py-4 mx-auto">
+        <div class="container max-w-6xl px-4 py-4 mx-auto sm:py-6">
             <div class="text-center">
                 <img src="{{ asset('assets/logo-transparent.webp') }}" alt="TikTok-Creator AI Logo"
-                    class="h-32 mx-auto mb-3 transition-transform duration-300 transform hover:scale-105 hover:rotate-2">
+                    class="h-24 mx-auto mb-3 transition-transform duration-300 transform sm:h-32 hover:scale-105 hover:rotate-2">
 
                 <!-- Main Content Container -->
-                <div class="max-w-2xl mx-auto space-y-8">
+                <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
                     <!-- Beta Badge -->
                     <div
-                        class="inline-flex items-center px-4 py-2 space-x-2 text-sm font-medium text-yellow-200 transition-all duration-300 rounded-full bg-yellow-900/20 hover:bg-yellow-900/30">
+                        class="inline-flex items-center px-3 py-1.5 space-x-2 text-xs sm:text-sm font-medium text-yellow-200 transition-all duration-300 rounded-full bg-yellow-900/20 hover:bg-yellow-900/30">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" />
@@ -47,17 +47,17 @@
 
                     <!-- Beta Message -->
                     <div
-                        class="p-6 transition-all duration-300 border rounded-2xl bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-sm border-white/10 hover:border-white/20">
+                        class="p-4 transition-all duration-300 border sm:p-6 rounded-2xl bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-sm border-white/10 hover:border-white/20">
                         <h1
-                            class="mb-6 text-4xl font-bold text-transparent md:text-5xl bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
+                            class="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
                             Creează filmulețe virale pentru TikTok
                         </h1>
-                        <p class="max-w-2xl mx-auto mb-8 text-xl text-gray-300">
+                        <p class="max-w-2xl mx-auto mb-6 text-lg text-gray-300 sm:mb-8 sm:text-xl">
                             Transformă-ți ideile în conținut viral folosind puterea inteligenței artificiale.
                             Totul în mai puțin de 5 minute.
                         </p>
 
-                        <div class="space-y-4 text-gray-300">
+                        <div class="space-y-3 text-sm text-gray-300 sm:space-y-4 sm:text-base">
                             <p class="flex items-center justify-center gap-2">
                                 <svg class="flex-shrink-0 w-5 h-5 text-purple-400 animate-pulse" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -94,13 +94,13 @@
                                         contact@tiktok-creator.ro
                                     </a>
                                     <span class="text-gray-600">|</span>
-                                    <a href="https://www.tiktok.com/@tiktok_creator_ai"
+                                    <a href="https://www.tiktok.com/@creatorul_de_tiktokuri"
                                         class="flex items-center gap-2 text-pink-400 transition-colors hover:text-pink-300">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                                             <path
                                                 d="M21 7h-3V6a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v1H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM8 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1H8V6zm12 13H4V9h16v10z" />
                                         </svg>
-                                        @tiktok_creator_ai
+                                        @creatorul_de_tiktokuri
                                     </a>
                                 </div>
                             </div>
@@ -110,7 +110,7 @@
 
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="inline-flex items-center justify-center w-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 transform border border-transparent group sm:w-auto rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
+                            class="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white transition-all duration-300 transform border border-transparent sm:px-8 sm:py-4 sm:text-lg group rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
                             <span class="flex items-center">
                                 <svg class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:rotate-12"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,13 +121,13 @@
                             </span>
                         </a>
                     @else
-                        <div class="flex flex-col items-center justify-center gap-6 sm:flex-row">
+                        <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 sm:flex-row">
                             <a href="{{ route('register') }}"
-                                class="inline-flex items-center justify-center w-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 transform border border-transparent group sm:w-auto rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
+                                class="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white transition-all duration-300 transform border border-transparent sm:px-8 sm:py-4 sm:text-lg group rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
                                 Începe Gratuit
                             </a>
                             <a href="#how-it-works"
-                                class="inline-flex items-center justify-center w-full px-8 py-4 text-lg font-medium text-gray-300 transition-all duration-300 border group sm:w-auto rounded-xl border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20">
+                                class="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-gray-300 transition-all duration-300 border sm:px-8 sm:py-4 sm:text-lg group rounded-xl border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20">
                                 Cum Funcționează
                             </a>
                         </div>
@@ -137,15 +137,17 @@
         </div>
 
         <!-- Process Steps -->
-        <section id="how-it-works" class="py-24 bg-gradient-to-b from-transparent to-black/30">
+        <section id="how-it-works" class="py-16 sm:py-24 bg-gradient-to-b from-transparent to-black/30">
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="mb-16 text-center">
-                    <h2 class="mb-4 text-3xl font-bold md:text-4xl [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">Procesul de
-                        Creare</h2>
-                    <p class="text-gray-400">De la idee la TikTok viral în 4 pași simpli</p>
+                <div class="mb-12 text-center sm:mb-16">
+                    <h2
+                        class="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
+                        Procesul de Creare
+                    </h2>
+                    <p class="text-sm text-gray-400 sm:text-base">De la idee la TikTok viral în 4 pași simpli</p>
                 </div>
 
-                <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+                <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
                     <!-- Step 1: Script -->
                     <div
                         class="relative p-6 transition-all duration-300 border group bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm hover:border-purple-500/30 hover:bg-white/10">
@@ -214,15 +216,17 @@
         </section>
 
         <!-- Pricing Section -->
-        <section class="py-24">
+        <section class="py-16 sm:py-24">
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="mb-16 text-center">
-                    <h2 class="mb-4 text-3xl font-bold md:text-4xl [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">Planuri
-                        Simple</h2>
-                    <p class="text-gray-400">Alege planul perfect pentru nevoile tale</p>
+                <div class="mb-12 text-center sm:mb-16">
+                    <h2
+                        class="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
+                        Planuri Simple
+                    </h2>
+                    <p class="text-sm text-gray-400 sm:text-base">Alege planul perfect pentru nevoile tale</p>
                 </div>
 
-                <div class="grid max-w-4xl grid-cols-1 gap-8 mx-auto md:grid-cols-2">
+                <div class="grid max-w-4xl grid-cols-1 gap-6 mx-auto sm:gap-8 md:grid-cols-2">
                     <!-- Free Plan -->
                     <div class="p-8 border bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm">
                         <h3 class="mb-4 text-2xl font-bold">Free</h3>

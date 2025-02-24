@@ -230,7 +230,7 @@ class CreateTikTok extends Component
     public function render()
     {
         $categories = $this->categoryService->getCategories();
-        \Log::info('Categories in render:', ['categories' => $categories->count()]);
+        Log::info('Categories in render:', ['categories' => $categories->count()]);
 
         return view('livewire.create-tik-tok', [
             'categories' => $categories
