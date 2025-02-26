@@ -44,115 +44,285 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'emotii-virale' => [
-                'name' => 'Emoții Virale',
-                'description' => 'Imagine statică cu impact emoțional și narare.',
+            'emotii-sentimente' => [
+                'name' => 'Emoții și Sentimente',
+                'description' => 'Exprimă emoții și sentimente prin videoclipuri.',
                 'subcategories' => [
                     'declaratii-dragoste' => [
                         'name' => 'Declarații de Dragoste',
-                        'description' => 'Imagine romantică (ex. cuplu, apus) cu text și voce emoționantă.',
+                        'description' => 'Declarații de dragoste pentru diverse ocazii și persoane.',
                         'subcategories' => [
-                            'romantice' => ['name' => 'Romantice', 'description' => 'Inimioare, flori, cer roz.'],
-                            'impacare' => ['name' => 'De Împăcare', 'description' => 'Mâini care se ating, ton calm.']
+                            'romantice' => ['name' => 'Romantice', 'description' => 'Declarații romantice.'],
+                            'pentru-iubit' => ['name' => 'Pentru iubit/iubită', 'description' => 'Declarații pentru iubit/iubită.'],
+                            'pentru-sot' => ['name' => 'Pentru soț/soție', 'description' => 'Declarații pentru soț/soție.'],
+                            'pentru-parinti' => ['name' => 'Pentru părinți', 'description' => 'Declarații pentru părinți.'],
+                            'pentru-copii' => ['name' => 'Pentru copii', 'description' => 'Declarații pentru copii.'],
+                            'pentru-prieteni' => ['name' => 'Pentru prieteni', 'description' => 'Declarații pentru prieteni.'],
+                            'aniversari' => ['name' => 'La aniversări', 'description' => 'Declarații pentru aniversări.'],
+                            'impacare' => ['name' => 'De împăcare', 'description' => 'Declarații pentru împăcare.']
                         ]
                     ],
                     'mesaje-motivationale' => [
                         'name' => 'Mesaje Motivaționale',
-                        'description' => 'Imagine inspirațională (ex. munte, soare) cu citat narat.',
+                        'description' => 'Mesaje pentru a motiva și încuraja.',
+                       'subcategories' => [
+                            'depasire-obstacole' => ['name' => 'Pentru depășirea obstacolelor', 'description' => 'Mesaje pentru a depăși obstacolele.'],
+                            'pentru-succes' => ['name' => 'Pentru succes', 'description' => 'Mesaje pentru a obține succesul.'],
+                            'pentru-studenti' => ['name' => 'Pentru studenți/elevi', 'description' => 'Mesaje pentru studenți/elevi.'],
+                            'pentru-sportivi' => ['name' => 'Pentru sportivi', 'description' => 'Mesaje pentru sportivi.'],
+                            'pentru-antreprenori' => ['name' => 'Pentru antreprenori', 'description' => 'Mesaje pentru antreprenori.'],
+                            'pierdere-greutate' => ['name' => 'Pentru pierderea în greutate', 'description' => 'Mesaje pentru a pierde în greutate.'],
+                            'dezvoltare-personala' => ['name' => 'Pentru dezvoltare personală', 'description' => 'Mesaje pentru dezvoltare personală.'],
+                            'pentru-dimineata' => ['name' => 'Pentru dimineața', 'description' => 'Mesaje pentru începutul zilei.'],
+                            'pentru-seara' => ['name' => 'Pentru seară', 'description' => 'Mesaje pentru sfârșitul zilei.']
+                        ]
+                    ],
+                    'mesaje-multumire' => [
+                        'name' => 'Mesaje de Mulțumire',
+                        'description' => 'Mesaje pentru a exprima recunoștința.',
                         'subcategories' => [
-                            'succes' => ['name' => 'Pentru Succes', 'description' => 'Trofee, drumuri lungi, ton energic.'],
-                            'dimineata' => ['name' => 'Pentru Dimineață', 'description' => 'Cafea, răsărit, voce caldă.']
+                            'pentru-profesori' => ['name' => 'Pentru profesori', 'description' => 'Mesaje de mulțumire pentru profesori.'],
+                            'pentru-medici' => ['name' => 'Pentru medici', 'description' => 'Mesaje de mulțumire pentru medici.'],
+                            'pentru-familie' => ['name' => 'Pentru familie', 'description' => 'Mesaje de mulțumire pentru familie.'],
+                            'pentru-prieteni-multumire' => ['name' => 'Pentru prieteni', 'description' => 'Mesaje de mulțumire pentru prieteni.'],
+                            'generale-multumire' => ['name' => 'Generale', 'description' => 'Mesaje de mulțumire generale.']
                         ]
                     ],
                     'mesaje-amuzante' => [
-                        'name' => 'Mesaje Amuzante',
-                        'description' => 'Imagine haioasă (ex. animale, meme) cu punchline narat.',
+                        'name' => 'Mesaje Amuzante/Hazlii',
+                        'description' => 'Mesaje pentru a aduce zâmbetul pe buze.',
                         'subcategories' => [
-                            'meme-uri-romanesti' => ['name' => 'Meme-uri Românești', 'description' => 'Dacia, sarmale, umor local.'],
-                            'glume-scurte' => ['name' => 'Glume Scurte', 'description' => 'Obiecte ciudate, text catchy.']
+                            'glume-scurte' => ['name' => 'Glume scurte', 'description' => 'Glume scurte și amuzante.'],
+                            'bancuri' => ['name' => 'Bancuri', 'description' => 'Bancuri.'],
+                            'povesti-amuzante' => ['name' => 'Povești amuzante', 'description' => 'Povești amuzante.'],
+                            'citate-amuzante' => ['name' => 'Citate amuzante', 'description' => 'Citate amuzante.'],
                         ]
                     ]
                 ]
             ],
-
-            'divertisment-viral' => [
-                'name' => 'Divertisment Viral',
-                'description' => 'Imagine statică care distrează instant.',
+            'spiritualitate-religie' => [
+                'name' => 'Spiritualitate și Religie',
+                'description' => 'Conținut legat de spiritualitate și religie.',
                 'subcategories' => [
-                    'nostalgie' => [
-                        'name' => 'Nostalgie',
-                        'description' => 'Imagine retro (ex. casete, jocuri vechi) cu voce nostalgică.',
+                    'rugaciuni' => [
+                        'name' => 'Rugăciuni',
+                        'description' => 'Rugăciuni pentru diverse nevoi.',
                         'subcategories' => [
-                            'anii-2000' => ['name' => 'Anii 2000', 'description' => 'Tamagotchi, Nokia, vibe old-school.']
+                            'rugaciuni-dimineata' => ['name' => 'Rugăciuni de dimineață', 'description' => 'Rugăciuni pentru începutul zilei.'],
+                            'rugaciuni-seara' => ['name' => 'Rugăciuni de seară', 'description' => 'Rugăciuni pentru sfârșitul zilei.'],
+                            'rugaciuni-sanatate' => ['name' => 'Rugăciuni pentru sănătate', 'description' => 'Rugăciuni pentru sănătate.'],
+                            'rugaciuni-protectie' => ['name' => 'Rugăciuni pentru protecție', 'description' => 'Rugăciuni pentru protecție.'],
+                            'rugaciuni-multumire' => ['name' => 'Rugăciuni de mulțumire', 'description' => 'Rugăciuni de mulțumire.'],
+                            'rugaciuni-diverse' => ['name' => 'Rugăciuni pentru diverse nevoi', 'description' => 'Rugăciuni pentru diverse nevoi.'],
+                            'rugaciuni-scurte' => ['name' => 'Rugăciuni scurte', 'description' => 'Rugăciuni scurte.']
                         ]
                     ],
-                    'animale-amuzante' => [
-                        'name' => 'Animale Amuzante',
-                        'description' => 'Imagine cu animale în ipostaze hilare.',
+                    'citate-religioase' => [
+                        'name' => 'Citate Religioase/Spirituale',
+                        'description' => 'Citate din surse religioase și spirituale.',
                         'subcategories' => [
-                            'catei' => ['name' => 'Căței Haioși', 'description' => 'Cățel cu ochelari, narare amuzantă.'],
-                            'pisici' => ['name' => 'Pisici Ciudate', 'description' => 'Pisică pe tastatură, ton ironic.']
+                            'biblie' => ['name' => 'Din Biblie', 'description' => 'Citate din Biblie.'],
+                            'sfinti' => ['name' => 'De la sfinți/părinți ai bisericii', 'description' => 'Citate de la sfinți/părinți ai bisericii.'],
+                            'alte-traditii' => ['name' => 'Din alte tradiții spirituale', 'description' => 'Citate din alte tradiții spirituale.']
+                        ]
+                    ],
+                ]
+            ],
+
+            'citate-intelepciune' => [
+                'name' => 'Citate și Înțelepciune',
+                'description' => 'Citate celebre, proverbe și aforisme.',
+                'subcategories' => [
+                    'citate-celebre' => [
+                        'name' => 'Citate Celebre',
+                        'description' => 'Citate celebre de la personalități marcante.',
+                        'subcategories' => [
+                            'citate-filozofice' => ['name' => 'Filozofice', 'description' => 'Citate filozofice.'],
+                            'citate-viata' => ['name' => 'Despre viață', 'description' => 'Citate despre viață.'],
+                            'citate-iubire' => ['name' => 'Despre iubire', 'description' => 'Citate despre iubire.'],
+                            'citate-succes' => ['name' => 'Despre succes', 'description' => 'Citate despre succes.'],
+                            'citate-fericire' => ['name' => 'Despre fericire', 'description' => 'Citate despre fericire.'],
+                            'autori-romani' => ['name' => 'De la autori români', 'description' => 'Citate de la autori români.'],
+                            'autori-internationali' => ['name' => 'De la autori internaționali', 'description' => 'Citate de la autori internaționali.']
+                        ]
+                    ],
+                    'proverbe' => [
+                        'name' => 'Proverbe și Zicători',
+                        'description' => 'Proverbe și zicători populare.',
+                        'subcategories' => [
+                            'proverbe-romanesti' => ['name' => 'Românești', 'description' => 'Proverbe românești.'],
+                            'proverbe-internationale' => ['name' => 'Internaționale', 'description' => 'Proverbe internaționale.']
+                        ]
+                    ],
+                    
+                ]
+            ],
+
+
+           'divertisment' => [
+                'name' => 'Divertisment',
+                'description' => 'Conținut pentru divertisment și relaxare.',
+                'subcategories' => [
+                    'povesti-scurte' => [
+                        'name' => 'Povești Scurte',
+                        'description' => 'Povești scurte de diverse genuri.',
+                        'subcategories' => [
+                            'povesti-groaza' => ['name' => 'De groază', 'description' => 'Povești de groază.'],
+                            'povesti-dragoste' => ['name' => 'De dragoste', 'description' => 'Povești de dragoste.'],
+                            'povesti-sf' => ['name' => 'SF', 'description' => 'Povești științifico-fantastice.'],
+                            'fabule' => ['name' => 'Fabule', 'description' => 'Fabule cu morală.'],
+                            'microfictiune' => ['name' => 'Microficțiune', 'description' => 'Povești foarte scurte.'],
+                        ]
+                    ],
+                  
+                    'poezii' => [
+                        'name' => 'Poezii',
+                        'description' => 'Poezii scurte și lungi.',
+                        'subcategories' => [
+                            'poezii-scurte' => ['name' => 'Poezii scurte', 'description' => 'Poezii scurte.'],
                         ]
                     ]
                 ]
             ],
 
-            'educatie-rapida' => [
-                'name' => 'Educație Rapidă',
-                'description' => 'Imagine informativă cu narare surprinzătoare.',
+            'educatie-informare' => [
+                'name' => 'Educație și Informare',
+                'description' => 'Prezintă informații educative și utile.',
                 'subcategories' => [
                     'curiozitati' => [
                         'name' => 'Curiozități',
-                        'description' => 'Imagine wow (ex. cosmos, animale rare) cu fapt narat.',
+                        'description' => 'Prezintă informații interesante și neobișnuite.',
                         'subcategories' => [
-                            'stiinta' => ['name' => 'Știință', 'description' => 'Galaxii, experimente, ton captivant.'],
-                            'stiai-ca' => ['name' => 'Știai Că...?', 'description' => 'Obiecte neobișnuite, voce intrigantă.']
+                            'curiozitati-stiinta' => ['name' => 'Despre știință', 'description' => 'Curiozități despre știință.'],
+                            'curiozitati-istorie' => ['name' => 'Despre istorie', 'description' => 'Curiozități despre istorie.'],
+                            'curiozitati-geografie' => ['name' => 'Despre geografie', 'description' => 'Curiozități despre geografie.'],
+                            'curiozitati-animale' => ['name' => 'Despre animale', 'description' => 'Curiozități despre animale.'],
+                            'curiozitati-corp' => ['name' => 'Despre corpul uman', 'description' => 'Curiozități despre corpul uman.'],
+                            'curiozitati-tehnologie' => ['name' => 'Despre tehnologie', 'description' => 'Curiozități despre tehnologie.']
                         ]
                     ],
                     'sfaturi-utile' => [
                         'name' => 'Sfaturi Utile',
-                        'description' => 'Imagine practică (ex. ustensile, portofel) cu sfat narat.',
+                        'description' => 'Oferă sfaturi practice în diverse domenii.',
                         'subcategories' => [
-                            'bucatarie' => ['name' => 'Bucătărie', 'description' => 'Mâncare, truc simplu, ton prietenos.'],
-                            'economisire' => ['name' => 'Economisire', 'description' => 'Bani, diagramă, voce clară.']
+                            'sfaturi-studiu' => ['name' => 'Pentru studiu', 'description' => 'Sfaturi pentru a învăța mai eficient.'],
+                            'sfaturi-gatit' => ['name' => 'Pentru gătit', 'description' => 'Sfaturi pentru gătit.'],
+                            'sfaturi-organizare' => ['name' => 'Pentru organizare', 'description' => 'Sfaturi pentru organizare.'],
+                            'sfaturi-calatorii' => ['name' => 'Pentru călătorii', 'description' => 'Sfaturi pentru călătorii.'],
+                            'sfaturi-ingrijire' => ['name' => 'Pentru îngrijirea personală', 'description' => 'Sfaturi pentru îngrijirea personală.'],
+                            'sfaturi-economie' => ['name' => 'Pentru economisirea banilor', 'description' => 'Sfaturi pentru a economisi bani.']
                         ]
-                    ]
-                ]
-            ],
+                    ],
+                    'mini-lectii' => [
+                        'name' => 'Mini-Lecții',
+                        'description' => 'Prezintă lecții scurte pe diverse teme.',
+                        'subcategories' => [
+                            'lectii-gramatica' => ['name' => 'De gramatică', 'description' => 'Mini-lecții de gramatică.'],
+                            'lectii-cultura' => ['name' => 'De cultură generală', 'description' => 'Mini-lecții de cultură generală.'],
+                            'lectii-istorie' => ['name' => 'De istorie', 'description' => 'Mini-lecții de istorie.'],
+                            'lectii-geografie' => ['name' => 'De geografie', 'description' => 'Mini-lecții de geografie.'],
+                        
+                        ]
+                    ],
 
-            'lifehacks-virale' => [
-                'name' => 'Life Hacks Virale',
-                'description' => 'Imagine cu obiecte zilnice și truc narat.',
-                'subcategories' => [
-                    '5-second-hacks' => ['name' => '5 Second Hacks', 'description' => 'Obiecte comune (ex. agrafă) cu idee genială.'],
-                    'tech-hacks' => ['name' => 'Tech Hacks', 'description' => 'Telefon, laptop, sfat rapid.']
-                ]
-            ],
-
-            'trenduri-statice' => [
-                'name' => 'Trenduri Statice',
-                'description' => 'Imagine adaptată la trenduri TikTok, fără mișcare.',
-                'subcategories' => [
-                    'quiz' => ['name' => 'Quiz Interactiv', 'description' => 'Imagine cu întrebare (ex. „Ce e asta?”) și narare.'],
-                    'estetica' => ['name' => 'Estetică Virală', 'description' => 'Cafea, flori, ton relaxant.']
+                    'meditatii' => [
+                        'name' => 'Meditații Ghidate',
+                        'description' => 'Oferă meditații ghidate pentru relaxare și bunăstare.',
+                        'subcategories' => [
+                            'meditatie-relaxare' => ['name' => 'Pentru relaxare', 'description' => 'Meditații pentru relaxare.'],
+                            'meditatie-stres' => ['name' => 'Pentru reducerea stresului', 'description' => 'Meditații pentru reducerea stresului.'],
+                            'meditatie-somn' => ['name' => 'Pentru somn', 'description' => 'Meditații pentru un somn mai bun.'],
+                            'meditatie-scurte' => ['name' => 'Scurte', 'description' => 'Meditații scurte.'],
+                        ]
+                    ],
+                   
                 ]
             ],
 
             'ocazii-speciale' => [
                 'name' => 'Ocazii Speciale',
-                'description' => 'Imagine festivă cu mesaj narat.',
+                'description' => 'Mesaje pentru ocazii speciale.',
                 'subcategories' => [
                     'sarbatori' => [
-                        'name' => 'Sărbători',
-                        'description' => 'Decor tematic (ex. brad, ouă) cu urare.',
+                        'name' => 'Mesaje de Sărbători',
+                        'description' => 'Mesaje pentru diverse sărbători.',
                         'subcategories' => [
-                            'craciun' => ['name' => 'Crăciun', 'description' => 'Lumințe, cadouri, voce caldă.'],
-                            'anul-nou' => ['name' => 'Anul Nou', 'description' => 'Artificii, şampanie, ton entuziast.']
+                            'mesaje-craciun' => ['name' => 'De Crăciun', 'description' => 'Mesaje de Crăciun.'],
+                            'mesaje-paste' => ['name' => 'De Paște', 'description' => 'Mesaje de Paște.'],
+                            'mesaje-anul-nou' => ['name' => 'De Anul Nou', 'description' => 'Mesaje de Anul Nou.'],
+                            'mesaje-1-8-martie' => ['name' => 'De 1 Martie/8 Martie', 'description' => 'Mesaje de 1 Martie/8 Martie.'],
+                            'mesaje-valentines' => ['name' => 'De Ziua Îndrăgostiților', 'description' => 'Mesaje de Ziua Îndrăgostiților.']
                         ]
                     ],
-                    'zile-nastere' => ['name' => 'Zile de Naștere', 'description' => 'Tort, baloane, urare rapidă.']
+                    'evenimente' => [
+                        'name' => 'Evenimente Speciale',
+                        'description' => 'Mesaje pentru evenimente speciale.',
+                        'subcategories' => [
+                            'zile-nastere' => ['name' => 'Mesaje de zile de naștere', 'description' => 'Mesaje de zile de naștere.'],
+                            'nunta-botez' => ['name' => 'Mesaje de nuntă, botez', 'description' => 'Mesaje de nuntă sau botez.']
+                        ]
+                    ]
                 ]
             ],
+
+            'gaming-tehnologie' => [
+    'name' => 'Gaming & Tehnologie',
+    'description' => 'Conținut despre jocuri video și tehnologie populară.',
+    'subcategories' => [
+        'gaming-tips' => [
+            'name' => 'Gaming Tips & Tricks',
+            'description' => 'Sfaturi și trucuri pentru jocuri populare.',
+            'subcategories' => [
+                'minecraft-tips' => ['name' => 'Minecraft Tips', 'description' => 'Sfaturi pentru Minecraft.'],
+                'fortnite-tips' => ['name' => 'Fortnite Tips', 'description' => 'Sfaturi pentru Fortnite.'],
+                'roblox-tips' => ['name' => 'Roblox Tips', 'description' => 'Sfaturi pentru Roblox.'],
+                'mobile-games-tips' => ['name' => 'Mobile Games', 'description' => 'Sfaturi pentru jocuri mobile populare.'],
+                
+            ]
+        ],
+        'tech-hacks-avansate' => [
+            'name' => 'Tech Hacks Avansate',
+            'description' => 'Trucuri avansate pentru dispozitive tehnologice.',
+            'subcategories' => [
+                'smartphone-hacks' => ['name' => 'Smartphone Hacks', 'description' => 'Trucuri pentru smartphone.'],
+                'aplicatii-utile' => ['name' => 'Aplicații Utile', 'description' => 'Prezentări scurte ale unor aplicații utile.'],
+                'setari-rapide' => ['name' => 'Setări Rapide', 'description' => 'Configurări rapide pentru diverse dispozitive.'],
+                'securitate-online' => ['name' => 'Securitate Online', 'description' => 'Sfaturi pentru siguranța online.']
+            ]
+        ],
+        'tech-reviews' => [
+            'name' => 'Tech Mini-Reviews',
+            'description' => 'Recenzii scurte de produse tehnologice.',
+            'subcategories' => [
+                'gadgets-mici' => ['name' => 'Gadget-uri Mici', 'description' => 'Recenzii pentru gadget-uri accesibile.'],
+                'accesorii-tech' => ['name' => 'Accesorii Tech', 'description' => 'Recenzii pentru accesorii tehnologice.'],
+
+              
+            ]
+        ],
+        'ai-tools' => [
+            'name' => 'AI & Tools',
+            'description' => 'Prezentare instrumente și aplicații AI populare.',
+            'subcategories' => [
+                'ai-art' => ['name' => 'AI Art', 'description' => 'Instrumente de generare artă cu AI.'],
+                'ai-scris' => ['name' => 'AI pentru Scris', 'description' => 'Instrumente de scriere și editare cu AI.'],
+                'ai-productivitate' => ['name' => 'AI pentru Productivitate', 'description' => 'AI pentru eficientizarea muncii.']
+            ]
+        ]
+    ]
+],
+
+
+            'lifehacks-virale' => [
+                'name' => 'Life Hacks Virale',
+                'description' => 'Prezintă trucuri și sfaturi utile pentru viața de zi cu zi.',
+                'subcategories' => [
+                    '5-second-hacks' => ['name' => '5 Second Hacks', 'description' => 'Obiecte comune (ex. agrafă) cu idee genială.'],
+                    'tech-hacks' => ['name' => 'Tech Hacks', 'description' => 'Telefon, laptop, sfat rapid.']
+                ]
+            ],
+          
+            
 
             'drama-gossip' => [
                 'name' => 'Drama & Gossip',
@@ -160,15 +330,6 @@ class CategorySeeder extends Seeder
                 'subcategories' => [
                     'povesti-scandal' => ['name' => 'Povești de Scandal', 'description' => 'Scenă dramatică (ex. ceartă) cu twist.'],
                     'secrete' => ['name' => 'Secrete Dezvăluite', 'description' => 'Obiect misterios, ton captivant.']
-                ]
-            ],
-
-            'spiritualitate-virala' => [
-                'name' => 'Spiritualitate Virală',
-                'description' => 'Imagine calmantă cu mesaj profund.',
-                'subcategories' => [
-                    'rugaciuni-scurte' => ['name' => 'Rugăciuni Scurte', 'description' => 'Apus, lumânări, voce liniștită.'],
-                    'citate-spirituale' => ['name' => 'Citate Spirituale', 'description' => 'Cer, natură, ton inspirațional.']
                 ]
             ],
 
@@ -186,27 +347,28 @@ class CategorySeeder extends Seeder
                 'description' => 'Imagine cu materiale sau rezultat și instrucțiuni narate.',
                 'subcategories' => [
                     'decor' => ['name' => 'Decor cu 5 Lei', 'description' => 'Floare din hârtie, ton creativ.'],
-                    'organizare' => ['name' => 'Hacks de Organizare', 'description' => 'Cutie decorată, voce practică.']
+                    'organizare' => ['name' => 'Hacks de Organizare', 'description' => 'Cutie decorată, voce practică.'],
+                    'moda-diy' => ['name' => 'Modă DIY', 'description' => 'Transformări de haine, accesorii hand-made, personalizări simple.'],
+                    'cadouri-diy' => ['name' => 'Cadouri DIY', 'description' => 'Idei de cadouri făcute manual, ambalaje creative.'],
+                    'reciclare-creativa' => ['name' => 'Reciclare Creativă', 'description' => 'Transformarea obiectelor vechi în obiecte utile sau decorative.'],
+                    'gradinarit-urban' => ['name' => 'Grădinărit Urban', 'description' => 'Plante în spații mici, ghivece creative, mini-grădini.'],
+                   
                 ]
             ],
 
-            'romania-virala' => [
-                'name' => 'România Virală',
-                'description' => 'Imagine locală cu umor sau nostalgie narată.',
+            'liste' => [
+                'name' => 'Liste (Top-uri)',
+                'description' => 'Creează videoclipuri cu liste (Top 5, Top 10, etc.).',
                 'subcategories' => [
-                    'viata-sat' => ['name' => 'Viața la Sat', 'description' => 'Căruță, fân, ton amuzant.'],
-                    'bucuresti' => ['name' => 'Glume despre București', 'description' => 'Trafic, metrou, voce ironică.']
-                ]
+                    'top-5-filme' => ['name' => 'Top 5 Filme', 'description' => 'Top 5 filme preferate.'],
+                    'top-10-carti' => ['name' => 'Top 10 Cărți', 'description' => 'Top 10 cărți preferate.'],
+                    'top-3-destinatii' => ['name' => 'Top 3 Destinații', 'description' => 'Top 3 destinații de călătorie preferate.'],
+                   
+                
+                ],
             ],
 
-            'estetica-lifestyle' => [
-                'name' => 'Estetică & Lifestyle',
-                'description' => 'Imagine elegantă cu poveste narată.',
-                'subcategories' => [
-                    'rutina' => ['name' => 'Rutina Mea', 'description' => 'Mic dejun, flori, ton relaxant.'],
-                    'stil' => ['name' => 'Hacks de Stil', 'description' => 'Eșarfă cool, voce inspirațională.']
-                ]
-            ]
+           
         ];
 
         foreach ($categories as $categoryData) {
