@@ -133,7 +133,7 @@
                 </div>
 
                 <!-- Stats Section -->
-                <div class="grid max-w-3xl grid-cols-2 gap-6 mx-auto mt-16 sm:grid-cols-3 lg:grid-cols-3"
+                {{-- <div class="grid max-w-3xl grid-cols-2 gap-6 mx-auto mt-16 sm:grid-cols-3 lg:grid-cols-3"
                     data-aos="fade-up" data-aos-delay="300">
                     <div class="p-6 text-center border rounded-2xl border-white/10 bg-white/5 backdrop-blur-sm">
                         <span class="block text-3xl font-bold text-purple-400 sm:text-4xl">500+</span>
@@ -147,7 +147,7 @@
                         <span class="block text-3xl font-bold text-blue-400 sm:text-4xl">98%</span>
                         <span class="text-gray-400">Satisfacție Clienți</span>
                     </div>
-                </div>
+                </div> --}}
 
                 <!-- Mockup Device Section -->
                 <div class="relative max-w-3xl mx-auto mt-20 overflow-hidden border shadow-2xl rounded-2xl shadow-purple-600/20 border-white/10"
@@ -263,6 +263,7 @@
                 </div>
             </div>
         </section>
+
         <!-- Process Steps with enhanced animations -->
         <section id="how-it-works" class="relative overflow-hidden py-28 sm:py-36">
             <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-[#0A0A0F]"></div>
