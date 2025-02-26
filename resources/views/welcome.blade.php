@@ -16,339 +16,638 @@
     <link rel="manifest" href="{{ asset('assets/favicon/site.webmanifest') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700|inter:300,400,500,600,700,800&display=swap"
+        rel="stylesheet" />
+    <!-- Add modern icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Adăugare AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    @livewireStyles
 </head>
 
-<body class="antialiased bg-[#0A0A0F] text-white min-h-screen selection:bg-purple-500/30 selection:text-white">
-    <!-- Decorative gradient effects -->
+<body
+    class="antialiased bg-[#0A0A0F] text-white min-h-screen selection:bg-purple-500/30 selection:text-white font-inter">
+    <!-- Decorative gradients with more refined animation -->
     <div
         class="fixed inset-0 -z-10 h-screen w-full bg-[#0A0A0F] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] pointer-events-none">
     </div>
 
-    <div class="relative min-h-screen">
-        <!-- Hero Section -->
-        <div class="container max-w-6xl px-4 py-4 mx-auto sm:py-6">
-            <div class="text-center">
-                <img src="{{ asset('assets/logo-transparent.webp') }}" alt="TikTok-Creator AI Logo"
-                    class="h-24 mx-auto mb-3 transition-transform duration-300 transform sm:h-32 hover:scale-105 hover:rotate-2">
+    <!-- Animated noise texture overlay -->
+    <div class="fixed inset-0 pointer-events-none -z-5 opacity-20">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+            <filter id="noise">
+                <feTurbulence type="fractalNoise" baseFrequency="0.80" numOctaves="4" stitchTiles="stitch" />
+                <feColorMatrix type="saturate" values="0" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#noise)" opacity="0.15" />
+        </svg>
+    </div>
 
-                <!-- Main Content Container -->
-                <div class="max-w-2xl mx-auto space-y-6 sm:space-y-8">
-                    <!-- Beta Badge -->
+    <!-- Modern Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b bg-black/30 backdrop-blur-md border-white/10">
+        <div class="container max-w-6xl px-4 py-4 mx-auto">
+            <div class="flex items-center justify-between">
+                <a href="{{ url('/') }}" class="transition-all duration-300 transform hover:scale-105">
+                    <img src="{{ asset('assets/logo-transparent.webp') }}" alt="TikTok-Creator Logo" class="h-10">
+                </a>
+                <div class="items-center hidden space-x-6 text-sm sm:flex">
+                    <a href="#how-it-works" class="text-gray-300 transition-all hover:text-white">Cum funcționează</a>
+                    <a href="#features" class="text-gray-300 transition-all hover:text-white">Funcționalități</a>
+                    <a href="#pricing" class="text-gray-300 transition-all hover:text-white">Prețuri</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    @auth
+                        <a href="{{ url('/dashboard') }}"
+                            class="flex items-center px-4 py-2 text-sm font-medium text-white transition-all rounded-full bg-purple-600/70 hover:bg-purple-600">
+                            <i class="mr-1 ri-dashboard-fill"></i> Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="hidden text-gray-300 transition-all sm:inline-flex hover:text-white">Login</a>
+                        <a href="{{ route('register') }}"
+                            class="flex items-center px-4 py-2 text-sm font-medium text-white transition-all rounded-full bg-purple-600/70 hover:bg-purple-600">
+                            <i class="mr-1 ri-user-add-line"></i> Înregistrare
+                        </a>
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="relative min-h-screen">
+        <!-- Hero Section with animated elements -->
+        <div class="container max-w-6xl px-4 pt-32 pb-20 mx-auto sm:pt-40 sm:pb-28">
+            <div class="text-center" data-aos="fade-up" data-aos-duration="1000">
+                <!-- Badge with pulse animation -->
+                <div
+                    class="inline-flex items-center px-3 py-1.5 mb-8 space-x-2 text-xs sm:text-sm font-medium text-purple-200 transition-all duration-300 rounded-full bg-purple-900/50 border border-purple-500/50 shadow-lg shadow-purple-900/20">
+                    <i class="text-yellow-400 ri-rocket-2-fill"></i>
+                    <span>Versiune Beta</span>
+                </div>
+
+                <h1
+                    class="mb-6 text-4xl font-bold leading-tight tracking-tight text-transparent sm:text-5xl md:text-6xl bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text">
+                    TikTok Viral <br class="sm:hidden">în <span class="relative inline-block">
+                        <span class="ml-2 highlight-text">Minute</span>
+                        <span
+                            class="absolute bottom-0 left-0 w-full h-3 transform bg-gradient-to-r from-purple-600/40 to-pink-600/40 -z-10 -rotate-1"></span>
+                    </span>
+                </h1>
+
+                <p class="max-w-2xl mx-auto mb-10 text-xl leading-relaxed text-gray-300 sm:text-2xl" data-aos="fade-up"
+                    data-aos-delay="100">
+                    Transformă-ți ideile în conținut viral folosind puterea inteligenței artificiale.
+                    <span
+                        class="font-medium text-transparent bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text">100%
+                        automatizat.</span>
+                </p>
+
+                <!-- CTA Section with 3D animation -->
+                <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 sm:flex-row" data-aos="fade-up"
+                    data-aos-delay="200">
+                    @auth
+                        <a href="{{ url('/dashboard') }}"
+                            class="relative inline-flex items-center justify-center w-full px-8 py-4 overflow-hidden text-lg font-medium text-white transition-all duration-300 shadow-lg group sm:w-auto rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 shadow-purple-600/30 hover:shadow-xl hover:shadow-purple-600/40 hover:scale-105">
+                            <span
+                                class="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/0 via-white/20 to-purple-600/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+                            <span class="relative flex items-center">
+                                <i class="mr-2 ri-movie-fill"></i> Creează TikTok
+                            </span>
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}"
+                            class="relative inline-flex items-center justify-center w-full px-8 py-4 overflow-hidden text-lg font-medium text-white transition-all duration-300 shadow-lg group sm:w-auto rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 shadow-purple-600/30 hover:shadow-xl hover:shadow-purple-600/40 hover:scale-105">
+                            <span
+                                class="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/0 via-white/20 to-purple-600/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+                            <span class="relative flex items-center">
+                                <i class="mr-2 ri-vip-crown-fill"></i> Începe Gratuit
+                            </span>
+                        </a>
+                        <a href="#how-it-works"
+                            class="inline-flex items-center justify-center w-full px-8 py-4 text-base font-medium text-gray-300 transition-all duration-300 border sm:w-auto rounded-xl border-white/10 backdrop-blur-sm hover:bg-white/10 hover:text-white hover:shadow-lg">
+                            <i class="mr-2 ri-play-circle-line"></i> Vezi Demo
+                        </a>
+                    @endauth
+                </div>
+
+                <!-- Stats Section -->
+                <div class="grid max-w-3xl grid-cols-2 gap-6 mx-auto mt-16 sm:grid-cols-3 lg:grid-cols-3"
+                    data-aos="fade-up" data-aos-delay="300">
+                    <div class="p-6 text-center border rounded-2xl border-white/10 bg-white/5 backdrop-blur-sm">
+                        <span class="block text-3xl font-bold text-purple-400 sm:text-4xl">500+</span>
+                        <span class="text-gray-400">Utilizatori Activi</span>
+                    </div>
+                    <div class="p-6 text-center border rounded-2xl border-white/10 bg-white/5 backdrop-blur-sm">
+                        <span class="block text-3xl font-bold text-pink-400 sm:text-4xl">2.5K+</span>
+                        <span class="text-gray-400">TikTok-uri Generate</span>
+                    </div>
+                    <div class="p-6 text-center border rounded-2xl border-white/10 bg-white/5 backdrop-blur-sm">
+                        <span class="block text-3xl font-bold text-blue-400 sm:text-4xl">98%</span>
+                        <span class="text-gray-400">Satisfacție Clienți</span>
+                    </div>
+                </div>
+
+                <!-- Mockup Device Section -->
+                <div class="relative max-w-3xl mx-auto mt-20 overflow-hidden border shadow-2xl rounded-2xl shadow-purple-600/20 border-white/10"
+                    data-aos="zoom-in-up" data-aos-delay="400">
                     <div
-                        class="inline-flex items-center px-3 py-1.5 space-x-2 text-xs sm:text-sm font-medium text-yellow-200 transition-all duration-300 rounded-full bg-yellow-900/20 hover:bg-yellow-900/30">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" />
-                        </svg>
-                        <span>Versiune Beta</span>
+                        class="flex items-center justify-center aspect-video bg-gradient-to-br from-purple-900/80 via-black to-pink-900/80">
+                        <!-- Placeholder for app mockup image -->
+                        <div class="flex flex-col items-center p-8 text-center">
+                            <i class="mb-4 text-6xl ri-smartphone-line text-white/80"></i>
+                            <p class="text-xl font-medium text-white">Aplicația TikTok Creator în acțiune</p>
+                            <p class="mt-2 text-sm text-gray-400">Interfață intuitivă pentru creare rapidă</p>
+                            <div class="mt-6">
+                                <button
+                                    class="flex items-center px-5 py-2.5 text-sm font-medium rounded-full bg-white/20 hover:bg-white/30 transition-all">
+                                    <i class="ri-play-fill mr-1.5"></i> Vezi Demo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Features Section (New) -->
+        <section id="features" class="relative py-20 overflow-hidden sm:py-28">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
+            <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="mb-16 text-center" data-aos="fade-up">
+                    <span
+                        class="px-4 py-1.5 text-xs font-medium text-white rounded-full bg-gradient-to-r from-purple-600/80 to-blue-600/80 inline-block mb-4">CARACTERISTICI
+                        PRINCIPALE</span>
+                    <h2
+                        class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+                        De ce să alegi TikTok Creator AI
+                    </h2>
+                    <p class="max-w-2xl mx-auto text-gray-400">Platforma noastră oferă tot ce ai nevoie pentru a crea
+                        conținut viral, rapid și eficient</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" data-aos="fade-up"
+                    data-aos-delay="100">
+                    <!-- Feature 1 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-purple-600/20">
+                            <i class="text-xl ri-ai-generate"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">AI Avansat</h3>
+                        <p class="text-gray-400">Algoritmi de ultimă generație pentru crearea de conținut optimizat
+                            pentru angajament și viralitate.</p>
                     </div>
 
-                    <!-- Beta Message -->
+                    <!-- Feature 2 -->
                     <div
-                        class="p-4 transition-all duration-300 border sm:p-6 rounded-2xl bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-sm border-white/10 hover:border-white/20">
-                        <h1
-                            class="mb-4 sm:mb-6 text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
-                            Creează filmulețe virale pentru TikTok
-                        </h1>
-                        <p class="max-w-2xl mx-auto mb-6 text-lg text-gray-300 sm:mb-8 sm:text-xl">
-                            Transformă-ți ideile în conținut viral folosind puterea inteligenței artificiale.
-                            Totul în mai puțin de 5 minute.
-                        </p>
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl shadow-blue-600/20">
+                            <i class="text-xl ri-time-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Rapid și Eficient</h3>
+                        <p class="text-gray-400">Generează videoclipuri complete în mai puțin de 5 minute, economisind
+                            ore de editare manuală.</p>
+                    </div>
 
-                        <div class="space-y-3 text-sm text-gray-300 sm:space-y-4 sm:text-base">
-                            <p class="flex items-center justify-center gap-2">
-                                <svg class="flex-shrink-0 w-5 h-5 text-purple-400 animate-pulse" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                                Aplicația TikTok-Creator este în versiune beta si se poate testa gratuit
-                            </p>
-                            <p class="flex items-center justify-center gap-2">
-                                <svg class="flex-shrink-0 w-5 h-5 text-pink-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                                </svg>
-                                Filmulețele generate vor avea logoul TikTok-Creator și Shotstack
-                            </p>
-                            <div class="flex flex-col items-center gap-4">
-                                <p class="flex items-center justify-center gap-2">
-                                    <svg class="flex-shrink-0 w-5 h-5 text-green-400" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                    </svg>
-                                    Așteptăm sugestiile voastre de îmbunătățire!
-                                </p>
+                    <!-- Feature 3 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-pink-600 to-red-600 rounded-xl shadow-pink-600/20">
+                            <i class="text-xl ri-voice-recognition-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Voci Naturale</h3>
+                        <p class="text-gray-400">Narațiune audio realistă cu intonație și accentuare perfectă pentru
+                            conținutul tău.</p>
+                    </div>
 
-                                <div class="flex items-center gap-4 text-sm">
-                                    <a href="mailto:contact@tiktok-creator.ro"
-                                        class="flex items-center gap-2 text-purple-400 transition-colors hover:text-purple-300">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        contact@tiktok-creator.ro
-                                    </a>
-                                    <span class="text-gray-600">|</span>
-                                    <a href="https://www.tiktok.com/@creatorul_de_tiktokuri"
-                                        class="flex items-center gap-2 text-pink-400 transition-colors hover:text-pink-300">
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                            <path
-                                                d="M21 7h-3V6a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v1H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM8 6a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1H8V6zm12 13H4V9h16v10z" />
-                                        </svg>
-                                        @creatorul_de_tiktokuri
-                                    </a>
+                    <!-- Feature 4 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-green-600 to-teal-600 rounded-xl shadow-green-600/20">
+                            <i class="text-xl ri-trend-chart-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Analize de Tendințe</h3>
+                        <p class="text-gray-400">Algoritmi care monitorizează și analizează cele mai recente tendințe
+                            TikTok pentru conținut relevant.</p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-amber-600 to-yellow-600 rounded-xl shadow-amber-600/20">
+                            <i class="text-xl ri-image-2-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Imagini de Calitate</h3>
+                        <p class="text-gray-400">Generare automată de imagini relevante și vizual atractive pentru
+                            videoclipurile tale.</p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl shadow-purple-600/20">
+                            <i class="text-xl ri-shield-check-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Siguranță și Conformitate</h3>
+                        <p class="text-gray-400">Conținut generat în conformitate cu regulile TikTok pentru a evita
+                            restricțiile.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Process Steps with enhanced animations -->
+        <section id="how-it-works" class="relative overflow-hidden py-28 sm:py-36">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-[#0A0A0F]"></div>
+
+            <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="mb-20 text-center" data-aos="fade-up">
+                    <span
+                        class="px-4 py-1.5 text-xs font-medium text-white rounded-full bg-gradient-to-r from-blue-600/80 to-purple-600/80 inline-block mb-4">PROCES
+                        SIMPLU</span>
+                    <h2
+                        class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+                        De la Idee la TikTok Viral
+                    </h2>
+                    <p class="max-w-2xl mx-auto text-gray-400">Sistem complet automatizat în doar 4 pași simpli</p>
+                </div>
+
+                <!-- Process Steps Timeline -->
+                <div class="relative max-w-4xl mx-auto">
+                    <!-- Timeline line -->
+                    <div
+                        class="absolute left-4 sm:left-1/2 top-0 h-full w-0.5 bg-gradient-to-b from-purple-500 via-pink-500 to-blue-500 transform sm:-translate-x-1/2">
+                    </div>
+
+                    <!-- Step 1 -->
+                    <div class="relative mb-16 sm:mb-24" data-aos="fade-right">
+                        <div class="flex flex-col items-start sm:flex-row sm:items-center">
+                            <div
+                                class="z-10 flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-purple-600 rounded-full shadow-lg shadow-purple-800/30">
+                                1
+                            </div>
+                            <div class="flex-1 ml-6 sm:ml-12">
+                                <div
+                                    class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-sm sm:ml-6 hover:bg-white/8 hover:shadow-xl hover:shadow-purple-900/10">
+                                    <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 w-16 h-16 shadow-lg bg-gradient-to-br from-purple-600/90 to-blue-600/90 rounded-xl shadow-purple-900/30">
+                                            <i class="text-3xl ri-file-text-line"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="mb-3 text-xl font-semibold text-purple-400">Generare Script</h3>
+                                            <p class="text-gray-400">AI-ul nostru analizează tendințele curente și
+                                                generează un script optimizat pentru engagement bazat pe tema aleasă.
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
-                    @auth
-                        <a href="{{ url('/dashboard') }}"
-                            class="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white transition-all duration-300 transform border border-transparent sm:px-8 sm:py-4 sm:text-lg group rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
-                            <span class="flex items-center">
-                                <svg class="w-5 h-5 mr-2 transition-transform duration-300 group-hover:rotate-12"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                Creează TikTok
-                            </span>
-                        </a>
-                    @else
-                        <div class="flex flex-col items-center justify-center gap-4 sm:gap-6 sm:flex-row">
-                            <a href="{{ route('register') }}"
-                                class="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-white transition-all duration-300 transform border border-transparent sm:px-8 sm:py-4 sm:text-lg group rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25">
-                                Începe Gratuit
-                            </a>
-                            <a href="#how-it-works"
-                                class="inline-flex items-center justify-center w-full px-6 py-3 text-base font-medium text-gray-300 transition-all duration-300 border sm:px-8 sm:py-4 sm:text-lg group rounded-xl border-white/10 hover:bg-white/10 hover:text-white hover:border-white/20">
-                                Cum Funcționează
-                            </a>
-                        </div>
-                    @endauth
-                </div>
-            </div>
-        </div>
-
-        <!-- Process Steps -->
-        <section id="how-it-works" class="py-16 sm:py-24 bg-gradient-to-b from-transparent to-black/30">
-            <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="mb-12 text-center sm:mb-16">
-                    <h2
-                        class="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
-                        Procesul de Creare
-                    </h2>
-                    <p class="text-sm text-gray-400 sm:text-base">De la idee la TikTok viral în 4 pași simpli</p>
-                </div>
-
-                <div class="grid grid-cols-1 gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    <!-- Step 1: Script -->
-                    <div
-                        class="relative p-6 transition-all duration-300 border group bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm hover:border-purple-500/30 hover:bg-white/10">
-                        <div
-                            class="absolute flex items-center justify-center w-8 h-8 text-lg font-bold transition-transform duration-300 bg-purple-600 rounded-full -top-4 left-4 group-hover:scale-110">
-                            1
-                        </div>
-                        <div class="pt-4">
-                            <h3 class="mb-4 text-xl font-semibold text-purple-400 group-hover:text-purple-300">Generare
-                                Script</h3>
-                            <p class="text-gray-400 group-hover:text-gray-300">AI-ul nostru analizează tendințele și
-                                generează un
-                                script optimizat pentru engagement.</p>
+                    <!-- Step 2 -->
+                    <div class="relative mb-16 sm:mb-24" data-aos="fade-left">
+                        <div class="flex flex-col items-start sm:flex-row-reverse sm:items-center">
+                            <div
+                                class="z-10 flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-blue-600 rounded-full shadow-lg shadow-blue-800/30">
+                                2
+                            </div>
+                            <div class="flex-1 ml-6 sm:ml-12 sm:mr-12 sm:text-right">
+                                <div
+                                    class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/8 hover:shadow-xl hover:shadow-blue-900/10">
+                                    <div class="flex flex-col gap-6 sm:flex-row-reverse sm:items-center">
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 w-16 h-16 shadow-lg bg-gradient-to-br from-blue-600/90 to-cyan-600/90 rounded-xl shadow-blue-900/30">
+                                            <i class="text-3xl ri-image-line"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="mb-3 text-xl font-semibold text-blue-400">Generare Imagini</h3>
+                                            <p class="text-gray-400">Creăm imagini atractive și relevante pentru
+                                                conținutul tău folosind tehnologii avansate de AI.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Step 2: Image -->
-                    <div
-                        class="relative p-6 transition-all duration-300 border group bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm hover:border-blue-500/30 hover:bg-white/10">
-                        <div
-                            class="absolute flex items-center justify-center w-8 h-8 text-lg font-bold transition-transform duration-300 bg-blue-600 rounded-full -top-4 left-4 group-hover:scale-110">
-                            2
-                        </div>
-                        <div class="pt-4">
-                            <h3 class="mb-4 text-xl font-semibold text-blue-400 group-hover:text-blue-300">Generare
-                                Imagini</h3>
-                            <p class="text-gray-400 group-hover:text-gray-300">Creăm imagini atractive și relevante
-                                pentru conținutul
-                                tău folosind AI.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Audio -->
-                    <div
-                        class="relative p-6 transition-all duration-300 border group bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm hover:border-pink-500/30 hover:bg-white/10">
-                        <div
-                            class="absolute flex items-center justify-center w-8 h-8 text-lg font-bold transition-transform duration-300 bg-pink-600 rounded-full -top-4 left-4 group-hover:scale-110">
-                            3
-                        </div>
-                        <div class="pt-4">
-                            <h3 class="mb-4 text-xl font-semibold text-pink-400 group-hover:text-pink-300">Narare Audio
-                            </h3>
-                            <p class="text-gray-400 group-hover:text-gray-300">Transformăm scriptul în narare audio
-                                naturală și
-                                captivantă.</p>
+                    <!-- Step 3 -->
+                    <div class="relative mb-16 sm:mb-24" data-aos="fade-right">
+                        <div class="flex flex-col items-start sm:flex-row sm:items-center">
+                            <div
+                                class="z-10 flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-pink-600 rounded-full shadow-lg shadow-pink-800/30">
+                                3
+                            </div>
+                            <div class="flex-1 ml-6 sm:ml-12">
+                                <div
+                                    class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-sm sm:ml-6 hover:bg-white/8 hover:shadow-xl hover:shadow-pink-900/10">
+                                    <div class="flex flex-col gap-6 sm:flex-row sm:items-center">
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 w-16 h-16 shadow-lg bg-gradient-to-br from-pink-600/90 to-red-600/90 rounded-xl shadow-pink-900/30">
+                                            <i class="text-3xl ri-volume-up-line"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="mb-3 text-xl font-semibold text-pink-400">Narare Audio</h3>
+                                            <p class="text-gray-400">Transformăm scriptul în narare audio naturală cu
+                                                intonație perfectă și voci optimizate pentru TikTok.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Step 4: Video -->
-                    <div
-                        class="relative p-6 transition-all duration-300 border group bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm hover:border-green-500/30 hover:bg-white/10">
-                        <div
-                            class="absolute flex items-center justify-center w-8 h-8 text-lg font-bold transition-transform duration-300 bg-green-600 rounded-full -top-4 left-4 group-hover:scale-110">
-                            4
-                        </div>
-                        <div class="pt-4">
-                            <h3 class="mb-4 text-xl font-semibold text-green-400 group-hover:text-green-300">Asamblare
-                                Video</h3>
-                            <p class="text-gray-400 group-hover:text-gray-300">Combinăm toate elementele într-un TikTok
-                                profesional
-                                gata de postare.</p>
+                    <!-- Step 4 -->
+                    <div class="relative" data-aos="fade-left">
+                        <div class="flex flex-col items-start sm:flex-row-reverse sm:items-center">
+                            <div
+                                class="z-10 flex items-center justify-center w-8 h-8 text-sm font-bold text-white bg-green-600 rounded-full shadow-lg shadow-green-800/30">
+                                4
+                            </div>
+                            <div class="flex-1 ml-6 sm:ml-12 sm:mr-12 sm:text-right">
+                                <div
+                                    class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/8 hover:shadow-xl hover:shadow-green-900/10">
+                                    <div class="flex flex-col gap-6 sm:flex-row-reverse sm:items-center">
+                                        <div
+                                            class="flex items-center justify-center flex-shrink-0 w-16 h-16 shadow-lg bg-gradient-to-br from-green-600/90 to-teal-600/90 rounded-xl shadow-green-900/30">
+                                            <i class="text-3xl ri-movie-2-line"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="mb-3 text-xl font-semibold text-green-400">Asamblare Video</h3>
+                                            <p class="text-gray-400">Combinăm toate elementele într-un TikTok
+                                                profesional cu efecte, timpi și tranziții optimizate pentru engagement.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        <!-- Testimonials Section (New) -->
+        <section class="relative py-20 overflow-hidden sm:py-28">
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"></div>
 
-        <!-- Pricing Section -->
-        <section class="py-16 sm:py-24">
-            <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="mb-12 text-center sm:mb-16">
+            <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="mb-16 text-center" data-aos="fade-up">
+                    <span
+                        class="px-4 py-1.5 text-xs font-medium text-white rounded-full bg-gradient-to-r from-pink-600/80 to-purple-600/80 inline-block mb-4">TESTIMONIALE</span>
                     <h2
-                        class="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold [text-shadow:0_4px_8px_rgba(0,0,0,0.1)]">
-                        Planuri Simple
+                        class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+                        Ce Spun Utilizatorii Noștri
                     </h2>
-                    <p class="text-sm text-gray-400 sm:text-base">Alege planul perfect pentru nevoile tale</p>
+                    <p class="max-w-2xl mx-auto text-gray-400">Iată câteva din experiențele celor care folosesc deja
+                        platforma noastră</p>
                 </div>
 
-                <div class="grid max-w-4xl grid-cols-1 gap-6 mx-auto sm:gap-8 md:grid-cols-2">
-                    <!-- Free Plan -->
-                    <div class="p-8 border bg-white/5 rounded-2xl border-white/10 backdrop-blur-sm">
-                        <h3 class="mb-4 text-2xl font-bold">Free</h3>
-                        <div class="mb-6">
-                            <span class="text-4xl font-bold">0 RON</span>
+                <div class="grid grid-cols-1 gap-8 md:grid-cols-3" data-aos="fade-up" data-aos-delay="100">
+                    <!-- Testimonial 1 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 overflow-hidden rounded-full bg-gradient-to-br from-purple-600 to-pink-600">
+                                <div class="flex items-center justify-center w-full h-full text-white">
+                                    <i class="text-xl ri-user-smile-line"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-white">Alexandra M.</h4>
+                                <p class="text-sm text-gray-400">Creator de conținut</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                            </div>
+                        </div>
+                        <p class="italic text-gray-300">"Am economisit ore de editare cu acest instrument. Filmulețele
+                            generate au un aspect profesional și primesc mult mai multe vizualizări față de cele pe care
+                            le făceam manual."</p>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 overflow-hidden rounded-full bg-gradient-to-br from-blue-600 to-cyan-600">
+                                <div class="flex items-center justify-center w-full h-full text-white">
+                                    <i class="text-xl ri-user-smile-line"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-white">Mihai D.</h4>
+                                <p class="text-sm text-gray-400">Antreprenor</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                            </div>
+                        </div>
+                        <p class="italic text-gray-300">"Incredibil cât de rapid pot crea conținut pentru brand-ul meu.
+                            Rezultatele sunt peste așteptări, iar audiența mea crește constant cu fiecare TikTok
+                            postat."</p>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10">
+                        <div class="flex items-center mb-4">
+                            <div
+                                class="w-12 h-12 overflow-hidden rounded-full bg-gradient-to-br from-pink-600 to-red-600">
+                                <div class="flex items-center justify-center w-full h-full text-white">
+                                    <i class="text-xl ri-user-smile-line"></i>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-white">Elena P.</h4>
+                                <p class="text-sm text-gray-400">Influencer</p>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                            </div>
+                        </div>
+                        <p class="italic text-gray-300">"De când folosesc TikTok Creator AI, numărul de urmăritori a
+                            crescut cu 400% în doar două luni. Este uimitor cât de bine știe să creeze conținut care
+                            rezonează cu publicul."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section with improved card design -->
+        <section id="pricing" class="relative py-20 overflow-hidden sm:py-28">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80"></div>
+
+            <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="mb-16 text-center" data-aos="fade-up">
+                    <span
+                        class="px-4 py-1.5 text-xs font-medium text-white rounded-full bg-gradient-to-r from-green-600/80 to-blue-600/80 inline-block mb-4">PREȚURI
+                        TRANSPARENTE</span>
+                    <h2
+                        class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+                        Planuri Simple
+                    </h2>
+                    <p class="max-w-2xl mx-auto text-gray-400">Alege planul perfect pentru nevoile tale de creare de
+                        conținut</p>
+                </div>
+
+                <div class="grid max-w-4xl grid-cols-1 gap-8 mx-auto sm:gap-10 md:grid-cols-2" data-aos="fade-up"
+                    data-aos-delay="100">
+                    <!-- Free Plan with enhanced styling -->
+                    <div
+                        class="p-8 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-sm hover:border-white/20 hover:shadow-xl hover:shadow-purple-900/10 hover:bg-white/8 hover:-translate-y-1 group">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold transition-colors duration-300 group-hover:text-purple-300">
+                                Free</h3>
+                            <span
+                                class="px-3 py-1.5 text-xs font-medium rounded-full bg-white/10 text-gray-300">Beta</span>
+                        </div>
+                        <div class="mb-8">
+                            <span
+                                class="text-4xl font-bold transition-colors duration-300 group-hover:text-purple-300">0
+                                RON</span>
                             <span class="text-gray-400">/lună</span>
+                            <p class="mt-2 text-sm text-gray-400">Perfect pentru începători și testare</p>
                         </div>
                         <ul class="mb-8 space-y-4">
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>5 videoclipuri/lună</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
+                                <span class="transition-colors duration-300 group-hover:text-gray-300">5
+                                    videoclipuri/lună</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Rezoluție 720p</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
+                                <span class="transition-colors duration-300 group-hover:text-gray-300">Rezoluție
+                                    720p</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Watermark inclus</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
+                                <span class="transition-colors duration-300 group-hover:text-gray-300">Watermark
+                                    inclus</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
+                                <span class="transition-colors duration-300 group-hover:text-gray-300">Acces la
+                                    funcțiile de bază</span>
                             </li>
                         </ul>
                         <a href="{{ route('register') }}"
-                            class="block w-full px-6 py-3 text-lg font-medium text-center text-white transition-all duration-200 rounded-xl bg-white/10 hover:bg-white/20">
-                            Începe Gratuit
+                            class="relative block w-full px-6 py-3 overflow-hidden text-lg font-medium text-center text-white transition-all duration-300 rounded-xl bg-white/10 hover:bg-white/20 hover:shadow-lg hover:shadow-white/5 group-hover:bg-gradient-to-r group-hover:from-purple-600/80 group-hover:to-blue-600/80">
+                            <span>Începe Gratuit</span>
                         </a>
                     </div>
 
-                    <!-- Premium Plan -->
+                    <!-- Premium Plan with enhanced styling and effects -->
                     <div
-                        class="relative p-8 overflow-hidden transition-all duration-300 border group bg-gradient-to-br from-purple-900/30 to-blue-900/30 rounded-2xl border-purple-500/50 backdrop-blur-sm hover:border-purple-500/70 hover:from-purple-900/40 hover:to-blue-900/40">
-                        <!-- Popular Badge -->
+                        class="relative p-8 overflow-hidden transition-all duration-500 border group bg-gradient-to-br from-purple-900/40 to-blue-900/40 rounded-2xl border-purple-500/50 backdrop-blur-sm hover:border-purple-500/80 hover:from-purple-900/50 hover:to-blue-900/50 hover:shadow-2xl hover:shadow-purple-900/20 hover:-translate-y-1">
+                        <!-- Popular Badge with glow -->
                         <div
-                            class="absolute top-0 right-0 px-4 py-1 text-sm font-medium text-white transition-all duration-300 bg-purple-500 rounded-bl-lg group-hover:bg-purple-600">
+                            class="absolute top-0 right-0 px-4 py-1 text-sm font-medium text-white transition-all duration-300 rounded-bl-lg shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 shadow-purple-500/30">
                             Popular
                         </div>
 
-                        <h3 class="mb-4 text-2xl font-bold">Premium (in curand)</h3>
-                        <div class="mb-6">
-                            <span class="text-4xl font-bold">49 RON</span>
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-2xl font-bold text-purple-300">Premium</h3>
+                            <span class="px-3 py-1.5 text-xs font-medium rounded-full bg-white/10 text-gray-300">În
+                                curând</span>
+                        </div>
+                        <div class="mb-8">
+                            <span class="text-4xl font-bold text-purple-300">49 RON</span>
                             <span class="text-gray-400">/lună</span>
+                            <p class="mt-2 text-sm text-gray-400">Pentru creatori serioși și business</p>
                         </div>
                         <ul class="mb-8 space-y-4">
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400 transition-transform duration-300 group-hover:scale-110"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Videoclipuri nelimitate</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
+                                <span class="text-gray-300">Videoclipuri nelimitate</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400 transition-transform duration-300 group-hover:scale-110"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Mai multe voci de narare</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
+                                <span class="text-gray-300">Mai multe voci și accente</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400 transition-transform duration-300 group-hover:scale-110"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Postare automata pe TikTok</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
+                                <span class="text-gray-300">Postare automată pe TikTok</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400 transition-transform duration-300 group-hover:scale-110"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Rezoluție HD</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
+                                <span class="text-gray-300">Rezoluție HD și 4K</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400 transition-transform duration-300 group-hover:scale-110"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Fără watermark</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
+                                <span class="text-gray-300">Fără watermark</span>
                             </li>
-                            <li class="flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-400 transition-transform duration-300 group-hover:scale-110"
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                <span>Suport prioritar</span>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
+                                <span class="text-gray-300">Suport prioritar 24/7</span>
                             </li>
                         </ul>
-                        <a href="{{ route('register') }}"
-                            class="block w-full px-6 py-3 text-lg font-medium text-center text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:shadow-lg hover:shadow-purple-500/25">
-                            Încearcă Premium
+                        <a href="#notify"
+                            class="relative block w-full px-6 py-3 overflow-hidden text-lg font-medium text-center text-white transition-all duration-500 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:shadow-xl hover:shadow-purple-500/30">
+                            <span
+                                class="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/0 via-white/20 to-purple-600/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+                            <span class="relative">Anunță-mă când e gata</span>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <x-footer />
-    </div>
 
-    <style>
-        @layer utilities {
-            .text-shadow {
-                text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-        }
-    </style>
+        <x-footer />
+
+        <!-- Add Scripts for Animations -->
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize AOS animation library
+                AOS.init({
+                    duration: 800,
+                    once: true,
+                    offset: 100,
+                });
+
+
+            });
+        </script>
+        @livewireScripts
 </body>
 
 </html>
