@@ -125,10 +125,10 @@
                                 <i class="mr-2 ri-vip-crown-fill"></i> Începe Gratuit
                             </span>
                         </a>
-                        <a href="#how-it-works"
-                            class="inline-flex items-center justify-center w-full px-8 py-4 text-base font-medium text-gray-300 transition-all duration-300 border sm:w-auto rounded-xl border-white/10 backdrop-blur-sm hover:bg-white/10 hover:text-white hover:shadow-lg">
-                            <i class="mr-2 ri-play-circle-line"></i> Vezi Demo
-                        </a>
+                        {{-- <a href="#how-it-works"
+             class="inline-flex items-center justify-center w-full px-8 py-4 text-base font-medium text-gray-300 transition-all duration-300 border sm:w-auto rounded-xl border-white/10 backdrop-blur-sm hover:bg-white/10 hover:text-white hover:shadow-lg">
+             <i class="mr-2 ri-play-circle-line"></i> Vezi Demo
+         </a> --}}
                     @endauth
                 </div>
 
@@ -170,99 +170,8 @@
                 </div>
             </div>
         </div>
-        <!-- Features Section (New) -->
-        <section id="features" class="relative py-20 overflow-hidden sm:py-28">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
-            <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="mb-16 text-center" data-aos="fade-up">
-                    <span
-                        class="px-4 py-1.5 text-xs font-medium text-white rounded-full bg-gradient-to-r from-purple-600/80 to-blue-600/80 inline-block mb-4">CARACTERISTICI
-                        PRINCIPALE</span>
-                    <h2
-                        class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
-                        De ce să alegi TikTok Creator AI
-                    </h2>
-                    <p class="max-w-2xl mx-auto text-gray-400">Platforma noastră oferă tot ce ai nevoie pentru a crea
-                        conținut viral, rapid și eficient</p>
-                </div>
 
-                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" data-aos="fade-up"
-                    data-aos-delay="100">
-                    <!-- Feature 1 -->
-                    <div
-                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-purple-600/20">
-                            <i class="text-xl ri-ai-generate"></i>
-                        </div>
-                        <h3 class="mb-3 text-xl font-semibold text-white">AI Avansat</h3>
-                        <p class="text-gray-400">Algoritmi de ultimă generație pentru crearea de conținut optimizat
-                            pentru angajament și viralitate.</p>
-                    </div>
-
-                    <!-- Feature 2 -->
-                    <div
-                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl shadow-blue-600/20">
-                            <i class="text-xl ri-time-line"></i>
-                        </div>
-                        <h3 class="mb-3 text-xl font-semibold text-white">Rapid și Eficient</h3>
-                        <p class="text-gray-400">Generează videoclipuri complete în mai puțin de 5 minute, economisind
-                            ore de editare manuală.</p>
-                    </div>
-
-                    <!-- Feature 3 -->
-                    <div
-                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-pink-600 to-red-600 rounded-xl shadow-pink-600/20">
-                            <i class="text-xl ri-voice-recognition-line"></i>
-                        </div>
-                        <h3 class="mb-3 text-xl font-semibold text-white">Voci Naturale</h3>
-                        <p class="text-gray-400">Narațiune audio realistă cu intonație și accentuare perfectă pentru
-                            conținutul tău.</p>
-                    </div>
-
-                    <!-- Feature 4 -->
-                    <div
-                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-green-600 to-teal-600 rounded-xl shadow-green-600/20">
-                            <i class="text-xl ri-trend-chart-line"></i>
-                        </div>
-                        <h3 class="mb-3 text-xl font-semibold text-white">Analize de Tendințe</h3>
-                        <p class="text-gray-400">Algoritmi care monitorizează și analizează cele mai recente tendințe
-                            TikTok pentru conținut relevant.</p>
-                    </div>
-
-                    <!-- Feature 5 -->
-                    <div
-                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-amber-600 to-yellow-600 rounded-xl shadow-amber-600/20">
-                            <i class="text-xl ri-image-2-line"></i>
-                        </div>
-                        <h3 class="mb-3 text-xl font-semibold text-white">Imagini de Calitate</h3>
-                        <p class="text-gray-400">Generare automată de imagini relevante și vizual atractive pentru
-                            videoclipurile tale.</p>
-                    </div>
-
-                    <!-- Feature 6 -->
-                    <div
-                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
-                        <div
-                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl shadow-purple-600/20">
-                            <i class="text-xl ri-shield-check-line"></i>
-                        </div>
-                        <h3 class="mb-3 text-xl font-semibold text-white">Siguranță și Conformitate</h3>
-                        <p class="text-gray-400">Conținut generat în conformitate cu regulile TikTok pentru a evita
-                            restricțiile.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- Process Steps with enhanced animations -->
         <section id="how-it-works" class="relative overflow-hidden py-28 sm:py-36">
@@ -395,6 +304,102 @@
                 </div>
             </div>
         </section>
+
+        <!-- Features Section (New) -->
+        <section id="features" class="relative py-20 overflow-hidden sm:py-28">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
+            <div class="relative px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="mb-16 text-center" data-aos="fade-up">
+                    <span
+                        class="px-4 py-1.5 text-xs font-medium text-white rounded-full bg-gradient-to-r from-purple-600/80 to-blue-600/80 inline-block mb-4">CARACTERISTICI
+                        PRINCIPALE</span>
+                    <h2
+                        class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
+                        De ce să alegi TikTok Creator AI
+                    </h2>
+                    <p class="max-w-2xl mx-auto text-gray-400">Platforma noastră oferă tot ce ai nevoie pentru a crea
+                        conținut viral, rapid și eficient</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3" data-aos="fade-up"
+                    data-aos-delay="100">
+                    <!-- Feature 1 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl shadow-purple-600/20">
+                            <i class="text-xl ri-ai-generate"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">AI Avansat</h3>
+                        <p class="text-gray-400">Algoritmi de ultimă generație pentru crearea de conținut optimizat
+                            pentru angajament și viralitate.</p>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl shadow-blue-600/20">
+                            <i class="text-xl ri-time-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Rapid și Eficient</h3>
+                        <p class="text-gray-400">Generează videoclipuri complete în mai puțin de 5 minute, economisind
+                            ore de editare manuală.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-pink-600 to-red-600 rounded-xl shadow-pink-600/20">
+                            <i class="text-xl ri-voice-recognition-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Voci Naturale</h3>
+                        <p class="text-gray-400">Narațiune audio realistă cu intonație și accentuare perfectă pentru
+                            conținutul tău.</p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-green-600 to-teal-600 rounded-xl shadow-green-600/20">
+                            <i class="text-xl ri-trend-chart-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Analize de Tendințe</h3>
+                        <p class="text-gray-400">Algoritmi care monitorizează și analizează cele mai recente tendințe
+                            TikTok pentru conținut relevant.</p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-amber-600 to-yellow-600 rounded-xl shadow-amber-600/20">
+                            <i class="text-xl ri-image-2-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Imagini de Calitate</h3>
+                        <p class="text-gray-400">Generare automată de imagini relevante și vizual atractive pentru
+                            videoclipurile tale.</p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div
+                        class="p-6 transition-all duration-500 border rounded-2xl bg-white/5 border-white/10 backdrop-blur-md hover:border-purple-500/30 hover:bg-white/8 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-center w-12 h-12 mb-6 shadow-lg bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl shadow-purple-600/20">
+                            <i class="text-xl ri-shield-check-line"></i>
+                        </div>
+                        <h3 class="mb-3 text-xl font-semibold text-white">Siguranță și Conformitate</h3>
+                        <p class="text-gray-400">Conținut generat în conformitate cu regulile TikTok pentru a evita
+                            restricțiile.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
         <!-- Testimonials Section (New) -->
         <section class="relative py-20 overflow-hidden sm:py-28">
             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"></div>
