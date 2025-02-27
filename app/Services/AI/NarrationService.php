@@ -25,27 +25,23 @@ class NarrationService
     public function generate(string $text, string $voiceId = null): array
     {
         try {
-            $userId = Auth::id();
-            // Folosim un hash pentru textul de narare pentru a evita chei prea lungi
-            $textHash = md5($text);
-            $cacheKey = "narration_{$textHash}_" . ($voiceId ?? $this->defaultVoiceId);
-            
             // Verifică dacă acest utilizator a generat deja narări pentru acest text
+            $userId = Auth::id();
+            $textHash = md5($text);
             $userNarrationsKey = "user_{$userId}_narrations";
             $userNarrations = Cache::get($userNarrationsKey, []);
             
-            // Dacă utilizatorul curent a mai generat narare cu acest text, forțăm generare nouă
+            // Dacă utilizatorul curent a mai generat narare cu acest text, variăm parametrii vocii
             $forceNewForUser = in_array($textHash, $userNarrations);
             
-            // Verifică cache-ul doar dacă nu este forțată generarea de narare nouă pentru utilizator
-            if (!$forceNewForUser && Cache::has($cacheKey)) {
-                $cachedNarration = Cache::get($cacheKey);
-                Log::info('Using cached narration', ['text_hash' => $textHash]);
-                return $cachedNarration;
+            // Adăugăm textul la lista utilizatorului pentru viitoare verificări
+            if (!in_array($textHash, $userNarrations)) {
+                $userNarrations[] = $textHash;
+                Cache::put($userNarrationsKey, $userNarrations, now()->addDays(30));
             }
-            
+
             Log::info('Starting narration generation', [
-                'text' => $text,
+                'text_hash' => $textHash,
                 'forceNewForUser' => $forceNewForUser
             ]);
 
@@ -107,25 +103,12 @@ class NarrationService
                 'cloudinary_url' => $uploadResult->getSecurePath()
             ]);
 
-            $result = [
+            return [
                 'status' => 'success',
                 'audio_url' => $uploadResult->getSecurePath(),
                 'cloudinary_public_id' => $uploadResult->getPublicId(),
                 'audio_duration' => $audioDuration // Returnăm și durata!
             ];
-            
-            // Adaugă acest text (hash) la lista utilizatorului
-            if (!in_array($textHash, $userNarrations)) {
-                $userNarrations[] = $textHash;
-                Cache::put($userNarrationsKey, $userNarrations, now()->addDays(30));
-            }
-            
-            // Salvează în cache doar dacă nu e pentru același utilizator
-            if (!$forceNewForUser) {
-                Cache::put($cacheKey, $result, now()->addHours(6));
-            }
-
-            return $result;
 
         } catch (Exception $e) {
             Log::error('Narration generation failed', [

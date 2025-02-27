@@ -13,31 +13,34 @@ class ScriptGenerationService
     public function generate(string $fullCategoryPath)
     {
         try {
-            $userId = Auth::id();
-            $cacheKey = "script_{$fullCategoryPath}";
-            
             // Verifică dacă acest utilizator a generat deja conținut pentru această categorie
+            $userId = Auth::id();
             $userCategoriesKey = "user_{$userId}_categories";
             $userCategories = Cache::get($userCategoriesKey, []);
             
             // Dacă utilizatorul curent a mai generat conținut în această categorie, forțăm conținut nou
             $forceNewForUser = in_array($fullCategoryPath, $userCategories);
             
-            // Verifică cache-ul doar dacă nu este forțată generarea de conținut nou pentru utilizator
-            if (!$forceNewForUser && Cache::has($cacheKey)) {
-                $cachedScript = Cache::get($cacheKey);
-                Log::info('Using cached script for category', ['category' => $fullCategoryPath]);
-                return $cachedScript;
+            // Adăugăm categoria la lista utilizatorului pentru viitoare verificări
+            if (!in_array($fullCategoryPath, $userCategories)) {
+                $userCategories[] = $fullCategoryPath;
+                Cache::put($userCategoriesKey, $userCategories, now()->addDays(30));
             }
-            
+
             Log::info('Starting script generation', [
                 'category' => $fullCategoryPath,
                 'forceNewForUser' => $forceNewForUser
             ]);
-            
-            // Crește temperatura pentru mai multă variabilitate dacă același utilizator accesează din nou
+
+            // Ajustăm temperatura dacă utilizatorul a mai generat conținut pentru această categorie
             $temperature = $forceNewForUser ? 0.9 : 0.7;
             
+            // Ajustăm prompt-ul pentru a cere conținut diferit dacă e cazul
+            $customization = "";
+            if ($forceNewForUser) {
+                $customization = " IMPORTANT: Generează un script complet diferit față de versiunile anterioare pe acest subiect. Folosește abordări noi și idei originale.";
+            }
+
             $result = Anthropic::messages()->create([
                 'model' => 'claude-3-7-sonnet-20250219',
                 'max_tokens' => 1024,
@@ -47,8 +50,7 @@ class ScriptGenerationService
                         'role' => 'user',
                         'content' => "Creează un script TikTok în limba română pentru categoria: '{$fullCategoryPath}'.
                                     Durata totală: între 15-30 secunde (maxim 45 secunde doar dacă subiectul necesită).
-                                    Asigură-te că textul este captivant și natural în limba română."
-                                    . ($forceNewForUser ? " IMPORTANT: Generează conținut complet diferit de creațiile anterioare pe acest subiect, cu abordare și idei noi." : "")
+                                    Asigură-te că textul este captivant și natural în limba română.{$customization}"
                     ]
                 ],
                 'temperature' => $temperature,
@@ -85,17 +87,6 @@ class ScriptGenerationService
             unset($scene); // Eliminăm referința (bună practică)
 
             $script['total_duration'] = $totalDuration;
-            
-            // Adaugă această categorie la lista utilizatorului
-            if (!in_array($fullCategoryPath, $userCategories)) {
-                $userCategories[] = $fullCategoryPath;
-                Cache::put($userCategoriesKey, $userCategories, now()->addDays(30));
-            }
-            
-            // Salvează în cache doar dacă nu e pentru același utilizator
-            if (!$forceNewForUser) {
-                Cache::put($cacheKey, $script, now()->addHours(6));
-            }
 
             return $script;
 
@@ -119,8 +110,6 @@ class ScriptGenerationService
                         - Hook puternic în primele 3 secunde
                         - Suspans care să țină utilizatorul până la final
                         - Durata totală: 15-30 secunde (maxim 45 secunde pentru topics complexe)**
-
-    Fiecare script pe care îl generezi trebuie să fie unic și original, chiar dacă subiectul este similar cu script-uri anterioare. Folosește abordări diferite, structuri variate și idei proaspete.
 
     Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea structură:
     {
