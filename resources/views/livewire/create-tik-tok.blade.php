@@ -144,13 +144,46 @@
                                                         x-transition:enter="transition ease-out duration-200"
                                                         x-transition:enter-start="opacity-0 -translate-y-2"
                                                         x-transition:enter-end="opacity-100 translate-y-0"
-                                                        class="mt-1">
+                                                        class="mt-1 ml-3">
                                                         @foreach ($subCategory->children as $childCategory)
-                                                            <button @click="setCategory('{{ $childCategory->slug }}')"
-                                                                class="w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 hover:bg-white/5"
-                                                                :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $childCategory->slug }}', 'text-gray-300': selectedCategory !== '{{ $childCategory->slug }}' }">
-                                                                {{ $childCategory->name }}
-                                                            </button>
+                                                            @if ($childCategory->children->count() > 0)
+                                                                <div x-data="{ openChild: false }" class="mt-1">
+                                                                    <button @click="openChild = !openChild"
+                                                                        class="flex items-center justify-between w-full p-3 text-sm text-left text-gray-300 transition-all duration-200 rounded-lg bg-white/5 hover:bg-white/10 group">
+                                                                        <span
+                                                                            class="group-hover:text-purple-400">{{ $childCategory->name }}</span>
+                                                                        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 group-hover:text-purple-400"
+                                                                            :class="{ 'rotate-180': openChild }"
+                                                                            fill="none" stroke="currentColor"
+                                                                            viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round"
+                                                                                stroke-linejoin="round"
+                                                                                stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                    <div x-show="openChild"
+                                                                        x-transition:enter="transition ease-out duration-200"
+                                                                        x-transition:enter-start="opacity-0 -translate-y-2"
+                                                                        x-transition:enter-end="opacity-100 translate-y-0"
+                                                                        class="pl-4 mt-1 space-y-1">
+                                                                        @foreach ($childCategory->children as $grandChildCategory)
+                                                                            <button
+                                                                                @click="setCategory('{{ $grandChildCategory->slug }}')"
+                                                                                class="w-full p-2 text-sm text-left text-gray-300 transition-all duration-200 rounded-lg hover:bg-white/5"
+                                                                                :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $grandChildCategory->slug }}', 'text-gray-300': selectedCategory !== '{{ $grandChildCategory->slug }}' }">
+                                                                                {{ $grandChildCategory->name }}
+                                                                            </button>
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                            @else
+                                                                <button
+                                                                    @click="setCategory('{{ $childCategory->slug }}')"
+                                                                    class="w-full p-2 text-sm text-left text-gray-300 transition-all duration-200 rounded-lg hover:bg-white/5"
+                                                                    :class="{ 'bg-purple-900/50 text-purple-400': selectedCategory === '{{ $childCategory->slug }}', 'text-gray-300': selectedCategory !== '{{ $childCategory->slug }}' }">
+                                                                    {{ $childCategory->name }}
+                                                                </button>
+                                                            @endif
                                                         @endforeach
                                                     </div>
                                                 @else

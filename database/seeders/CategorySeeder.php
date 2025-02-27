@@ -100,6 +100,34 @@ class CategorySeeder extends Seeder
                     ]
                 ]
             ],
+            'spiritualitate-religie' => [
+                'name' => 'Spiritualitate și Religie',
+                'description' => 'Conținut legat de spiritualitate și religie.',
+                'subcategories' => [
+                    'rugaciuni' => [
+                        'name' => 'Rugăciuni',
+                        'description' => 'Rugăciuni pentru diverse nevoi.',
+                        'subcategories' => [
+                            'rugaciuni-dimineata' => ['name' => 'Rugăciuni de dimineață', 'description' => 'Rugăciuni pentru începutul zilei.'],
+                            'rugaciuni-seara' => ['name' => 'Rugăciuni de seară', 'description' => 'Rugăciuni pentru sfârșitul zilei.'],
+                            'rugaciuni-sanatate' => ['name' => 'Rugăciuni pentru sănătate', 'description' => 'Rugăciuni pentru sănătate.'],
+                            'rugaciuni-protectie' => ['name' => 'Rugăciuni pentru protecție', 'description' => 'Rugăciuni pentru protecție.'],
+                            'rugaciuni-multumire' => ['name' => 'Rugăciuni de mulțumire', 'description' => 'Rugăciuni de mulțumire.'],
+                            'rugaciuni-diverse' => ['name' => 'Rugăciuni pentru diverse nevoi', 'description' => 'Rugăciuni pentru diverse nevoi.'],
+                            'rugaciuni-scurte' => ['name' => 'Rugăciuni scurte', 'description' => 'Rugăciuni scurte.']
+                        ]
+                    ],
+                    'citate-religioase' => [
+                        'name' => 'Citate Religioase/Spirituale',
+                        'description' => 'Citate din surse religioase și spirituale.',
+                        'subcategories' => [
+                            'biblie' => ['name' => 'Din Biblie', 'description' => 'Citate din Biblie.'],
+                            'sfinti' => ['name' => 'De la sfinți/părinți ai bisericii', 'description' => 'Citate de la sfinți/părinți ai bisericii.'],
+                            'alte-traditii' => ['name' => 'Din alte tradiții spirituale', 'description' => 'Citate din alte tradiții spirituale.']
+                        ]
+                    ],
+                ]
+            ],
 
             'gaming-tehnologie' => [
                 'name' => 'Gaming & Tehnologie',
@@ -132,48 +160,59 @@ class CategorySeeder extends Seeder
                         'subcategories' => [
                             'gadgets-mici' => ['name' => 'Gadget-uri Mici', 'description' => 'Recenzii pentru gadget-uri accesibile.'],
                             'accesorii-tech' => ['name' => 'Accesorii Tech', 'description' => 'Recenzii pentru accesorii tehnologice.'],
-            
-                          
                         ]
                     ],
                     'ai-tools' => [
                         'name' => 'AI & Tools',
                         'description' => 'Prezentare instrumente și aplicații AI populare.',
                         'subcategories' => [
-                            'ai-art' => ['name' => 'AI Art', 'description' => 'Instrumente de generare artă cu AI.'],
-                            'ai-scris' => ['name' => 'AI pentru Scris', 'description' => 'Instrumente de scriere și editare cu AI.'],
-                            'ai-productivitate' => ['name' => 'AI pentru Productivitate', 'description' => 'AI pentru eficientizarea muncii.']
+                            'ai-art' => [
+                                'name' => 'AI Art & Design',
+                                'description' => 'Instrumente de generare artă cu AI.',
+                                'subcategories' => [
+                                    'text-to-image' => ['name' => 'Text-to-Image', 'description' => 'Generare de imagini din descrieri text.'],
+                                    'image-editing' => ['name' => 'Editare Imagini AI', 'description' => 'Retușare și transformare de imagini folosind AI.'],
+                                    'ai-animation' => ['name' => 'Animație AI', 'description' => 'Crearea animațiilor și efectelor vizuale cu AI.']
+                                ]
+                            ],
+                            'ai-scris' => [
+                                'name' => 'AI pentru Scris',
+                                'description' => 'Instrumente de scriere și editare cu AI.',
+                                'subcategories' => [
+                                    'asistenti-scriere' => ['name' => 'Asistenți de Scriere', 'description' => 'AI pentru crearea și editarea textelor.'],
+                                    'copywriting' => ['name' => 'Copywriting AI', 'description' => 'Generare text marketing și reclame.'],
+                                    'corectare-text' => ['name' => 'Corectare Text', 'description' => 'Îmbunătățirea gramaticii și stilului.']
+                                ]
+                            ],
+                            'ai-audio-video' => [
+                                'name' => 'AI Audio & Video',
+                                'description' => 'Generare și editare audio/video cu AI.',
+                                'subcategories' => [
+                                    'text-to-speech' => ['name' => 'Text-to-Speech', 'description' => 'Convertirea textului în voce naturală.'],
+                                    'muzica-ai' => ['name' => 'Muzică generată', 'description' => 'Generare melodii și sunete cu AI.'],
+                                    'video-editing' => ['name' => 'Editare Video AI', 'description' => 'Automatizări și efecte video cu AI.']
+                                ]
+                            ],
+                            'ai-productivitate' => [
+                                'name' => 'AI pentru Productivitate',
+                                'description' => 'AI pentru eficientizarea muncii.',
+                                'subcategories' => [
+                                    'asistenti-virtuali' => ['name' => 'Asistenți Virtuali', 'description' => 'Chatboți și asistenți AI pentru diverse sarcini.'],
+                                    'automatizare' => ['name' => 'Automatizare Workflow', 'description' => 'Automatizarea proceselor repetitive cu AI.'],
+                                    'analiza-date' => ['name' => 'Analiză Date', 'description' => 'Procesare și vizualizare date cu AI.']
+                                ]
+                            ],
+                            'tendinte-ai' => [
+                                'name' => 'Tendințe în AI',
+                                'description' => 'Noutăți și inovații în domeniul AI.',
+                                'subcategories' => [
+                                    'noi-tehnologii' => ['name' => 'Noi Tehnologii', 'description' => 'Cele mai recente inovații în AI.'],
+                                    'impactul-ai' => ['name' => 'Impactul AI', 'description' => 'Cum schimbă AI diverse domenii.'],
+                                    'viitorul-ai' => ['name' => 'Viitorul AI', 'description' => 'Predicții despre evoluția AI.']
+                                ]
+                            ]
                         ]
                     ]
-                ]
-            ],
-
-            'spiritualitate-religie' => [
-                'name' => 'Spiritualitate și Religie',
-                'description' => 'Conținut legat de spiritualitate și religie.',
-                'subcategories' => [
-                    'rugaciuni' => [
-                        'name' => 'Rugăciuni',
-                        'description' => 'Rugăciuni pentru diverse nevoi.',
-                        'subcategories' => [
-                            'rugaciuni-dimineata' => ['name' => 'Rugăciuni de dimineață', 'description' => 'Rugăciuni pentru începutul zilei.'],
-                            'rugaciuni-seara' => ['name' => 'Rugăciuni de seară', 'description' => 'Rugăciuni pentru sfârșitul zilei.'],
-                            'rugaciuni-sanatate' => ['name' => 'Rugăciuni pentru sănătate', 'description' => 'Rugăciuni pentru sănătate.'],
-                            'rugaciuni-protectie' => ['name' => 'Rugăciuni pentru protecție', 'description' => 'Rugăciuni pentru protecție.'],
-                            'rugaciuni-multumire' => ['name' => 'Rugăciuni de mulțumire', 'description' => 'Rugăciuni de mulțumire.'],
-                            'rugaciuni-diverse' => ['name' => 'Rugăciuni pentru diverse nevoi', 'description' => 'Rugăciuni pentru diverse nevoi.'],
-                            'rugaciuni-scurte' => ['name' => 'Rugăciuni scurte', 'description' => 'Rugăciuni scurte.']
-                        ]
-                    ],
-                    'citate-religioase' => [
-                        'name' => 'Citate Religioase/Spirituale',
-                        'description' => 'Citate din surse religioase și spirituale.',
-                        'subcategories' => [
-                            'biblie' => ['name' => 'Din Biblie', 'description' => 'Citate din Biblie.'],
-                            'sfinti' => ['name' => 'De la sfinți/părinți ai bisericii', 'description' => 'Citate de la sfinți/părinți ai bisericii.'],
-                            'alte-traditii' => ['name' => 'Din alte tradiții spirituale', 'description' => 'Citate din alte tradiții spirituale.']
-                        ]
-                    ],
                 ]
             ],
 
