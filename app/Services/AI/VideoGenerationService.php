@@ -273,7 +273,7 @@ class VideoGenerationService
                     'cloudinary_id' => $project->image_cloudinary_id
                 ]);
             }
-
+    
             // Cleanup audio
             if ($project->audio_cloudinary_id) {
                 Cloudinary::destroy($project->audio_cloudinary_id);
@@ -282,13 +282,13 @@ class VideoGenerationService
                     'cloudinary_id' => $project->audio_cloudinary_id
                 ]);
             }
-
+    
             // Update project to clear Cloudinary IDs
             $project->update([
                 'image_cloudinary_id' => null,
                 'audio_cloudinary_id' => null
             ]);
-
+    
             return true;
         } catch (Exception $e) {
             Log::error('Failed to cleanup Cloudinary resources', [
