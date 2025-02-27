@@ -100,6 +100,54 @@ class CategorySeeder extends Seeder
                     ]
                 ]
             ],
+
+            'gaming-tehnologie' => [
+                'name' => 'Gaming & Tehnologie',
+                'description' => 'Conținut despre jocuri video și tehnologie populară.',
+                'subcategories' => [
+                    'gaming-tips' => [
+                        'name' => 'Gaming Tips & Tricks',
+                        'description' => 'Sfaturi și trucuri pentru jocuri populare.',
+                        'subcategories' => [
+                            'minecraft-tips' => ['name' => 'Minecraft Tips', 'description' => 'Sfaturi pentru Minecraft.'],
+                            'fortnite-tips' => ['name' => 'Fortnite Tips', 'description' => 'Sfaturi pentru Fortnite.'],
+                            'roblox-tips' => ['name' => 'Roblox Tips', 'description' => 'Sfaturi pentru Roblox.'],
+                            'mobile-games-tips' => ['name' => 'Mobile Games', 'description' => 'Sfaturi pentru jocuri mobile populare.'],
+                            
+                        ]
+                    ],
+                    'tech-hacks-avansate' => [
+                        'name' => 'Tech Hacks Avansate',
+                        'description' => 'Trucuri avansate pentru dispozitive tehnologice.',
+                        'subcategories' => [
+                            'smartphone-hacks' => ['name' => 'Smartphone Hacks', 'description' => 'Trucuri pentru smartphone.'],
+                            'aplicatii-utile' => ['name' => 'Aplicații Utile', 'description' => 'Prezentări scurte ale unor aplicații utile.'],
+                            'setari-rapide' => ['name' => 'Setări Rapide', 'description' => 'Configurări rapide pentru diverse dispozitive.'],
+                            'securitate-online' => ['name' => 'Securitate Online', 'description' => 'Sfaturi pentru siguranța online.']
+                        ]
+                    ],
+                    'tech-reviews' => [
+                        'name' => 'Tech Mini-Reviews',
+                        'description' => 'Recenzii scurte de produse tehnologice.',
+                        'subcategories' => [
+                            'gadgets-mici' => ['name' => 'Gadget-uri Mici', 'description' => 'Recenzii pentru gadget-uri accesibile.'],
+                            'accesorii-tech' => ['name' => 'Accesorii Tech', 'description' => 'Recenzii pentru accesorii tehnologice.'],
+            
+                          
+                        ]
+                    ],
+                    'ai-tools' => [
+                        'name' => 'AI & Tools',
+                        'description' => 'Prezentare instrumente și aplicații AI populare.',
+                        'subcategories' => [
+                            'ai-art' => ['name' => 'AI Art', 'description' => 'Instrumente de generare artă cu AI.'],
+                            'ai-scris' => ['name' => 'AI pentru Scris', 'description' => 'Instrumente de scriere și editare cu AI.'],
+                            'ai-productivitate' => ['name' => 'AI pentru Productivitate', 'description' => 'AI pentru eficientizarea muncii.']
+                        ]
+                    ]
+                ]
+            ],
+
             'spiritualitate-religie' => [
                 'name' => 'Spiritualitate și Religie',
                 'description' => 'Conținut legat de spiritualitate și religie.',
@@ -264,54 +312,6 @@ class CategorySeeder extends Seeder
                     ]
                 ]
             ],
-
-            'gaming-tehnologie' => [
-    'name' => 'Gaming & Tehnologie',
-    'description' => 'Conținut despre jocuri video și tehnologie populară.',
-    'subcategories' => [
-        'gaming-tips' => [
-            'name' => 'Gaming Tips & Tricks',
-            'description' => 'Sfaturi și trucuri pentru jocuri populare.',
-            'subcategories' => [
-                'minecraft-tips' => ['name' => 'Minecraft Tips', 'description' => 'Sfaturi pentru Minecraft.'],
-                'fortnite-tips' => ['name' => 'Fortnite Tips', 'description' => 'Sfaturi pentru Fortnite.'],
-                'roblox-tips' => ['name' => 'Roblox Tips', 'description' => 'Sfaturi pentru Roblox.'],
-                'mobile-games-tips' => ['name' => 'Mobile Games', 'description' => 'Sfaturi pentru jocuri mobile populare.'],
-                
-            ]
-        ],
-        'tech-hacks-avansate' => [
-            'name' => 'Tech Hacks Avansate',
-            'description' => 'Trucuri avansate pentru dispozitive tehnologice.',
-            'subcategories' => [
-                'smartphone-hacks' => ['name' => 'Smartphone Hacks', 'description' => 'Trucuri pentru smartphone.'],
-                'aplicatii-utile' => ['name' => 'Aplicații Utile', 'description' => 'Prezentări scurte ale unor aplicații utile.'],
-                'setari-rapide' => ['name' => 'Setări Rapide', 'description' => 'Configurări rapide pentru diverse dispozitive.'],
-                'securitate-online' => ['name' => 'Securitate Online', 'description' => 'Sfaturi pentru siguranța online.']
-            ]
-        ],
-        'tech-reviews' => [
-            'name' => 'Tech Mini-Reviews',
-            'description' => 'Recenzii scurte de produse tehnologice.',
-            'subcategories' => [
-                'gadgets-mici' => ['name' => 'Gadget-uri Mici', 'description' => 'Recenzii pentru gadget-uri accesibile.'],
-                'accesorii-tech' => ['name' => 'Accesorii Tech', 'description' => 'Recenzii pentru accesorii tehnologice.'],
-
-              
-            ]
-        ],
-        'ai-tools' => [
-            'name' => 'AI & Tools',
-            'description' => 'Prezentare instrumente și aplicații AI populare.',
-            'subcategories' => [
-                'ai-art' => ['name' => 'AI Art', 'description' => 'Instrumente de generare artă cu AI.'],
-                'ai-scris' => ['name' => 'AI pentru Scris', 'description' => 'Instrumente de scriere și editare cu AI.'],
-                'ai-productivitate' => ['name' => 'AI pentru Productivitate', 'description' => 'AI pentru eficientizarea muncii.']
-            ]
-        ]
-    ]
-],
-
 
             'lifehacks-virale' => [
                 'name' => 'Life Hacks Virale',
