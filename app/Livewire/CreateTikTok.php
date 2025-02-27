@@ -187,48 +187,54 @@ class CreateTikTok extends Component
     }
 
     public function checkStatus()
-    {
-        try {
-            $project = Auth::user()->videoProjects()
-                ->where('render_id', $this->render_id)
-                ->first();
-    
-            if (!$project) {
-                $this->isProcessing = false;
-                return;
-            }
-    
-            $status = $this->videoService->checkStatus($project->render_id);
-    
-            if ($status['success'] && $status['status'] === 'done') {
-                $project->update([
-                    'status' => 'completed',
-                    'video_url' => $status['url']
-                ]);
-    
-                $this->videoUrl = $status['url'];
-                $this->isProcessing = false;
-    
-                // Curățăm resursele Cloudinary după generarea cu succes a videoclipului
-                $this->videoService->cleanupResources($project);
-    
-                $this->dispatch('videoReady');
-    
-                session()->flash('message', 'Videoclipul este gata!');
-            } elseif (!$status['success'] || $status['status'] === 'failed') {
-                $project->update(['status' => 'failed']);
-                $this->isProcessing = false;
-                session()->flash('error', 'Video generation failed: ' . ($status['error'] ?? 'Unknown error'));
-            }
-        } catch (Exception $e) {
+{
+    try {
+        $project = Auth::user()->videoProjects()
+            ->where('render_id', $this->render_id)
+            ->first();
+
+        if (!$project) {
             $this->isProcessing = false;
-            Log::error('Status check failed', [
-                'error' => $e->getMessage(),
-                'render_id' => $this->render_id
-            ]);
-            session()->flash('error', 'Error checking status: ' . $e->getMessage());
+            return;
         }
+
+        $status = $this->videoService->checkStatus($project->render_id);
+
+        if ($status['success'] && $status['status'] === 'done') {
+            $project->update([
+                'status' => 'completed',
+                'video_url' => $status['url']
+            ]);
+
+            $this->videoUrl = $status['url'];
+            $this->isProcessing = false;
+
+            // Curățăm resursele Cloudinary după generarea cu succes a videoclipului
+            $cleanupResult = $this->videoService->cleanupResources($project);
+            
+            if ($cleanupResult) {
+                Log::info('Successfully cleaned up Cloudinary resources', ['project_id' => $project->id]);
+            } else {
+                Log::warning('Failed to clean up some Cloudinary resources', ['project_id' => $project->id]);
+            }
+
+            $this->dispatch('videoReady');
+
+            session()->flash('message', 'Videoclipul este gata!');
+        } elseif (!$status['success'] || $status['status'] === 'failed') {
+            $project->update(['status' => 'failed']);
+            $this->isProcessing = false;
+            session()->flash('error', 'Video generation failed: ' . ($status['error'] ?? 'Unknown error'));
+        }
+    } catch (Exception $e) {
+        $this->isProcessing = false;
+        Log::error('Status check failed', [
+            'error' => $e->getMessage(),
+            'render_id' => $this->render_id
+        ]);
+        session()->flash('error', 'Error checking status: ' . $e->getMessage());
     }
+}
 
     public function render()
     {

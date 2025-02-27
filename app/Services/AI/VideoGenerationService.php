@@ -267,6 +267,9 @@ class VideoGenerationService
     try {
         // Cleanup imagine
         if ($project->image_cloudinary_id) {
+            Log::info('Attempting to delete image from Cloudinary', [
+                'image_cloudinary_id' => $project->image_cloudinary_id
+            ]);
             Cloudinary::destroy($project->image_cloudinary_id);
             Log::info('Cleaned up image from Cloudinary', [
                 'project_id' => $project->id,
@@ -276,6 +279,10 @@ class VideoGenerationService
 
         // Cleanup audio - specifică tipul "video" pentru resursele audio
         if ($project->audio_cloudinary_id) {
+            Log::info('Attempting to delete audio from Cloudinary', [
+                'audio_cloudinary_id' => $project->audio_cloudinary_id,
+                'resource_type' => 'video'
+            ]);
             Cloudinary::destroy($project->audio_cloudinary_id, ['resource_type' => 'video']);
             Log::info('Cleaned up audio from Cloudinary', [
                 'project_id' => $project->id,

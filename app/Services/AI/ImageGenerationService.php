@@ -4,6 +4,8 @@ namespace App\Services\AI;
 
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ImageGenerationService
@@ -19,7 +21,36 @@ class ImageGenerationService
     public function generateImage(string $prompt)
     {
         try {
-            Log::info('Starting image generation with Together AI Flux Schnell', ['prompt' => $prompt]);
+            $userId = Auth::id();
+            $cacheKey = "image_" . md5($prompt);
+            
+            // Verifică dacă acest utilizator a generat deja imagini pentru acest prompt
+            $userPromptsKey = "user_{$userId}_image_prompts";
+            $userPrompts = Cache::get($userPromptsKey, []);
+            
+            // Dacă utilizatorul curent a mai generat imagini cu acest prompt, forțăm generare nouă
+            $forceNewForUser = in_array(md5($prompt), $userPrompts);
+            
+            // Verifică cache-ul doar dacă nu este forțată generarea de imagini noi pentru utilizator
+            if (!$forceNewForUser && Cache::has($cacheKey)) {
+                $cachedImage = Cache::get($cacheKey);
+                Log::info('Using cached image for prompt', ['prompt_hash' => md5($prompt)]);
+                return $cachedImage;
+            }
+            
+            Log::info('Starting image generation with Together AI Flux Schnell', [
+                'prompt' => $prompt,
+                'forceNewForUser' => $forceNewForUser
+            ]);
+
+            // Modificăm prompt-ul pentru a forța variație dacă e același utilizator
+            $modifiedPrompt = $prompt;
+            if ($forceNewForUser) {
+                // Adăugăm un qualifier aleatoriu pentru a obține o imagine diferită
+                $styles = ['cinematic', 'vibrant', 'dramatic', 'moody', 'bright', 'detailed'];
+                $randomStyle = $styles[array_rand($styles)];
+                $modifiedPrompt = $prompt . ", {$randomStyle} style";
+            }
 
             // Facem request către Together AI API
             $response = Http::withHeaders([
@@ -27,12 +58,12 @@ class ImageGenerationService
                 'Content-Type' => 'application/json',
             ])->post($this->togetherApiUrl, [
                 'model' => 'black-forest-labs/FLUX.1-schnell-Free',
-                'prompt' => $prompt,
+                'prompt' => $modifiedPrompt,
                 'width' => 1008,  // Max allowed height while maintaining 9:16 ratio
                 'height' => 1792,  // Maximum allowed height
                 'steps' => 4,
                 'n' => 1,
-                'response_format' => 'url', // folosim url în loc de b64_json pentru simplitate
+                'response_format' => 'url',
                 'go_fast' => true,
                 'output_format' => 'jpeg',
                 'output_quality' => 80
@@ -66,11 +97,24 @@ class ImageGenerationService
                     'cloudinary_url' => $uploadResult->getSecurePath()
                 ]);
 
-                return [
+                $response = [
                     'success' => true,
                     'image_url' => $uploadResult->getSecurePath(),
                     'cloudinary_public_id' => $uploadResult->getPublicId()
                 ];
+                
+                // Adaugă acest prompt la lista utilizatorului (hash pentru a economisi spațiu)
+                if (!in_array(md5($prompt), $userPrompts)) {
+                    $userPrompts[] = md5($prompt);
+                    Cache::put($userPromptsKey, $userPrompts, now()->addDays(30));
+                }
+                
+                // Salvează în cache doar dacă nu e pentru același utilizator
+                if (!$forceNewForUser) {
+                    Cache::put($cacheKey, $response, now()->addHours(6));
+                }
+
+                return $response;
             } finally {
                 if (file_exists($tempFile)) {
                     unlink($tempFile);
@@ -89,96 +133,4 @@ class ImageGenerationService
             ];
         }
     }
-
-    /* Implementarea anterioară cu Replicate
-    protected string $modelOwner = 'black-forest-labs';
-    protected string $modelName = 'flux-schnell';
-
-    public function generateImageWithReplicate(string $prompt)
-    {
-        try {
-            Log::info('Starting image generation', ['prompt' => $prompt]);
-            
-            // Generăm imaginea cu Replicate
-            $prediction = Replicate::createModelPrediction(
-                $this->modelOwner,
-                $this->modelName,
-                'latest',
-                [
-                    'input' => [
-                        'prompt' => $prompt,
-                        'go_fast' => true,
-                        'megapixels' => "1",
-                        'num_outputs' => 1,
-                        'aspect_ratio' => "9:16",
-                        'output_format' => "webp",
-                        'output_quality' => 80,
-                        'num_inference_steps' => 4
-                    ]
-                ]
-            );
-
-            Log::info('Initial prediction', ['prediction' => $prediction]);
-
-            $predictionId = $prediction['id'];
-            
-            $maxAttempts = 30;
-            $attempts = 0;
-            
-            do {
-                sleep(2);
-                $attempts++;
-                
-                $result = Replicate::getPrediction($predictionId);
-                Log::info('Polling attempt ' . $attempts, ['result' => $result]);
-                
-                if (isset($result['status']) && $result['status'] === 'succeeded' && isset($result['output'][0])) {
-                    $imageUrl = $result['output'][0];
-
-                    // Descărcăm imaginea și o încărcăm pe Cloudinary
-                    $imageContent = Http::get($imageUrl)->body();
-                    $tempFile = tempnam(sys_get_temp_dir(), 'bg_');
-                    file_put_contents($tempFile, $imageContent);
-
-                    $uploadResult = Cloudinary::upload($tempFile, [
-                        'folder' => 'tiktok/backgrounds',
-                        'public_id' => 'bg_' . time(),
-                        'resource_type' => 'image'
-                    ]);
-
-                    unlink($tempFile);
-
-                    Log::info('Image uploaded to Cloudinary', [
-                        'cloudinary_url' => $uploadResult->getSecurePath()
-                    ]);
-
-                    return [
-                        'success' => true,
-                        'image_url' => $uploadResult->getSecurePath(),
-                        'cloudinary_public_id' => $uploadResult->getPublicId()
-                    ];
-                }
-                
-                if (isset($result['status']) && $result['status'] === 'failed') {
-                    throw new \Exception('Image generation failed: ' . ($result['error'] ?? 'Unknown error'));
-                }
-                
-            } while ($attempts < $maxAttempts);
-            
-            throw new \Exception('Image generation timed out after ' . $maxAttempts . ' attempts');
-
-        } catch (\Exception $e) {
-            Log::error('Image Generation Error', [
-                'error' => $e->getMessage(),
-                'prompt' => $prompt,
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            return [
-                'success' => false,
-                'error' => $e->getMessage()
-            ];
-        }
-    }
-    */
 }
