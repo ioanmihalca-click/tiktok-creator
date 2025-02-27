@@ -2,10 +2,11 @@
 
 namespace App\Services\AI;
 
+use Exception;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Kalnoy\Nestedset\NodeNotFoundException;
-use Exception;
 
 class CategoryService
 {
@@ -33,7 +34,7 @@ class CategoryService
 
             return $path;
         } catch (\Exception $e) {
-            \Log::error('Error getting category path:', [
+            Log::error('Error getting category path:', [
                 'slug' => $slug,
                 'error' => $e->getMessage()
             ]);
@@ -55,8 +56,8 @@ class CategoryService
             ->defaultOrder()
             ->get();
 
-        \Log::info('Categories count:', ['count' => $categories->count()]);
-        \Log::info('First few categories:', ['categories' => $categories->take(5)->toArray()]);
+        Log::info('Categories count:', ['count' => $categories->count()]);
+        Log::info('First few categories:', ['categories' => $categories->take(5)->toArray()]);
 
         return $categories->toTree();
     }
