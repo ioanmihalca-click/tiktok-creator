@@ -13,33 +13,25 @@ class ScriptGenerationService
     public function generate(string $fullCategoryPath)
     {
         try {
-            // Verifică dacă acest utilizator a generat deja conținut pentru această categorie
+            // Adăugare: Tracking pentru utilizatori care folosesc aceeași categorie
             $userId = Auth::id();
             $userCategoriesKey = "user_{$userId}_categories";
             $userCategories = Cache::get($userCategoriesKey, []);
-            
-            // Dacă utilizatorul curent a mai generat conținut în această categorie, forțăm conținut nou
             $forceNewForUser = in_array($fullCategoryPath, $userCategories);
             
-            // Adăugăm categoria la lista utilizatorului pentru viitoare verificări
-            if (!in_array($fullCategoryPath, $userCategories)) {
-                $userCategories[] = $fullCategoryPath;
-                Cache::put($userCategoriesKey, $userCategories, now()->addDays(30));
+            // Adăugare: Modificăm temperatura dacă este același utilizator
+            $temperature = $forceNewForUser ? 0.9 : 0.7;
+            
+            // Adăugare: Modificăm prompt-ul pentru a obține rezultate diferite
+            $customization = "";
+            if ($forceNewForUser) {
+                $customization = " IMPORTANT: Generează un script complet diferit față de versiunile anterioare pe acest subiect.";
             }
-
+            
             Log::info('Starting script generation', [
                 'category' => $fullCategoryPath,
                 'forceNewForUser' => $forceNewForUser
             ]);
-
-            // Ajustăm temperatura dacă utilizatorul a mai generat conținut pentru această categorie
-            $temperature = $forceNewForUser ? 0.9 : 0.7;
-            
-            // Ajustăm prompt-ul pentru a cere conținut diferit dacă e cazul
-            $customization = "";
-            if ($forceNewForUser) {
-                $customization = " IMPORTANT: Generează un script complet diferit față de versiunile anterioare pe acest subiect. Folosește abordări noi și idei originale.";
-            }
 
             $result = Anthropic::messages()->create([
                 'model' => 'claude-3-7-sonnet-20250219',
@@ -87,6 +79,12 @@ class ScriptGenerationService
             unset($scene); // Eliminăm referința (bună practică)
 
             $script['total_duration'] = $totalDuration;
+            
+            // Adăugare: Actualizăm lista de categorii accesate de utilizator
+            if (!in_array($fullCategoryPath, $userCategories)) {
+                $userCategories[] = $fullCategoryPath;
+                Cache::put($userCategoriesKey, $userCategories, now()->addDays(30));
+            }
 
             return $script;
 
