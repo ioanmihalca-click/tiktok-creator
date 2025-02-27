@@ -88,7 +88,7 @@
                 </div>
 
                 <h1
-                    class="mb-6 text-4xl font-bold leading-tight tracking-tight text-transparent sm:text-5xl md:text-6xl bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text">
+                    class="mb-6 text-4xl font-bold leading-tight tracking-tight text-transparent sm:text-5xl md:text-6xl bg-gradient-to-r from-purple-300 via-purple-500 to-red-500 bg-clip-text">
                     TikTok Viral <br class="sm:hidden">în <span class="relative inline-block">
                         <span class="ml-2 highlight-text">Minute</span>
                         <span
@@ -109,7 +109,7 @@
                     data-aos-delay="200">
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="relative inline-flex items-center justify-center w-full px-8 py-4 overflow-hidden text-lg font-medium text-white transition-all duration-300 shadow-lg group sm:w-auto rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 shadow-purple-600/30 hover:shadow-xl hover:shadow-purple-600/40 hover:scale-105">
+                            class="relative inline-flex items-center justify-center w-full px-8 py-4 overflow-hidden text-lg font-medium text-white transition-all duration-300 shadow-lg group sm:w-auto rounded-xl bg-gradient-to-r from-purple-600 to-red-500 shadow-purple-600/30 hover:shadow-xl hover:shadow-purple-600/40 hover:scale-105">
                             <span
                                 class="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/0 via-white/20 to-purple-600/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
                             <span class="relative flex items-center">

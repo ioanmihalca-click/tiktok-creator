@@ -1,8 +1,4 @@
 <div>
-    <!-- Add this at the top of the file for debugging -->
-    @php
-        \Log::info('Categories in view:', ['categories' => $categories]);
-    @endphp
 
     <div class="min-h-screen text-white bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <div class="max-w-5xl p-6 mx-auto">
