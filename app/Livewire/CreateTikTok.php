@@ -4,14 +4,13 @@ namespace App\Livewire;
 
 use Exception;
 use Livewire\Component;
+use App\Jobs\GenerateTikTokJob;
+use App\Jobs\CheckTikTokStatusJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\AI\CategoryService;
 use Illuminate\Support\Facades\Auth;
-use App\Services\AI\NarrationService;
-use App\Services\AI\ImageGenerationService;
-use App\Services\AI\VideoGenerationService;
-use App\Services\AI\ScriptGenerationService;
+use App\Models\VideoProject;
 
 class CreateTikTok extends Component
 {
@@ -25,25 +24,14 @@ class CreateTikTok extends Component
     public bool $isProcessing = false;
     public string $currentStep = '';
     public array $completedSteps = [];
+    public ?int $projectId = null;
+    public bool $jobStarted = false;
 
     private CategoryService $categoryService;
-    private ScriptGenerationService $scriptService;
-    private ImageGenerationService $imageService;
-    private NarrationService $narrationService;
-    private VideoGenerationService $videoService;
 
-    public function boot(
-        CategoryService $categoryService,
-        ScriptGenerationService $scriptService,
-        ImageGenerationService $imageService,
-        NarrationService $narrationService,
-        VideoGenerationService $videoService
-    ) {
+    public function boot(CategoryService $categoryService)
+    {
         $this->categoryService = $categoryService;
-        $this->scriptService = $scriptService;
-        $this->imageService = $imageService;
-        $this->narrationService = $narrationService;
-        $this->videoService = $videoService;
     }
 
     public function mount()
@@ -58,7 +46,14 @@ class CreateTikTok extends Component
                 if ($lastProject) {
                     $this->render_id = $lastProject->render_id;
                     $this->videoUrl = $lastProject->video_url;
-                    $this->isProcessing = $lastProject->status === 'rendering';
+                    $this->projectId = $lastProject->id;
+                    
+                    // Important: Verificăm statusul real, nu ne bazăm doar pe câmpul din BD
+                    $this->isProcessing = in_array($lastProject->status, ['processing', 'rendering']);
+                    
+                    if ($this->isProcessing) {
+                        $this->currentStep = 'Procesare video în curs...';
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -68,14 +63,7 @@ class CreateTikTok extends Component
 
     public function generate()
     {
-        // Setăm timpul maxim de execuție la 5 minute
-        ini_set('max_execution_time', '300');
-        set_time_limit(300);
-
-        // Setăm timeout-ul pentru Guzzle
-        config(['guzzle.timeout' => 300]);
-
-        $this->reset(['videoUrl', 'script', 'imageUrl', 'audioUrl', 'completedSteps']);
+        $this->reset(['videoUrl', 'script', 'imageUrl', 'audioUrl', 'completedSteps', 'projectId', 'jobStarted']);
         $this->isProcessing = true;
         $this->dispatch('processingStarted');
 
@@ -84,101 +72,29 @@ class CreateTikTok extends Component
         ]);
 
         try {
-            DB::beginTransaction();
-
-            // Actualizăm starea curentă
-            $this->currentStep = 'Inițializare proiect...';
-            $this->dispatch('refresh');
-
-            $categoryName = $this->categoryService->getCategoryFullPath($this->categorySlug);
-            if (!$categoryName) {
-                throw new Exception("Category not found: " . $this->categorySlug);
-            }
-
-            // Generate script
-            $this->currentStep = 'Generare script...';
-            $this->dispatch('refresh');
-
-            $this->script = $this->scriptService->generate($categoryName);
-            if (!$this->script) {
-                throw new Exception("Script generation failed");
-            }
-            $this->completedSteps[] = 'script';
-            $this->dispatch('refresh');
-
-            // Generate image
-            if (isset($this->script['background_prompt'])) {
-                $this->currentStep = 'Generare imagine...';
-                $this->dispatch('refresh');
-
-                $imageResult = $this->imageService->generateImage($this->script['background_prompt']);
-                if (!$imageResult['success']) {
-                    throw new Exception("Image generation failed: " . ($imageResult['error'] ?? 'Unknown error'));
-                }
-                $this->imageUrl = $imageResult['image_url'];
-                $imageCloudinaryId = $imageResult['cloudinary_public_id'];
-                $this->completedSteps[] = 'image';
-                $this->dispatch('refresh');
-            }
-
-            // Generate audio
-            $this->currentStep = 'Generare narare...';
-            $this->dispatch('refresh');
-
-            $fullNarration = '';
-            foreach ($this->script['scenes'] as $scene) {
-                $fullNarration .= $scene['narration'] . " ";
-            }
-
-            $narrationResult = $this->narrationService->generate($fullNarration);
-            if ($narrationResult['status'] !== 'success') {
-                throw new Exception("Narration generation failed");
-            }
-
-            $this->audioUrl = $narrationResult['audio_url'];
-            $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
-            $audioDuration = $narrationResult['audio_duration'];
-            $this->completedSteps[] = 'audio';
-            $this->dispatch('refresh');
-
-            // Create project and generate video
-            $this->currentStep = 'Inițializare procesare video...';
-            $this->dispatch('refresh');
-
-            $project = Auth::user()->videoProjects()->create([
-                'title' => $this->title ?? $categoryName . " TikTok",
-                'script' => $this->script,
+            $this->currentStep = 'Inițializare generare TikTok...';
+            
+            // Marcăm faptul că jobul este în curs de pornire
+            $this->jobStarted = true;
+            
+            // Salvăm un proiect inițial pentru a avea un ID
+            $initialProject = Auth::user()->videoProjects()->create([
+                'title' => $this->title ?? $this->categoryService->getCategoryFullPath($this->categorySlug) . " TikTok",
                 'status' => 'processing',
-                'image_url' => $this->imageUrl,
-                'image_cloudinary_id' => $imageCloudinaryId ?? null,
-                'audio_url' => $this->audioUrl,
-                'audio_cloudinary_id' => $audioCloudinaryId ?? null,
-                'audio_duration' => $audioDuration ?? null
             ]);
-
-            $videoResult = $this->videoService->generate($project);
-            if (!$videoResult['success']) {
-                throw new Exception("Video generation failed: " . ($videoResult['error'] ?? 'Unknown error'));
-            }
-
-            $project->update([
-                'status' => 'rendering',
-                'render_id' => $videoResult['render_id']
-            ]);
-
-            $this->render_id = $videoResult['render_id'];
-            $this->completedSteps[] = 'video_init';
-            DB::commit();
-
+            
+            $this->projectId = $initialProject->id;
+            
+            // Dispatch job-ul pentru generarea TikTok
+            GenerateTikTokJob::dispatch(Auth::user(), $this->categorySlug, $this->title, $initialProject->id);
+            
             $this->currentStep = 'Procesare video în curs...';
-            $this->dispatch('refresh');
-
-            session()->flash('message', 'Video creation started successfully!');
+            
+            session()->flash('message', 'Procesul de generare a început. Acest lucru poate dura câteva minute.');
         } catch (Exception $e) {
             $this->isProcessing = false;
             $this->currentStep = 'Eroare: ' . $e->getMessage();
-            DB::rollBack();
-            Log::error('TikTok generation failed', [
+            Log::error('TikTok generation job dispatch failed', [
                 'error' => $e->getMessage(),
                 'category' => $this->categorySlug
             ]);
@@ -187,60 +103,73 @@ class CreateTikTok extends Component
     }
 
     public function checkStatus()
-{
-    try {
-        $project = Auth::user()->videoProjects()
-            ->where('render_id', $this->render_id)
-            ->first();
-
-        if (!$project) {
-            $this->isProcessing = false;
+    {
+        // Dacă nu avem un ID de proiect sau un render_id, nu putem verifica statusul
+        if (!$this->projectId && !$this->render_id) {
             return;
         }
+        
+        try {
+            $project = Auth::user()->videoProjects()
+                ->where(function($query) {
+                    if ($this->projectId) {
+                        $query->where('id', $this->projectId);
+                    } elseif ($this->render_id) {
+                        $query->where('render_id', $this->render_id);
+                    }
+                })
+                ->first();
 
-        $status = $this->videoService->checkStatus($project->render_id);
-
-        if ($status['success'] && $status['status'] === 'done') {
-            $project->update([
-                'status' => 'completed',
-                'video_url' => $status['url']
-            ]);
-
-            $this->videoUrl = $status['url'];
-            $this->isProcessing = false;
-
-            // Curățăm resursele Cloudinary după generarea cu succes a videoclipului
-            $cleanupResult = $this->videoService->cleanupResources($project);
-            
-            if ($cleanupResult) {
-                Log::info('Successfully cleaned up Cloudinary resources', ['project_id' => $project->id]);
-            } else {
-                Log::warning('Failed to clean up some Cloudinary resources', ['project_id' => $project->id]);
+            if (!$project) {
+                $this->isProcessing = false;
+                return;
             }
-
-            $this->dispatch('videoReady');
-
-            session()->flash('message', 'Videoclipul este gata!');
-        } elseif (!$status['success'] || $status['status'] === 'failed') {
-            $project->update(['status' => 'failed']);
-            $this->isProcessing = false;
-            session()->flash('error', 'Video generation failed: ' . ($status['error'] ?? 'Unknown error'));
+            
+            $this->projectId = $project->id;
+            $this->render_id = $project->render_id;
+            
+            // Să verificăm dacă avem deja un URL de video
+            if ($project->status === 'completed' && $project->video_url) {
+                // Doar dacă există un video_url valid, considerăm că procesul s-a finalizat
+                $this->videoUrl = $project->video_url;
+                $this->isProcessing = false;
+                $this->dispatch('videoReady');
+                session()->flash('message', 'Videoclipul este gata!');
+            } elseif ($project->status === 'failed') {
+                // Dacă s-a marcat ca eșuat, actualizăm interfața
+                $this->isProcessing = false;
+                session()->flash('error', 'Generarea video a eșuat.');
+            } else {
+                // Dacă proiectul este încă în procesare, ne asigurăm că interfața arată acest lucru
+                $this->isProcessing = true;
+                $this->currentStep = 'Procesare video în curs...';
+                
+                // Dacă proiectul are un render_id dar este încă în procesare, verificăm statusul
+                if ($project->render_id) {
+                    // Dispatchăm jobul de verificare a statusului
+                    CheckTikTokStatusJob::dispatch($project->id);
+                }
+            }
+        } catch (Exception $e) {
+            // Nu schimbăm starea de procesare în caz de eroare pentru a evita afișarea falsă a finalizării
+            Log::error('Status check failed', [
+                'error' => $e->getMessage(),
+                'project_id' => $this->projectId,
+                'render_id' => $this->render_id
+            ]);
+            session()->flash('error', 'Error checking status: ' . $e->getMessage());
         }
-    } catch (Exception $e) {
-        $this->isProcessing = false;
-        Log::error('Status check failed', [
-            'error' => $e->getMessage(),
-            'render_id' => $this->render_id
-        ]);
-        session()->flash('error', 'Error checking status: ' . $e->getMessage());
     }
-}
 
     public function render()
     {
         $categories = $this->categoryService->getCategories();
-        Log::info('Categories in render:', ['categories' => $categories->count()]);
-
+        
+        // Verificăm statusul dacă suntem în procesare și avem un project ID
+        if ($this->isProcessing && $this->projectId) {
+            $this->checkStatus();
+        }
+        
         return view('livewire.create-tik-tok', [
             'categories' => $categories
         ]);
@@ -248,12 +177,12 @@ class CreateTikTok extends Component
 
     public function updatedCategorySlug($value)
     {
-        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing']);
+        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing', 'projectId', 'jobStarted']);
     }
 
     public function setCategory($slug)
     {
-        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing']);
+        $this->reset(['script', 'imageUrl', 'audioUrl', 'videoUrl', 'isProcessing', 'projectId', 'jobStarted']);
         $this->categorySlug = $slug;
     }
 }
