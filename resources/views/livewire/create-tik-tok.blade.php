@@ -225,7 +225,7 @@
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                 </path>
                             </svg>
-                            {{-- Se procesează... --}}
+                            {{-- Procesare... --}}
                         </span>
                     </button>
 
@@ -321,14 +321,14 @@
                         @endif
                     </div>
 
-                    <!-- Initial Processing State -->
-                    <div wire:loading wire:target="generate"
+                    <!-- Initial Processing Modal - cu poziționare corectată -->
+                    <div x-data="{ show: @entangle('showInitialProcessingModal') }" x-show="show"
                         class="fixed inset-0 z-[100] flex items-center justify-center">
                         <!-- Overlay cu blur -->
                         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
 
-                        <!-- Conținutul modalului -->
-                        <div class="relative z-[101] w-full max-w-md mx-auto transform -translate-y-1/2 top-1/2">
+                        <!-- Conținutul modalului - am corectat poziționarea -->
+                        <div class="relative z-[101] w-full max-w-md mx-auto">
                             <div
                                 class="relative p-6 border shadow-2xl bg-gray-900/95 border-white/10 rounded-xl backdrop-blur-sm">
                                 <h2 class="flex items-center gap-2 mb-6 text-xl font-bold text-gray-200">
@@ -427,6 +427,12 @@
                     top: document.querySelector('.min-h-screen').scrollHeight,
                     behavior: 'smooth'
                 });
+
+                // Adăugăm un timer care va închide modalul inițial după 30 de secunde
+                // Poți ajusta valoarea (30000) pentru a crește sau reduce durata de afișare
+                setTimeout(() => {
+                    @this.finishInitialProcessing();
+                }, 20000); // 20 secunde
             });
         });
     </script>

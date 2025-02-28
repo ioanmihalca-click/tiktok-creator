@@ -26,6 +26,8 @@ class CreateTikTok extends Component
     public array $completedSteps = [];
     public ?int $projectId = null;
     public bool $jobStarted = false;
+    public bool $showInitialProcessingModal = false;
+    public bool $initialProcessingComplete = false;
 
     private CategoryService $categoryService;
 
@@ -47,10 +49,10 @@ class CreateTikTok extends Component
                     $this->render_id = $lastProject->render_id;
                     $this->videoUrl = $lastProject->video_url;
                     $this->projectId = $lastProject->id;
-                    
+
                     // Important: Verificăm statusul real, nu ne bazăm doar pe câmpul din BD
                     $this->isProcessing = in_array($lastProject->status, ['processing', 'rendering']);
-                    
+
                     if ($this->isProcessing) {
                         $this->currentStep = 'Procesare video în curs...';
                     }
@@ -65,6 +67,8 @@ class CreateTikTok extends Component
     {
         $this->reset(['videoUrl', 'script', 'imageUrl', 'audioUrl', 'completedSteps', 'projectId', 'jobStarted']);
         $this->isProcessing = true;
+        $this->showInitialProcessingModal = true;  // Afișăm modalul inițial
+        $this->initialProcessingComplete = false;  // Resetăm flag-ul de finalizare
         $this->dispatch('processingStarted');
 
         $this->validate([
@@ -73,25 +77,27 @@ class CreateTikTok extends Component
 
         try {
             $this->currentStep = 'Inițializare generare TikTok...';
-            
+
             // Marcăm faptul că jobul este în curs de pornire
             $this->jobStarted = true;
-            
+
             // Salvăm un proiect inițial pentru a avea un ID
             $initialProject = Auth::user()->videoProjects()->create([
                 'title' => $this->title ?? $this->categoryService->getCategoryFullPath($this->categorySlug) . " TikTok",
                 'status' => 'processing',
             ]);
-            
+
             $this->projectId = $initialProject->id;
-            
+
             // Dispatch job-ul pentru generarea TikTok
             GenerateTikTokJob::dispatch(Auth::user(), $this->categorySlug, $this->title, $initialProject->id);
-            
-            $this->currentStep = 'Procesare video în curs...';
-            
+
+            // Nu mai schimbăm currentStep aici - rămâne în starea inițială
+            // Pentru a permite vizualizarea modalului pentru o perioadă mai lungă de timp
+
             session()->flash('message', 'Procesul de generare a început. Acest lucru poate dura câteva minute.');
         } catch (Exception $e) {
+            $this->showInitialProcessingModal = false;
             $this->isProcessing = false;
             $this->currentStep = 'Eroare: ' . $e->getMessage();
             Log::error('TikTok generation job dispatch failed', [
@@ -102,16 +108,28 @@ class CreateTikTok extends Component
         }
     }
 
+    public function finishInitialProcessing()
+    {
+        $this->showInitialProcessingModal = false;
+        $this->initialProcessingComplete = true;
+        $this->currentStep = 'Procesare video în curs...';
+
+        // Putem să verificăm statusul proiectului imediat
+        if ($this->projectId) {
+            $this->checkStatus();
+        }
+    }
+
     public function checkStatus()
     {
         // Dacă nu avem un ID de proiect sau un render_id, nu putem verifica statusul
         if (!$this->projectId && !$this->render_id) {
             return;
         }
-        
+
         try {
             $project = Auth::user()->videoProjects()
-                ->where(function($query) {
+                ->where(function ($query) {
                     if ($this->projectId) {
                         $query->where('id', $this->projectId);
                     } elseif ($this->render_id) {
@@ -124,10 +142,10 @@ class CreateTikTok extends Component
                 $this->isProcessing = false;
                 return;
             }
-            
+
             $this->projectId = $project->id;
             $this->render_id = $project->render_id;
-            
+
             // Să verificăm dacă avem deja un URL de video
             if ($project->status === 'completed' && $project->video_url) {
                 // Doar dacă există un video_url valid, considerăm că procesul s-a finalizat
@@ -143,7 +161,7 @@ class CreateTikTok extends Component
                 // Dacă proiectul este încă în procesare, ne asigurăm că interfața arată acest lucru
                 $this->isProcessing = true;
                 $this->currentStep = 'Procesare video în curs...';
-                
+
                 // Dacă proiectul are un render_id dar este încă în procesare, verificăm statusul
                 if ($project->render_id) {
                     // Dispatchăm jobul de verificare a statusului
@@ -164,12 +182,12 @@ class CreateTikTok extends Component
     public function render()
     {
         $categories = $this->categoryService->getCategories();
-        
+
         // Verificăm statusul dacă suntem în procesare și avem un project ID
         if ($this->isProcessing && $this->projectId) {
             $this->checkStatus();
         }
-        
+
         return view('livewire.create-tik-tok', [
             'categories' => $categories
         ]);
