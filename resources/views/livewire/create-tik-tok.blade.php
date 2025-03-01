@@ -321,8 +321,8 @@
                         @endif
                     </div>
 
-                    <!-- Initial Processing Modal - cu poziționare corectată -->
-                    <div x-data="{ show: @entangle('showInitialProcessingModal') }" x-show="show"
+                    <!-- Initial Processing Modal -->
+                    <div x-data="{ show: @entangle('showInitialProcessingModal') }" x-show="show" x-cloak
                         class="fixed inset-0 z-[100] flex items-center justify-center">
                         <!-- Overlay cu blur -->
                         <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm"></div>
