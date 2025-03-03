@@ -56,8 +56,6 @@ class CategoryService
             ->defaultOrder()
             ->get();
 
-        Log::info('Categories count:', ['count' => $categories->count()]);
-        Log::info('First few categories:', ['categories' => $categories->take(5)->toArray()]);
 
         return $categories->toTree();
     }
