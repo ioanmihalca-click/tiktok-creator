@@ -17,6 +17,9 @@ class UserCredit extends Model
         'used_free_credits'
     ];
 
+    // FOARTE IMPORTANT: Adaugă 'total_available_credits' aici!
+    protected $appends = ['total_available_credits'];
+
     public function user()
     {
         return $this->belongsTo(User::class);

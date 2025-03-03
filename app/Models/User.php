@@ -6,6 +6,7 @@ namespace App\Models;
 use Filament\Panel;
 use App\Models\VideoProject;
 use Laravel\Cashier\Billable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -74,36 +75,44 @@ class User extends Authenticatable implements FilamentUser
     // Create a method to check if user has credits
     public function hasCreditsAvailable()
     {
-        return $this->userCredit?->total_available_credits > 0;
+        return $this->userCredit && $this->userCredit->total_available_credits > 0;
     }
 
     // Create a method to deduct credits
     public function deductCredit()
     {
-        if (!$this->userCredit) {
-            $this->userCredit()->create([
-                'free_credits' => 3
-            ]);
+        if (!$this->hasCreditsAvailable()) {
+            return ['success' => false, 'type' => null]; // Nu are credite suficiente
         }
 
-        if ($this->userCredit->available_free_credits > 0) {
-            $this->userCredit->increment('used_free_credits');
-            $this->creditTransactions()->create([
-                'transaction_type' => 'usage',
-                'amount' => -1,
-                'description' => 'Used free credit for video generation'
-            ]);
-            return 'free';
-        } elseif ($this->userCredit->available_credits > 0) {
-            $this->userCredit->increment('used_credits');
-            $this->creditTransactions()->create([
-                'transaction_type' => 'usage',
-                'amount' => -1,
-                'description' => 'Used paid credit for video generation'
-            ]);
-            return 'paid';
-        }
+        // Folosim o tranzactie
+        return DB::transaction(function () {
 
-        return false;
+            if (!$this->userCredit) {
+                $this->userCredit()->create([
+                    'free_credits' => 3
+                ]);
+            }
+
+            if ($this->userCredit->available_free_credits > 0) {
+                $this->userCredit->increment('used_free_credits');
+                $this->creditTransactions()->create([
+                    'transaction_type' => 'usage',
+                    'amount' => -1,
+                    'description' => 'Used free credit for video generation'
+                ]);
+                return ['success' => true, 'type' => 'free'];
+            } elseif ($this->userCredit->available_credits > 0) {
+                $this->userCredit->increment('used_credits');
+                $this->creditTransactions()->create([
+                    'transaction_type' => 'usage',
+                    'amount' => -1,
+                    'description' => 'Used paid credit for video generation'
+                ]);
+                return ['success' => true, 'type' => 'paid'];
+            }
+            //Teoretic nu ar trebui sa ajunga aici, dar e bine sa avem un return
+            return ['success' => false, 'type' => null];
+        });
     }
 }

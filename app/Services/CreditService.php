@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Models\CreditPackage;
 use App\Models\CreditTransaction;
 use Illuminate\Support\Facades\DB;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 
 class CreditService
 {
-    public function addCredits(User $user, int $credits, string $source = 'purchase', string $paymentId = null, string $description = null)
+    public function addCredits(User $user, int $credits, string $source = 'purchase', ?string $paymentId = null, ?string $description = null)
     {
         DB::beginTransaction();
 
@@ -23,11 +23,12 @@ class CreditService
                 $user->userCredit->increment('credits', $credits);
             }
 
+            // Folosește relația pentru a crea tranzacția
             $user->creditTransactions()->create([
                 'transaction_type' => $source,
                 'amount' => $credits,
-                'payment_id' => $paymentId,
-                'description' => $description ?? "Added {$credits} credits via {$source}"
+                'payment_id' => $paymentId, // Poate fi null pentru tranzacții non-plată
+                'description' => $description ?? "Added {$credits} credits via {$source}",
             ]);
 
             DB::commit();
@@ -38,7 +39,6 @@ class CreditService
             return false;
         }
     }
-
     public function checkCreditType(User $user)
     {
         if (!$user->userCredit) {

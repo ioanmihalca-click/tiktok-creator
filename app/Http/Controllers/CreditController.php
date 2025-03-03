@@ -1,91 +1,77 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
-use App\Models\CreditPackage;
-use App\Models\CreditTransaction;
 use App\Models\User;
-use App\Services\StripeService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\CreditTransaction;
+use Illuminate\Support\Facades\DB;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 
-class CreditController extends Controller
+class CreditService
 {
-    protected $stripeService;
-
-    public function __construct(StripeService $stripeService)
+    public function addCredits(User $user, int $credits, string $source = 'purchase', ?string $paymentId = null, ?string $description = null)
     {
-        $this->stripeService = $stripeService;
+        DB::beginTransaction();
+
+        try {
+            if (!$user->userCredit) {
+                $user->userCredit()->create([
+                    'credits' => $credits,
+                    'free_credits' => 3 // Initial free credits
+                ]);
+            } else {
+                $user->userCredit->increment('credits', $credits);
+            }
+
+            // Folosește relația pentru a crea tranzacția
+            $user->creditTransactions()->create([
+                'transaction_type' => $source,
+                'amount' => $credits,
+                'payment_id' => $paymentId, // Poate fi null pentru tranzacții non-plată
+                'description' => $description ?? "Added {$credits} credits via {$source}",
+            ]);
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollback();
+            report($e);
+            return false;
+        }
     }
-
-    /**
-     * Afișează lista de pachete disponibile pentru achiziție
-     */
-    public function index()
+    public function checkCreditType(User $user)
     {
-        $packages = CreditPackage::where('is_active', true)->get();
-        $userCredit = Auth::user()->userCredit;
-
-        return view('credits.index', [
-            'packages' => $packages,
-            'userCredit' => $userCredit
-        ]);
-    }
-
-    /**
-     * Inițiază procesul de checkout pentru un pachet
-     */
-    public function checkout($id)
-    {
-        $package = CreditPackage::findOrFail($id);
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('login');
+        if (!$user->userCredit) {
+            $user->userCredit()->create([
+                'free_credits' => 3
+            ]);
         }
 
-        // Explicit cast to User model
-        $user = User::find($user->id);
-        $session = $this->stripeService->createCheckoutSession($user, $package);
-
-        return redirect($session->url);
-    }
-
-    /**
-     * Pagina de succes după o plată reușită
-     */
-    public function success(Request $request)
-    {
-        return view('credits.success', [
-            'session_id' => $request->session_id
-        ]);
-    }
-
-    /**
-     * Pagina de anulare după ce utilizatorul a anulat plata
-     */
-    public function cancel()
-    {
-        return view('credits.cancel');
-    }
-
-    /**
-     * Afișează istoricul tranzacțiilor utilizatorului
-     */
-    public function history()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('login');
+        if ($user->userCredit->available_free_credits > 0) {
+            return 'free';
+        } elseif ($user->userCredit->available_credits > 0) {
+            return 'paid';
         }
 
-        $transactions = CreditTransaction::where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        return false;
+    }
 
-        return view('credits.history', [
-            'transactions' => $transactions
-        ]);
+    public function getEnvironmentType(User $user)
+    {
+        $creditType = $this->checkCreditType($user);
+
+        if ($creditType === 'free') {
+            return 'sandbox';
+        } elseif ($creditType === 'paid') {
+            return 'production';
+        }
+
+        return 'sandbox'; // Default to sandbox if no credits
+    }
+
+    public function shouldHaveWatermark(User $user)
+    {
+        $creditType = $this->checkCreditType($user);
+        return $creditType === 'free';
     }
 }

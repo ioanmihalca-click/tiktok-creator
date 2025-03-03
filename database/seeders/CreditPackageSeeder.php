@@ -19,6 +19,7 @@ class CreditPackageSeeder extends Seeder
                 'credits' => 1,
                 'price' => 999, // 9.99 lei (stored in cents)
                 'is_active' => true,
+                'stripe_price_id' => 'price_...' // Pune ID-ul de la Stripe aici
             ],
             [
                 'name' => 'Pachet Basic',
@@ -26,6 +27,7 @@ class CreditPackageSeeder extends Seeder
                 'credits' => 3,
                 'price' => 1999, // 19.99 lei
                 'is_active' => true,
+                'stripe_price_id' => 'price_...' // Pune ID-ul de la Stripe aici
             ],
             [
                 'name' => 'Pachet Standard',
@@ -33,6 +35,7 @@ class CreditPackageSeeder extends Seeder
                 'credits' => 5,
                 'price' => 2499, // 24.99 lei
                 'is_active' => true,
+                'stripe_price_id' => 'price_...' // Pune ID-ul de la Stripe aici
             ],
             [
                 'name' => 'Pachet Value',
@@ -40,6 +43,7 @@ class CreditPackageSeeder extends Seeder
                 'credits' => 10,
                 'price' => 3999, // 39.99 lei
                 'is_active' => true,
+                'stripe_price_id' => 'price_...' // Pune ID-ul de la Stripe aici
             ],
             [
                 'name' => 'Pachet Premium',
@@ -47,6 +51,7 @@ class CreditPackageSeeder extends Seeder
                 'credits' => 20,
                 'price' => 6999, // 69.99 lei
                 'is_active' => true,
+                'stripe_price_id' => 'price_...' // Pune ID-ul de la Stripe aici
             ],
         ];
 
