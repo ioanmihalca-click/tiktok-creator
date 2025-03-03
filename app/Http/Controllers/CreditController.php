@@ -1,77 +1,138 @@
 <?php
 
-namespace App\Services;
+namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\CreditTransaction;
-use Illuminate\Support\Facades\DB;
-use Laravel\Cashier\Exceptions\IncompletePayment;
+use Illuminate\Http\Request;
+use Laravel\Cashier\Cashier;
+use App\Models\CreditPackage;
+use App\Services\CreditService;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
-class CreditService
+class CreditController extends Controller
 {
-    public function addCredits(User $user, int $credits, string $source = 'purchase', ?string $paymentId = null, ?string $description = null)
+    protected $creditService;
+
+    public function __construct(CreditService $creditService)
     {
-        DB::beginTransaction();
+        $this->creditService = $creditService;
+    }
+
+    /**
+     * Afișează lista de pachete disponibile pentru achiziție
+     */
+    public function index()
+    {
+        $packages = CreditPackage::where('is_active', true)->get();
+        $userCredit = Auth::user()?->userCredit; // Folosim operatorul null-safe
+
+        return view('credits.index', [
+            'packages' => $packages,
+            'userCredit' => $userCredit
+        ]);
+    }
+
+    public function checkout($id)
+    {
+        $package = CreditPackage::findOrFail($id);
+        $user = Auth::user();
+
+        if (!$user || !($user instanceof \App\Models\User)) {
+            return redirect()->route('login');
+        }
+
+        $stripePriceId = $package->stripe_price_id;
 
         try {
-            if (!$user->userCredit) {
-                $user->userCredit()->create([
-                    'credits' => $credits,
-                    'free_credits' => 3 // Initial free credits
-                ]);
-            } else {
-                $user->userCredit->increment('credits', $credits);
+            $checkoutSession = $user->checkout([$stripePriceId => 1], [
+                'success_url' => route('credits.success', ['session_id' => '{CHECKOUT_SESSION_ID}']),
+                'cancel_url' => route('credits.cancel'),
+                'metadata' => [
+                    'package_id' => $package->id,
+                    'credits' => $package->credits,
+                ],
+            ]);
+
+            return redirect($checkoutSession->url);
+        } catch (\Laravel\Cashier\Exceptions\IncompletePayment $e) { //Prindem exceptia specifica
+            return redirect()->route(
+                'cashier.payment',
+                [$e->payment->id, 'redirect' => route('credits.index')] //Redirectionam catre o pagina unde se poate reincerca plata.
+            );
+        } catch (\Exception $e) { //Prindem restul exceptiilor.
+            Log::error('Eroare la crearea sesiunii de checkout: ' . $e->getMessage());
+            return back()->with('error', 'A apărut o eroare la procesarea plății. Te rugăm să încerci din nou.');
+        }
+    }
+
+    public function success(Request $request)
+    {
+        $sessionId = $request->get('session_id');
+
+        try {
+            $session = Cashier::stripe()->checkout->sessions->retrieve($sessionId);
+
+            if ($session->payment_status !== 'paid') {
+                // Loghează dacă statusul nu este 'paid'
+                Log::warning("Payment not completed for session ID: {$sessionId}, status: {$session->payment_status}");
+                return redirect()->route('credits.cancel')->with('error', 'Plata nu a fost finalizată cu succes.');
             }
 
-            // Folosește relația pentru a crea tranzacția
-            $user->creditTransactions()->create([
-                'transaction_type' => $source,
-                'amount' => $credits,
-                'payment_id' => $paymentId, // Poate fi null pentru tranzacții non-plată
-                'description' => $description ?? "Added {$credits} credits via {$source}",
-            ]);
+            $packageId = $session->metadata->package_id ?? null;
+            $credits = $session->metadata->credits ?? null;
 
-            DB::commit();
-            return true;
+            if (!$packageId || !$credits) {
+                // Loghează dacă lipsesc metadatele
+                Log::error("Missing package_id or credits in metadata for session ID: {$sessionId}");
+                return redirect()->route('credits.cancel')->with('error', 'A apărut o eroare la procesarea plății. (Missing metadata)');
+            }
+
+            $user = Auth::user();
+            if (!$user || !($user instanceof \App\Models\User)) {
+                Log::error('User not authenticated or incorrect type in success method for session ID: ' . $sessionId);
+                return redirect()->route('credits.cancel')->with('error', 'A apărut o eroare la procesarea platii.');
+            }
+
+            $package = CreditPackage::find($packageId);
+            if (!$package) {
+                Log::error("Package with id {$packageId} not found for session ID: {$sessionId}");
+                return redirect()->route('credits.cancel')->with('error', 'A apărut o eroare la procesarea plății. (Package not found)');
+            }
+
+
+            // Folosim CreditService
+            $this->creditService->addCredits($user, $credits, 'purchase', $session->payment_intent, "Achizitie pachet {$package->name}");
+
+
+            return view('credits.success', ['session_id' => $sessionId]);
         } catch (\Exception $e) {
-            DB::rollback();
-            report($e);
-            return false;
+            Log::error("Error retrieving session: {$sessionId} - " . $e->getMessage());
+            return redirect()->route('credits.cancel')->with('error', 'A apărut o eroare la procesarea plății. Te rugăm să încerci din nou.');
         }
     }
-    public function checkCreditType(User $user)
+
+    /**
+     * Pagina de anulare după ce utilizatorul a anulat plata
+     */
+    public function cancel()
     {
-        if (!$user->userCredit) {
-            $user->userCredit()->create([
-                'free_credits' => 3
-            ]);
-        }
-
-        if ($user->userCredit->available_free_credits > 0) {
-            return 'free';
-        } elseif ($user->userCredit->available_credits > 0) {
-            return 'paid';
-        }
-
-        return false;
+        return view('credits.cancel');
     }
 
-    public function getEnvironmentType(User $user)
+    public function history()
     {
-        $creditType = $this->checkCreditType($user);
+        $user = Auth::user();
 
-        if ($creditType === 'free') {
-            return 'sandbox';
-        } elseif ($creditType === 'paid') {
-            return 'production';
+        if (!$user) {
+            return redirect()->route('login');
         }
 
-        return 'sandbox'; // Default to sandbox if no credits
-    }
+        // Folosește relația:
+        $transactions = $user->creditTransactions()->orderBy('created_at', 'desc')->paginate(10);
 
-    public function shouldHaveWatermark(User $user)
-    {
-        $creditType = $this->checkCreditType($user);
-        return $creditType === 'free';
+        return view('credits.history', [
+            'transactions' => $transactions
+        ]);
     }
 }
