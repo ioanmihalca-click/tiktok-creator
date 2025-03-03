@@ -518,9 +518,9 @@
                         TRANSPARENTE</span>
                     <h2
                         class="mb-4 text-3xl font-bold text-transparent sm:text-4xl md:text-5xl bg-gradient-to-r from-white to-gray-300 bg-clip-text">
-                        Planuri Simple
+                        Pachete Simple
                     </h2>
-                    <p class="max-w-2xl mx-auto text-gray-400">Alege planul perfect pentru nevoile tale de creare de
+                    <p class="max-w-2xl mx-auto text-gray-400">Alege pachetul perfect pentru nevoile tale de creare de
                         conținut</p>
                 </div>
 
@@ -546,8 +546,8 @@
                             <li class="flex items-center gap-3">
                                 <i
                                     class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
-                                <span class="transition-colors duration-300 group-hover:text-gray-300">5
-                                    videoclipuri/lună</span>
+                                <span class="transition-colors duration-300 group-hover:text-gray-300">3
+                                    videoclipuri</span>
                             </li>
                             <li class="flex items-center gap-3">
                                 <i
@@ -574,7 +574,7 @@
                         </a>
                     </div>
 
-                    <!-- Premium Plan with enhanced styling and effects -->
+                    <!-- Paachete Premium -->
                     <div
                         class="relative p-8 overflow-hidden transition-all duration-500 border group bg-gradient-to-br from-purple-900/40 to-blue-900/40 rounded-2xl border-purple-500/50 backdrop-blur-sm hover:border-purple-500/80 hover:from-purple-900/50 hover:to-blue-900/50 hover:shadow-2xl hover:shadow-purple-900/20 hover:-translate-y-1">
                         <!-- Popular Badge with glow -->
@@ -584,12 +584,12 @@
                         </div>
 
                         <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-2xl font-bold text-purple-300">Premium</h3>
+                            <h3 class="text-2xl font-bold text-purple-300">Pachete Premium</h3>
                             <span class="px-3 py-1.5 text-xs font-medium rounded-full bg-white/10 text-gray-300">În
                                 curând</span>
                         </div>
                         <div class="mb-8">
-                            <span class="text-4xl font-bold text-purple-300">49 RON</span>
+                            <span class="text-4xl font-bold text-purple-300">9.99-69.99</span>
                             <span class="text-gray-400">/lună</span>
                             <p class="mt-2 text-sm text-gray-400">Pentru creatori serioși și business</p>
                         </div>
@@ -629,7 +629,7 @@
                             class="relative block w-full px-6 py-3 overflow-hidden text-lg font-medium text-center text-white transition-all duration-500 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 hover:shadow-xl hover:shadow-purple-500/30">
                             <span
                                 class="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600/0 via-white/20 to-purple-600/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
-                            <span class="relative">Anunță-mă când e gata</span>
+                            <span class="relative">In curand</span>
                         </a>
                     </div>
                 </div>
