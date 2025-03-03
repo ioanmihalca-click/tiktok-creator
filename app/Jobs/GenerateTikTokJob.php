@@ -90,8 +90,12 @@ class GenerateTikTokJob implements ShouldQueue
                 throw new Exception("Category not found: " . $this->categorySlug);
             }
 
-            // Generăm scriptul
-            $script = $scriptService->generate($categoryName);
+            // Găsim ID-ul categoriei după slug
+            $category = $categoryService->getCategoryBySlug($this->categorySlug);
+            $categoryId = $category ? $category->id : null;
+
+            // Generăm scriptul - transmitem și user_id pentru History-Based Generation
+            $script = $scriptService->generate($categoryName, $this->user->id);
             if (!$script) {
                 throw new Exception("Script generation failed");
             }
@@ -126,11 +130,11 @@ class GenerateTikTokJob implements ShouldQueue
             // Verificăm dacă trebuie să utilizăm un proiect existent sau să creăm unul nou
             if ($this->existingProjectId) {
                 $project = VideoProject::find($this->existingProjectId);
-                
+
                 if (!$project || $project->user_id !== $this->user->id) {
                     throw new Exception("Project not found or does not belong to the user");
                 }
-                
+
                 // Actualizăm proiectul existent
                 $project->update([
                     'script' => $script,
@@ -138,7 +142,8 @@ class GenerateTikTokJob implements ShouldQueue
                     'image_cloudinary_id' => $imageCloudinaryId ?? null,
                     'audio_url' => $audioUrl,
                     'audio_cloudinary_id' => $audioCloudinaryId ?? null,
-                    'audio_duration' => $audioDuration ?? null
+                    'audio_duration' => $audioDuration ?? null,
+                    'category_id' => $categoryId // Adăugăm categoria
                 ]);
             } else {
                 // Creăm un proiect nou
@@ -150,7 +155,8 @@ class GenerateTikTokJob implements ShouldQueue
                     'image_cloudinary_id' => $imageCloudinaryId ?? null,
                     'audio_url' => $audioUrl,
                     'audio_cloudinary_id' => $audioCloudinaryId ?? null,
-                    'audio_duration' => $audioDuration ?? null
+                    'audio_duration' => $audioDuration ?? null,
+                    'category_id' => $categoryId // Adăugăm categoria
                 ]);
             }
 
@@ -166,18 +172,17 @@ class GenerateTikTokJob implements ShouldQueue
             ]);
 
             DB::commit();
-            
+
             // Dispatchăm imediat un job pentru a verifica statusul
             CheckTikTokStatusJob::dispatch($project->id)->delay(now()->addSeconds(10));
-            
+
             Log::info('GenerateTikTokJob completed successfully', [
                 'project_id' => $project->id,
                 'render_id' => $videoResult['render_id']
             ]);
-            
         } catch (Exception $e) {
             DB::rollBack();
-            
+
             // Dacă avem un proiect existent, actualizăm statusul la failed
             if ($this->existingProjectId) {
                 try {
@@ -191,13 +196,13 @@ class GenerateTikTokJob implements ShouldQueue
                     ]);
                 }
             }
-            
+
             Log::error('GenerateTikTokJob failed', [
                 'error' => $e->getMessage(),
                 'category' => $this->categorySlug,
                 'trace' => $e->getTraceAsString()
             ]);
-            
+
             throw $e; // Re-aruncăm excepția pentru a marca job-ul ca eșuat
         }
     }

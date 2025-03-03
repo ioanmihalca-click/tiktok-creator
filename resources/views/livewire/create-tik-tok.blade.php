@@ -284,8 +284,10 @@
                                         <div class="mb-6 text-center">
                                             <h2 class="mb-2 text-xl font-bold text-gray-200">
                                                 {{ $script['title'] ?? 'Video Generat' }}</h2>
-                                            @if (isset($script['hashtags']))
-                                                <div class="flex flex-wrap justify-center gap-2">
+
+                                            <!-- Hashtaguri -->
+                                            @if (isset($script['hashtags']) && is_array($script['hashtags']))
+                                                <div class="flex flex-wrap justify-center gap-2 mb-3">
                                                     @foreach ($script['hashtags'] as $hashtag)
                                                         <span
                                                             class="px-3 py-1 text-sm text-blue-400 rounded-full bg-blue-500/10">
@@ -294,6 +296,8 @@
                                                     @endforeach
                                                 </div>
                                             @endif
+
+
                                         </div>
 
                                         <div class="overflow-hidden rounded-lg aspect-w-9 aspect-h-16">

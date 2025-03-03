@@ -150,6 +150,7 @@ class CreateTikTok extends Component
             if ($project->status === 'completed' && $project->video_url) {
                 // Doar dacă există un video_url valid, considerăm că procesul s-a finalizat
                 $this->videoUrl = $project->video_url;
+                $this->script = $project->script; // Adăugat aici - încărcăm scriptul
                 $this->isProcessing = false;
                 $this->dispatch('videoReady');
                 session()->flash('message', 'Videoclipul este gata!');
