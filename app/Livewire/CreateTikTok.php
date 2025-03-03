@@ -13,6 +13,8 @@ use App\Services\CreditService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\VideoProject;
+use App\Models\UserCredit; // Asigură-te că ai acest import!
+
 
 class CreateTikTok extends Component
 {
@@ -32,12 +34,13 @@ class CreateTikTok extends Component
     public bool $initialProcessingComplete = false;
 
     private CategoryService $categoryService;
-    private CreditService $creditService;
+    private CreditService $creditService; // Corect
 
-    public $hasCredits = false;
-    public $creditType = null;
+    public bool $hasCredits = false; // Corect
+    public string $creditType = ''; // Corect
 
-    public function boot(CategoryService $categoryService, CreditService $creditService)
+
+    public function boot(CategoryService $categoryService, CreditService $creditService) // Folosim boot()
     {
         $this->categoryService = $categoryService;
         $this->creditService = $creditService;
@@ -46,15 +49,24 @@ class CreateTikTok extends Component
     public function mount()
     {
         try {
-            // Verificăm dacă utilizatorul are credite disponibile
-            if (Auth::check()) {
-                $user = User::find(Auth::id());
-                $this->creditType = $this->creditService->checkCreditType($user);
-                $this->hasCredits = (bool) $this->creditType;
-            }
 
             if (Auth::check()) {
                 $user = User::find(Auth::id());
+
+                // Folosește firstOrCreate() pentru a crea UserCredit dacă nu există
+                $user->userCredit()->firstOrCreate(
+                    [
+                        'user_id' => $user->id
+                    ],
+                    [
+                        'free_credits' => 3 // Valori implicite
+                    ]
+                );
+
+                $this->creditType = $this->creditService->checkCreditType($user);
+                $this->hasCredits = (bool) $this->creditType;
+
+
                 $lastProject = $user->videoProjects()
                     ->whereNotNull('render_id')
                     ->latest()
@@ -77,7 +89,6 @@ class CreateTikTok extends Component
             Log::error('Error in CreateTikTok mount:', ['error' => $e->getMessage()]);
         }
     }
-
     public function generate()
     {
         // Verificăm dacă utilizatorul are credite disponibile
@@ -103,11 +114,25 @@ class CreateTikTok extends Component
         try {
             $this->currentStep = 'Inițializare generare TikTok...';
 
+            //Incepem tranzactia
+            DB::beginTransaction();
+            // Deducem creditul *INAINTE* de a începe generarea. Apel DIRECT pe $user
+            $deductResult = $user->deductCredit();
+
+            if (!$deductResult['success']) {
+                // Daca nu s-a putut deduce creditul.
+                DB::rollBack();
+                session()->flash('error', 'Nu ai credite suficiente pentru a genera un videoclip.');
+                $this->isProcessing = false;
+                $this->showInitialProcessingModal = false; // Ascundem modalul
+                return;
+            }
+
             // Marcăm faptul că jobul este în curs de pornire
             $this->jobStarted = true;
 
             // Salvăm un proiect inițial pentru a avea un ID
-            $user = User::find(Auth::id());
+            //$user = User::find(Auth::id()); // Nu mai e nevoie, avem deja $user
             $initialProject = $user->videoProjects()->create([
                 'title' => $this->title ?? $this->categoryService->getCategoryFullPath($this->categorySlug) . " TikTok",
                 'status' => 'processing',
@@ -122,7 +147,9 @@ class CreateTikTok extends Component
             // Pentru a permite vizualizarea modalului pentru o perioadă mai lungă de timp
 
             session()->flash('message', 'Procesul de generare a început. Acest lucru poate dura câteva minute.');
+            DB::commit(); //Comitem tranzactia
         } catch (Exception $e) {
+            DB::rollBack(); //Rollback in caz de eroare
             $this->showInitialProcessingModal = false;
             $this->isProcessing = false;
             $this->currentStep = 'Eroare: ' . $e->getMessage();
@@ -145,6 +172,7 @@ class CreateTikTok extends Component
             $this->checkStatus();
         }
     }
+
 
     public function checkStatus()
     {
@@ -212,6 +240,15 @@ class CreateTikTok extends Component
         // Actualizăm starea creditelor la fiecare randare
         if (Auth::check()) {
             $user = User::find(Auth::id());
+            //Asiguram existenta UserCredit.
+            $user->userCredit()->firstOrCreate(
+                [
+                    'user_id' => $user->id
+                ],
+                [
+                    'free_credits' => 3 // Valori implicite
+                ]
+            );
             $this->creditType = $this->creditService->checkCreditType($user);
             $this->hasCredits = (bool) $this->creditType;
         }
@@ -227,7 +264,7 @@ class CreateTikTok extends Component
             'categories' => $categories,
             'hasCredits' => $this->hasCredits,
             'creditType' => $this->creditType,
-            'userCredit' => Auth::check() ? User::find(Auth::id())->userCredit : null
+            'userCredit' => Auth::check() ? Auth::user()->userCredit : null // Folosim Auth::user()
         ]);
     }
 
