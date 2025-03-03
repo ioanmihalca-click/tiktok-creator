@@ -22,7 +22,8 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-400">Videoclipuri Create</p>
-                                <p class="text-2xl font-bold text-white">0</p>
+                                <p class="text-2xl font-bold text-white">
+                                    {{ Auth::user()->videoProjects ? Auth::user()->videoProjects->count() : 0 }}</p>
                             </div>
                         </div>
                     </div>
