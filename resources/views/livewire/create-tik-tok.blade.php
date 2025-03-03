@@ -202,11 +202,97 @@
                     </div>
                 </div>
 
+                <!-- Credit Information -->
+                <div class="p-6 mt-8 border rounded-xl bg-white/5 backdrop-blur-sm border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-200">
+                            <span class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Credite Disponibile
+                            </span>
+                        </h3>
+                        <a href="{{ route('credits.index') }}" class="text-sm text-indigo-400 hover:text-indigo-300">
+                            Achiziționează credite →
+                        </a>
+                    </div>
+
+                    <div class="flex flex-wrap gap-4">
+                        <div class="p-4 border rounded-lg bg-blue-900/20 border-blue-500/20">
+                            <p class="text-sm text-gray-400">Videoclipuri gratuite</p>
+                            <p class="text-2xl font-bold text-white">
+                                {{ $userCredit ? $userCredit->available_free_credits : 0 }}</p>
+                            <p class="mt-1 text-xs text-gray-400">Include watermark</p>
+                        </div>
+
+                        <div class="p-4 border rounded-lg bg-green-900/20 border-green-500/20">
+                            <p class="text-sm text-gray-400">Videoclipuri premium</p>
+                            <p class="text-2xl font-bold text-white">
+                                {{ $userCredit ? $userCredit->available_credits : 0 }}</p>
+                            <p class="mt-1 text-xs text-gray-400">Fără watermark</p>
+                        </div>
+
+                        @if (!$hasCredits)
+                            <div class="flex-1 p-4 border rounded-lg bg-red-900/20 border-red-500/20">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-red-400">Nu ai credite disponibile</p>
+                                        <p class="mt-1 text-sm text-gray-400">Pentru a genera un videoclip, trebuie să
+                                            achiziționezi un pachet de credite sau să aștepți până când primești credite
+                                            gratuite.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif ($creditType === 'free')
+                            <div class="flex-1 p-4 border rounded-lg bg-blue-900/20 border-blue-500/20">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-blue-400">Vei folosi un credit gratuit</p>
+                                        <p class="mt-1 text-sm text-gray-400">Videoclipul generat va include un logo
+                                            watermark. Pentru videoclipuri fără watermark, achiziționează un pachet
+                                            premium.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif ($creditType === 'paid')
+                            <div class="flex-1 p-4 border rounded-lg bg-green-900/20 border-green-500/20">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div>
+                                        <p class="font-medium text-green-400">Vei folosi un credit premium</p>
+                                        <p class="mt-1 text-sm text-gray-400">Videoclipul generat va fi de calitate
+                                            superioară, fără watermark.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <!-- Generate Button & Loading State -->
                 <div class="relative mt-8">
                     <button type="button" wire:click="generate"
                         class="relative w-full px-8 py-4 text-lg font-medium text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-                        wire:loading.attr="disabled" wire:target="generate" wire:loading.class="opacity-75">
+                        wire:loading.attr="disabled" wire:target="generate" wire:loading.class="opacity-75"
+                        @if (!$hasCredits) disabled @endif
+                        @if (!$hasCredits) class="opacity-50 cursor-not-allowed" @endif>
                         <span wire:loading.remove wire:target="generate"
                             class="flex items-center justify-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

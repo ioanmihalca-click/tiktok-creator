@@ -9,7 +9,9 @@ use App\Jobs\CheckTikTokStatusJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\AI\CategoryService;
+use App\Services\CreditService;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\VideoProject;
 
 class CreateTikTok extends Component
@@ -30,17 +32,30 @@ class CreateTikTok extends Component
     public bool $initialProcessingComplete = false;
 
     private CategoryService $categoryService;
+    private CreditService $creditService;
 
-    public function boot(CategoryService $categoryService)
+    public $hasCredits = false;
+    public $creditType = null;
+
+    public function boot(CategoryService $categoryService, CreditService $creditService)
     {
         $this->categoryService = $categoryService;
+        $this->creditService = $creditService;
     }
 
     public function mount()
     {
         try {
+            // Verificăm dacă utilizatorul are credite disponibile
             if (Auth::check()) {
-                $lastProject = Auth::user()->videoProjects()
+                $user = User::find(Auth::id());
+                $this->creditType = $this->creditService->checkCreditType($user);
+                $this->hasCredits = (bool) $this->creditType;
+            }
+
+            if (Auth::check()) {
+                $user = User::find(Auth::id());
+                $lastProject = $user->videoProjects()
                     ->whereNotNull('render_id')
                     ->latest()
                     ->first();
@@ -65,6 +80,16 @@ class CreateTikTok extends Component
 
     public function generate()
     {
+        // Verificăm dacă utilizatorul are credite disponibile
+        $user = User::find(Auth::id());
+        $this->creditType = $this->creditService->checkCreditType($user);
+        $this->hasCredits = (bool) $this->creditType;
+
+        if (!$this->hasCredits) {
+            session()->flash('error', 'Nu ai credite disponibile. Te rugăm să achiziționezi un pachet de credite.');
+            return redirect()->route('credits.index');
+        }
+
         $this->reset(['videoUrl', 'script', 'imageUrl', 'audioUrl', 'completedSteps', 'projectId', 'jobStarted']);
         $this->isProcessing = true;
         $this->showInitialProcessingModal = true;  // Afișăm modalul inițial
@@ -82,7 +107,8 @@ class CreateTikTok extends Component
             $this->jobStarted = true;
 
             // Salvăm un proiect inițial pentru a avea un ID
-            $initialProject = Auth::user()->videoProjects()->create([
+            $user = User::find(Auth::id());
+            $initialProject = $user->videoProjects()->create([
                 'title' => $this->title ?? $this->categoryService->getCategoryFullPath($this->categorySlug) . " TikTok",
                 'status' => 'processing',
             ]);
@@ -90,7 +116,7 @@ class CreateTikTok extends Component
             $this->projectId = $initialProject->id;
 
             // Dispatch job-ul pentru generarea TikTok
-            GenerateTikTokJob::dispatch(Auth::user(), $this->categorySlug, $this->title, $initialProject->id);
+            GenerateTikTokJob::dispatch($user, $this->categorySlug, $this->title, $initialProject->id);
 
             // Nu mai schimbăm currentStep aici - rămâne în starea inițială
             // Pentru a permite vizualizarea modalului pentru o perioadă mai lungă de timp
@@ -128,7 +154,8 @@ class CreateTikTok extends Component
         }
 
         try {
-            $project = Auth::user()->videoProjects()
+            $user = User::find(Auth::id());
+            $project = $user->videoProjects()
                 ->where(function ($query) {
                     if ($this->projectId) {
                         $query->where('id', $this->projectId);
@@ -182,6 +209,13 @@ class CreateTikTok extends Component
 
     public function render()
     {
+        // Actualizăm starea creditelor la fiecare randare
+        if (Auth::check()) {
+            $user = User::find(Auth::id());
+            $this->creditType = $this->creditService->checkCreditType($user);
+            $this->hasCredits = (bool) $this->creditType;
+        }
+
         $categories = $this->categoryService->getCategories();
 
         // Verificăm statusul dacă suntem în procesare și avem un project ID
@@ -190,7 +224,10 @@ class CreateTikTok extends Component
         }
 
         return view('livewire.create-tik-tok', [
-            'categories' => $categories
+            'categories' => $categories,
+            'hasCredits' => $this->hasCredits,
+            'creditType' => $this->creditType,
+            'userCredit' => Auth::check() ? User::find(Auth::id())->userCredit : null
         ]);
     }
 

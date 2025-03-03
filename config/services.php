@@ -28,9 +28,19 @@ return [
 
     'shotstack' => [
         'key' => env('SHOTSTACK_API_KEY'),
+        'production_key' => env('SHOTSTACK_PRODUCTION_API_KEY'),
     ],
 
     'together' => [
         'api_key' => env('TOGETHER_API_KEY'),
+    ],
+
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook' => [
+            'secret' => env('STRIPE_WEBHOOK_SECRET'),
+            'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
+        ],
     ],
 ];

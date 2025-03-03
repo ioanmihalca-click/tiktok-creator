@@ -59,4 +59,50 @@ class User extends Authenticatable implements FilamentUser
     {
         return str_ends_with($this->email, 'ioanclickmihalca@gmail.com');
     }
+
+    public function userCredit()
+    {
+        return $this->hasOne(UserCredit::class);
+    }
+
+    public function creditTransactions()
+    {
+        return $this->hasMany(CreditTransaction::class);
+    }
+
+    // Create a method to check if user has credits
+    public function hasCreditsAvailable()
+    {
+        return $this->userCredit?->total_available_credits > 0;
+    }
+
+    // Create a method to deduct credits
+    public function deductCredit()
+    {
+        if (!$this->userCredit) {
+            $this->userCredit()->create([
+                'free_credits' => 3
+            ]);
+        }
+
+        if ($this->userCredit->available_free_credits > 0) {
+            $this->userCredit->increment('used_free_credits');
+            $this->creditTransactions()->create([
+                'transaction_type' => 'usage',
+                'amount' => -1,
+                'description' => 'Used free credit for video generation'
+            ]);
+            return 'free';
+        } elseif ($this->userCredit->available_credits > 0) {
+            $this->userCredit->increment('used_credits');
+            $this->creditTransactions()->create([
+                'transaction_type' => 'usage',
+                'amount' => -1,
+                'description' => 'Used paid credit for video generation'
+            ]);
+            return 'paid';
+        }
+
+        return false;
+    }
 }

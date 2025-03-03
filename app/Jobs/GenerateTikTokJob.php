@@ -9,6 +9,7 @@ use App\Services\AI\ScriptGenerationService;
 use App\Services\AI\ImageGenerationService;
 use App\Services\AI\NarrationService;
 use App\Services\AI\VideoGenerationService;
+use App\Services\CreditService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -73,7 +74,8 @@ class GenerateTikTokJob implements ShouldQueue
         ScriptGenerationService $scriptService,
         ImageGenerationService $imageService,
         NarrationService $narrationService,
-        VideoGenerationService $videoService
+        VideoGenerationService $videoService,
+        CreditService $creditService
     ) {
         Log::info('Starting GenerateTikTokJob', [
             'user_id' => $this->user->id,
@@ -82,6 +84,15 @@ class GenerateTikTokJob implements ShouldQueue
         ]);
 
         try {
+            // Verificăm dacă utilizatorul are credite disponibile
+            $creditType = $creditService->checkCreditType($this->user);
+            if (!$creditType) {
+                throw new Exception("User has no available credits");
+            }
+
+            // Determinăm tipul de mediu și setările pentru watermark
+            $environmentType = $creditService->getEnvironmentType($this->user);
+            $hasWatermark = $creditService->shouldHaveWatermark($this->user);
             DB::beginTransaction();
 
             // Obținem calea completă a categoriei
@@ -156,7 +167,9 @@ class GenerateTikTokJob implements ShouldQueue
                     'audio_url' => $audioUrl,
                     'audio_cloudinary_id' => $audioCloudinaryId ?? null,
                     'audio_duration' => $audioDuration ?? null,
-                    'category_id' => $categoryId // Adăugăm categoria
+                    'category_id' => $categoryId, // Adăugăm categoria
+                    'environment_type' => $environmentType, // Adăugăm tipul de mediu
+                    'has_watermark' => $hasWatermark // Adăugăm setarea pentru watermark
                 ]);
             }
 
@@ -171,6 +184,22 @@ class GenerateTikTokJob implements ShouldQueue
                 'render_id' => $videoResult['render_id']
             ]);
 
+            // Deducem un credit din contul utilizatorului
+            if ($creditType === 'free') {
+                $this->user->userCredit->increment('used_free_credits');
+                $transactionDescription = 'Used 1 free credit for video generation';
+            } else {
+                $this->user->userCredit->increment('used_credits');
+                $transactionDescription = 'Used 1 paid credit for video generation';
+            }
+
+            // Înregistrăm tranzacția
+            $this->user->creditTransactions()->create([
+                'transaction_type' => 'usage',
+                'amount' => -1, // Valoare negativă pentru utilizare
+                'description' => $transactionDescription
+            ]);
+
             DB::commit();
 
             // Dispatchăm imediat un job pentru a verifica statusul
@@ -178,7 +207,10 @@ class GenerateTikTokJob implements ShouldQueue
 
             Log::info('GenerateTikTokJob completed successfully', [
                 'project_id' => $project->id,
-                'render_id' => $videoResult['render_id']
+                'render_id' => $videoResult['render_id'],
+                'credit_type' => $creditType,
+                'environment_type' => $environmentType,
+                'has_watermark' => $hasWatermark
             ]);
         } catch (Exception $e) {
             DB::rollBack();
