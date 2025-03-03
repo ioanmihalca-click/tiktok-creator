@@ -65,7 +65,7 @@ class CategorySeeder extends Seeder
                     'mesaje-motivationale' => [
                         'name' => 'Mesaje Motivaționale',
                         'description' => 'Mesaje pentru a motiva și încuraja.',
-                       'subcategories' => [
+                        'subcategories' => [
                             'depasire-obstacole' => ['name' => 'Pentru depășirea obstacolelor', 'description' => 'Mesaje pentru a depăși obstacolele.'],
                             'pentru-succes' => ['name' => 'Pentru succes', 'description' => 'Mesaje pentru a obține succesul.'],
                             'pentru-studenti' => ['name' => 'Pentru studenți/elevi', 'description' => 'Mesaje pentru studenți/elevi.'],
@@ -88,16 +88,16 @@ class CategorySeeder extends Seeder
                             'generale-multumire' => ['name' => 'Generale', 'description' => 'Mesaje de mulțumire generale.']
                         ]
                     ],
-                    'mesaje-amuzante' => [
-                        'name' => 'Mesaje Amuzante/Hazlii',
-                        'description' => 'Mesaje pentru a aduce zâmbetul pe buze.',
-                        'subcategories' => [
-                            'glume-scurte' => ['name' => 'Glume scurte', 'description' => 'Glume scurte și amuzante.'],
-                            'bancuri' => ['name' => 'Bancuri', 'description' => 'Bancuri.'],
-                            'povesti-amuzante' => ['name' => 'Povești amuzante', 'description' => 'Povești amuzante.'],
-                            'citate-amuzante' => ['name' => 'Citate amuzante', 'description' => 'Citate amuzante.'],
-                        ]
-                    ]
+                    // 'mesaje-amuzante' => [
+                    //     'name' => 'Mesaje Amuzante/Hazlii',
+                    //     'description' => 'Mesaje pentru a aduce zâmbetul pe buze.',
+                    //     'subcategories' => [
+                    //         'glume-scurte' => ['name' => 'Glume scurte', 'description' => 'Glume scurte și amuzante.'],
+                    //         'bancuri' => ['name' => 'Bancuri', 'description' => 'Bancuri.'],
+                    //         'povesti-amuzante' => ['name' => 'Povești amuzante', 'description' => 'Povești amuzante.'],
+                    //         'citate-amuzante' => ['name' => 'Citate amuzante', 'description' => 'Citate amuzante.'],
+                    //     ]
+                    // ]
                 ]
             ],
             'spiritualitate-religie' => [
@@ -141,7 +141,7 @@ class CategorySeeder extends Seeder
                             'fortnite-tips' => ['name' => 'Fortnite Tips', 'description' => 'Sfaturi pentru Fortnite.'],
                             'roblox-tips' => ['name' => 'Roblox Tips', 'description' => 'Sfaturi pentru Roblox.'],
                             'mobile-games-tips' => ['name' => 'Mobile Games', 'description' => 'Sfaturi pentru jocuri mobile populare.'],
-                            
+
                         ]
                     ],
                     'tech-hacks-avansate' => [
@@ -241,12 +241,12 @@ class CategorySeeder extends Seeder
                             'proverbe-internationale' => ['name' => 'Internaționale', 'description' => 'Proverbe internaționale.']
                         ]
                     ],
-                    
+
                 ]
             ],
 
 
-           'divertisment' => [
+            'divertisment' => [
                 'name' => 'Divertisment',
                 'description' => 'Conținut pentru divertisment și relaxare.',
                 'subcategories' => [
@@ -258,10 +258,9 @@ class CategorySeeder extends Seeder
                             'povesti-dragoste' => ['name' => 'De dragoste', 'description' => 'Povești de dragoste.'],
                             'povesti-sf' => ['name' => 'SF', 'description' => 'Povești științifico-fantastice.'],
                             'fabule' => ['name' => 'Fabule', 'description' => 'Fabule cu morală.'],
-                            'microfictiune' => ['name' => 'Microficțiune', 'description' => 'Povești foarte scurte.'],
                         ]
                     ],
-                  
+
                     'poezii' => [
                         'name' => 'Poezii',
                         'description' => 'Poezii scurte și lungi.',
@@ -308,7 +307,7 @@ class CategorySeeder extends Seeder
                             'lectii-cultura' => ['name' => 'De cultură generală', 'description' => 'Mini-lecții de cultură generală.'],
                             'lectii-istorie' => ['name' => 'De istorie', 'description' => 'Mini-lecții de istorie.'],
                             'lectii-geografie' => ['name' => 'De geografie', 'description' => 'Mini-lecții de geografie.'],
-                        
+
                         ]
                     ],
 
@@ -322,7 +321,7 @@ class CategorySeeder extends Seeder
                             'meditatie-scurte' => ['name' => 'Scurte', 'description' => 'Meditații scurte.'],
                         ]
                     ],
-                   
+
                 ]
             ],
 
@@ -360,17 +359,17 @@ class CategorySeeder extends Seeder
                     'tech-hacks' => ['name' => 'Tech Hacks', 'description' => 'Telefon, laptop, sfat rapid.']
                 ]
             ],
-          
-            
 
-            'drama-gossip' => [
-                'name' => 'Drama & Gossip',
-                'description' => 'Imagine intrigantă cu poveste narată.',
-                'subcategories' => [
-                    'povesti-scandal' => ['name' => 'Povești de Scandal', 'description' => 'Scenă dramatică (ex. ceartă) cu twist.'],
-                    'secrete' => ['name' => 'Secrete Dezvăluite', 'description' => 'Obiect misterios, ton captivant.']
-                ]
-            ],
+
+
+            // 'drama-gossip' => [
+            //     'name' => 'Drama & Gossip',
+            //     'description' => 'Imagine intrigantă cu poveste narată.',
+            //     'subcategories' => [
+            //         'povesti-scandal' => ['name' => 'Povești de Scandal', 'description' => 'Scenă dramatică (ex. ceartă) cu twist.'],
+            //         'secrete' => ['name' => 'Secrete Dezvăluite', 'description' => 'Obiect misterios, ton captivant.']
+            //     ]
+            // ],
 
             'fitness-rapid' => [
                 'name' => 'Fitness Rapid',
@@ -381,19 +380,19 @@ class CategorySeeder extends Seeder
                 ]
             ],
 
-            'diy-simplu' => [
-                'name' => 'DIY Simplu',
-                'description' => 'Imagine cu materiale sau rezultat și instrucțiuni narate.',
-                'subcategories' => [
-                    'decor' => ['name' => 'Decor cu 5 Lei', 'description' => 'Floare din hârtie, ton creativ.'],
-                    'organizare' => ['name' => 'Hacks de Organizare', 'description' => 'Cutie decorată, voce practică.'],
-                    'moda-diy' => ['name' => 'Modă DIY', 'description' => 'Transformări de haine, accesorii hand-made, personalizări simple.'],
-                    'cadouri-diy' => ['name' => 'Cadouri DIY', 'description' => 'Idei de cadouri făcute manual, ambalaje creative.'],
-                    'reciclare-creativa' => ['name' => 'Reciclare Creativă', 'description' => 'Transformarea obiectelor vechi în obiecte utile sau decorative.'],
-                    'gradinarit-urban' => ['name' => 'Grădinărit Urban', 'description' => 'Plante în spații mici, ghivece creative, mini-grădini.'],
-                   
-                ]
-            ],
+            // 'diy-simplu' => [
+            //     'name' => 'DIY Simplu',
+            //     'description' => 'Imagine cu materiale sau rezultat și instrucțiuni narate.',
+            //     'subcategories' => [
+            //         'decor' => ['name' => 'Decor cu 5 Lei', 'description' => 'Floare din hârtie, ton creativ.'],
+            //         'organizare' => ['name' => 'Hacks de Organizare', 'description' => 'Cutie decorată, voce practică.'],
+            //         'moda-diy' => ['name' => 'Modă DIY', 'description' => 'Transformări de haine, accesorii hand-made, personalizări simple.'],
+            //         'cadouri-diy' => ['name' => 'Cadouri DIY', 'description' => 'Idei de cadouri făcute manual, ambalaje creative.'],
+            //         'reciclare-creativa' => ['name' => 'Reciclare Creativă', 'description' => 'Transformarea obiectelor vechi în obiecte utile sau decorative.'],
+            //         'gradinarit-urban' => ['name' => 'Grădinărit Urban', 'description' => 'Plante în spații mici, ghivece creative, mini-grădini.'],
+
+            //     ]
+            // ],
 
             'liste' => [
                 'name' => 'Liste (Top-uri)',
@@ -402,12 +401,12 @@ class CategorySeeder extends Seeder
                     'top-5-filme' => ['name' => 'Top 5 Filme', 'description' => 'Top 5 filme preferate.'],
                     'top-10-carti' => ['name' => 'Top 10 Cărți', 'description' => 'Top 10 cărți preferate.'],
                     'top-3-destinatii' => ['name' => 'Top 3 Destinații', 'description' => 'Top 3 destinații de călătorie preferate.'],
-                   
-                
+
+
                 ],
             ],
 
-           
+
         ];
 
         foreach ($categories as $categoryData) {

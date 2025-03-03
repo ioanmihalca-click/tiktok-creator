@@ -148,6 +148,8 @@ class ScriptGenerationService
                         
     **IMPORTANT: Evită să menționezi anii specifici (precum 2024) în script. Folosește formulări atemporale sau referințe generale precum "în prezent", "în zilele noastre", "în era digitală", "recent", etc. Conținutul trebuie să rămână relevant pentru o perioadă mai lungă de timp.** 
 
+    **IMPORTANT PENTRU HASHTAGS: Folosește doar caractere latine (a-z, A-Z), cifre și underscore în hashtaguri. NU folosi diacritice sau caractere speciale. De exemplu, folosește #InteligentaArtificiala în loc de #InteligenţăArtificială sau caractere din alte limbi.**
+
     **ASIGURĂ-TE CĂ GENEREZI CONȚINUT UNIC și VARIAT, evitând repetarea ideilor sau abordărilor similare din scripturile anterioare ale utilizatorului.**
 
     Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea structură:
