@@ -39,7 +39,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-// Webhook Stripe (nu necesită autentificare)
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook'])->name('stripe.webhook');
-
 require __DIR__ . '/auth.php';

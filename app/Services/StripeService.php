@@ -16,6 +16,9 @@ class StripeService
 
     public function createCheckoutSession(User $user, CreditPackage $package)
     {
+        // Convertește prețul în număr întreg (fără zecimale)
+        $unitAmount = (int) $package->price;
+
         return Session::create([
             'payment_method_types' => ['card'],
             'customer_email' => $user->email,
@@ -27,7 +30,7 @@ class StripeService
                             'name' => $package->name,
                             'description' => $package->description
                         ],
-                        'unit_amount' => $package->price, // Price is already stored in cents
+                        'unit_amount' => $unitAmount, // Număr întreg (fără zecimale)
                     ],
                     'quantity' => 1,
                 ],
