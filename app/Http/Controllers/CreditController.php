@@ -46,7 +46,7 @@ class CreditController extends Controller
 
         try {
             $checkoutSession = $user->checkout([$stripePriceId => 1], [
-                'success_url' => route('credits.success', ['session_id' => '{CHECKOUT_SESSION_ID}']),
+                'success_url' => route('credits.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('credits.cancel'),
                 'metadata' => [
                     'package_id' => $package->id,
