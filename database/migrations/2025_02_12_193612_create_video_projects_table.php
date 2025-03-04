@@ -15,7 +15,6 @@ return new class extends Migration
             $table->json('script')->nullable();
             $table->json('settings')->nullable();
             $table->string('status')->default('draft');
-            $table->string('image_url')->nullable();
             $table->string('audio_url')->nullable();
             $table->string('video_url')->nullable();
             $table->timestamps();

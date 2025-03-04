@@ -78,8 +78,43 @@ class GenerateTikTokJob implements ShouldQueue
                 throw new Exception("Script generation failed");
             }
 
-            // MODIFICĂRI AICI: Iterăm prin scene și generăm imaginile
-            $images = [];
+
+            if ($this->existingProjectId) {
+                $project = VideoProject::find($this->existingProjectId);
+
+                if (!$project || $project->user_id !== $this->user->id) {
+                    throw new Exception("Project not found or does not belong to the user");
+                }
+                // Stergem imaginile existente inainte de a crea altele noi (daca exista)
+                foreach ($project->images as $image) {
+                    $image->delete();
+                }
+
+                $project->update([
+                    'script' => $script,
+                    'image_url' => null,          // Setam la null vechiul camp
+                    'image_cloudinary_id' => null, // Setam la null vechiul camp
+                    'audio_url' => null, // Setam la null inainte de a genera din nou
+                    'audio_cloudinary_id' => null,
+                    'audio_duration' => null,
+                    'category_id' => $categoryId
+                ]);
+            } else {
+                $project = $this->user->videoProjects()->create([
+                    'title' => $this->title ?? $categoryName . " TikTok",
+                    'script' => $script,
+                    'status' => 'processing',
+                    'image_url' => null,
+                    'image_cloudinary_id' => null,
+                    'audio_url' => null,
+                    'audio_cloudinary_id' => null,
+                    'audio_duration' => null,
+                    'category_id' => $categoryId,
+                    'environment_type' => $environmentType,
+                    'has_watermark' => $hasWatermark
+                ]);
+            }
+
             foreach ($script['scenes'] as $index => $scene) {
                 Log::info("Processing scene {$index}", ['scene' => $scene]);
 
@@ -87,7 +122,6 @@ class GenerateTikTokJob implements ShouldQueue
                     throw new Exception("Image prompt for scene {$index} is missing");
                 }
 
-                // Apelăm ImageGenerationService->generateImage() - varianta cu polling!
                 $imageResult = $imageService->generateImage($scene['image_prompt']);
 
                 Log::info("Image generation result for scene {$index}", ['result' => $imageResult]);
@@ -96,20 +130,19 @@ class GenerateTikTokJob implements ShouldQueue
                     throw new Exception("Image generation failed for scene {$index}: " . ($imageResult['error'] ?? 'Unknown error'));
                 }
 
-                // Stocăm direct URL-ul și Cloudinary ID (NU prediction_id)
-                $images[] = [
+                $startTime = $index === 0 ? 0 : $script['scenes'][$index - 1]['duration'];
+                if ($index > 0) {
+                    $startTime +=  $script['scenes'][$index - 1]['duration'];
+                }
+
+                $project->images()->create([
                     'url' => $imageResult['image_url'],
                     'cloudinary_id' => $imageResult['cloudinary_public_id'],
-                    'start' => $index === 0 ? 0 : $script['scenes'][$index - 1]['duration'],
-                    'duration' => $scene['duration']
-                ];
-                if ($index > 0) {
-                    $images[$index]['start'] +=  $images[$index - 1]['start'];
-                }
+                    'start' => $startTime,
+                    'duration' => $scene['duration'],
+                    'order' => $index,
+                ]);
             }
-
-            Log::info('Images generated', ['images' => $images]);
-
 
             $fullNarration = '';
             foreach ($script['scenes'] as $scene) {
@@ -125,39 +158,13 @@ class GenerateTikTokJob implements ShouldQueue
             $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
             $audioDuration = $narrationResult['audio_duration'];
 
-            if ($this->existingProjectId) {
-                $project = VideoProject::find($this->existingProjectId);
 
-                if (!$project || $project->user_id !== $this->user->id) {
-                    throw new Exception("Project not found or does not belong to the user");
-                }
+            $project->update([
+                'audio_url' => $audioUrl,
+                'audio_cloudinary_id' => $audioCloudinaryId,
+                'audio_duration' => $audioDuration,
+            ]);
 
-                $project->update([
-                    'script' => $script,
-                    'images' => $images, // STOCĂM ARRAY-UL CU IMAGINI
-                    'image_url' => null,          // Setam la null vechiul camp
-                    'image_cloudinary_id' => null, // Setam la null vechiul camp
-                    'audio_url' => $audioUrl,
-                    'audio_cloudinary_id' => $audioCloudinaryId ?? null,
-                    'audio_duration' => $audioDuration ?? null,
-                    'category_id' => $categoryId
-                ]);
-            } else {
-                $project = $this->user->videoProjects()->create([
-                    'title' => $this->title ?? $categoryName . " TikTok",
-                    'script' => $script,
-                    'status' => 'processing',
-                    'images' => $images, // STOCĂM ARRAY-UL CU IMAGINI
-                    'image_url' => null, //NU MAI AVEM NEVOIE
-                    'image_cloudinary_id' => null, //NU MAI AVEM NEVOIE
-                    'audio_url' => $audioUrl,
-                    'audio_cloudinary_id' => $audioCloudinaryId ?? null,
-                    'audio_duration' => $audioDuration ?? null,
-                    'category_id' => $categoryId,
-                    'environment_type' => $environmentType,
-                    'has_watermark' => $hasWatermark
-                ]);
-            }
 
             $videoResult = $videoService->generate($project);
             if (!$videoResult['success']) {
@@ -185,7 +192,7 @@ class GenerateTikTokJob implements ShouldQueue
 
             DB::commit();
 
-            CheckTikTokStatusJob::dispatch($project->id)->delay(now()->addSeconds(10));
+            CheckTikTokStatusJob::dispatch($project->id); // FARA DELAY
 
             Log::info('GenerateTikTokJob completed successfully', [
                 'project_id' => $project->id,

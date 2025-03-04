@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 use App\Services\AI\CategoryService;
 use Illuminate\Support\Facades\Auth;
 use App\Services\AI\NarrationService;
-use App\Models\UserCredit; // Asigură-te că ai acest import!
+use App\Models\UserCredit;
 
 
 class CreateTikTok extends Component

@@ -111,28 +111,24 @@ class VideoGenerationService
         }
     }
 
-    // MODIFICARE MAJORĂ: Acum generăm *mai multe* clipuri de imagine, câte unul pentru fiecare scenă
     private function generateImageClips($videoProject)
     {
         $imageClips = [];
 
-        // Verificăm dacă avem datele despre imagini
-        if (empty($videoProject->images) || !is_array($videoProject->images)) {
-            Log::warning('No image data found for project', ['project_id' => $videoProject->id]);
-            return []; // Sau o valoare default, în funcție de ce dorești să faci dacă nu există imagini
-        }
-        foreach ($videoProject->images as $imageData) {
+        // Folosim relația $videoProject->images:
+        foreach ($videoProject->images as $image) { // $image este acum un obiect VideoImage
             $imageClips[] = [
                 'asset' => [
                     'type' => 'image',
-                    'src' => $imageData['url'], // Folosim URL-ul din array-ul de imagini
+                    'src' => $image->url, // Folosim $image->url
                 ],
-                'start' => $imageData['start'], // Folosim start time-ul din array
-                'length' => $imageData['duration'],   // Folosim durata din array
+                'start' => $image->start, // Folosim $image->start
+                'length' => $image->duration, // Folosim $image->duration
                 'fit' => 'cover',
-                'effect' => 'zoomIn' // Păstrăm efectul de zoom
+                'effect' => 'zoomIn'
             ];
         }
+
         return $imageClips;
     }
 
@@ -273,20 +269,19 @@ class VideoGenerationService
     public function cleanupResources($project)
     {
         try {
-            // Cleanup imagini
-            if ($project->images && is_array($project->images)) { // Verifică dacă există și este array
-                foreach ($project->images as $image) {
-                    if (isset($image['cloudinary_id'])) { // Verifică dacă există cloudinary_id
-                        Log::info('Attempting to delete image from Cloudinary', [
-                            'image_cloudinary_id' => $image['cloudinary_id']
-                        ]);
-                        Cloudinary::destroy($image['cloudinary_id']);
-                        Log::info('Cleaned up image from Cloudinary', [
-                            'project_id' => $project->id,
-                            'cloudinary_id' => $image['cloudinary_id']
-                        ]);
-                    }
+            // Stergem imaginile asociate, folosind relația:
+            foreach ($project->images as $image) {
+                if ($image->cloudinary_id) {
+                    Log::info('Attempting to delete image from Cloudinary', [
+                        'image_cloudinary_id' => $image->cloudinary_id
+                    ]);
+                    Cloudinary::destroy($image->cloudinary_id);
+                    Log::info('Cleaned up image from Cloudinary', [
+                        'project_id' => $project->id,
+                        'cloudinary_id' => $image->cloudinary_id
+                    ]);
                 }
+                $image->delete(); // Ștergem înregistrarea din baza de date
             }
 
             // Cleanup audio - specifică tipul "video" pentru resursele audio
@@ -303,8 +298,9 @@ class VideoGenerationService
             }
 
             // Update project to clear Cloudinary IDs
+
             $project->update([
-                'images' => null, // Setam images la null
+
                 'image_cloudinary_id' => null,
                 'audio_cloudinary_id' => null
             ]);
