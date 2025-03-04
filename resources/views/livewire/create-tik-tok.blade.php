@@ -286,8 +286,8 @@
                     </div>
                 </div>
 
-                <!-- Voci premium -->
-                <div class="p-6 mt-8 border rounded-xl bg-white/5 backdrop-blur-sm border-white/10">
+                <!-- Voci narare -->
+                <div class="p-6 mx-auto mt-8 border rounded-xl bg-white/5 backdrop-blur-sm border-white/10">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-medium text-gray-200">
                             <span class="flex items-center gap-3">
@@ -301,38 +301,105 @@
                         </h3>
                     </div>
 
-                    <div class="space-y-4">
+                    <!-- Voci gratuite -->
+                    <div class="mb-6">
+                        <h4 class="mb-3 text-sm font-medium text-gray-400">Voci gratuite</h4>
+                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                            @foreach ($availableVoices['free'] as $voice)
+                                <div wire:click="selectVoice('{{ $voice['voice_id'] }}')"
+                                    class="p-4 transition-all duration-200 border rounded-lg cursor-pointer hover:bg-white/10 
+                                    {{ $selectedVoiceId === $voice['voice_id'] ? 'bg-purple-900/30 border-purple-500' : 'bg-white/5 border-white/10' }}">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h5 class="text-base font-medium text-white">{{ $voice['name'] }}</h5>
+                                        @if ($selectedVoiceId === $voice['voice_id'])
+                                            <span
+                                                class="flex items-center px-2 py-1 text-xs font-medium text-purple-300 rounded-full bg-purple-500/30">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                Selectat
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <p class="text-sm text-gray-400">
+                                        @if ($voice['voice_id'] === 'S98OhkhaxeAKHEbhoLi7')
+                                            Voce standard masculină de vârstă mijlocie, caldă și sofisticată, perfectă
+                                            pentru narațiuni.
+                                        @endif
+                                    </p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Voci premium -->
+                    @if (!empty($availableVoices['premium']))
                         <div>
-                            <label class="text-sm text-gray-400">Voce pentru narare</label>
-                            <div class="relative">
-                                <select wire:model="selectedVoiceId"
-                                    class="block w-full px-4 py-3 mt-1 text-white transition-all duration-200 border appearance-none bg-gray-800/80 border-purple-500/30 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <optgroup label="Voci Gratuite" class="text-white bg-gray-800">
-                                        @foreach ($availableVoices['free'] as $voice)
-                                            <option value="{{ $voice['voice_id'] }}"
-                                                class="px-2 py-1 text-white bg-gray-800">
-                                                {{ $voice['name'] }} (Gratuit)
-                                            </option>
-                                        @endforeach
-                                    </optgroup>
-
-                                    @if ($creditType === 'paid' && !empty($availableVoices['premium']))
-                                        <optgroup label="Voci Premium"
-                                            class="font-medium text-purple-300 bg-gray-800">
-                                            @foreach ($availableVoices['premium'] as $voice)
-                                                <option value="{{ $voice['voice_id'] }}"
-                                                    class="px-2 py-1 text-purple-300 bg-gray-800">
-                                                    {{ $voice['name'] }} (Premium)
-                                                </option>
-                                            @endforeach
-                                        </optgroup>
-                                    @endif
-                                </select>
-
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-medium text-purple-400">Voci premium</h4>
+                                @if ($creditType !== 'paid')
+                                    <span
+                                        class="px-2 py-1 text-xs font-medium text-yellow-400 rounded-full bg-yellow-900/30">
+                                        Necesită credit premium
+                                    </span>
+                                @endif
                             </div>
 
-                            @if ($creditType !== 'paid' && !empty($availableVoices['premium']))
-                                <div class="p-3 mt-3 border rounded-lg bg-yellow-900/20 border-yellow-500/20">
+                            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                @foreach ($availableVoices['premium'] as $voice)
+                                    <div
+                                        @if ($creditType === 'paid') wire:click="selectVoice('{{ $voice['voice_id'] }}')"
+                                            class="p-4 transition-all duration-200 border rounded-lg cursor-pointer hover:bg-white/10 
+                                            {{ $selectedVoiceId === $voice['voice_id'] ? 'bg-purple-900/30 border-purple-500' : 'bg-white/5 border-white/10' }}"
+                                        @else
+                                            class="p-4 border rounded-lg bg-white/5 border-white/10 opacity-60" @endif>
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h5 class="text-base font-medium text-white">{{ $voice['name'] }}</h5>
+                                            @if ($selectedVoiceId === $voice['voice_id'])
+                                                <span
+                                                    class="flex items-center px-2 py-1 text-xs font-medium text-purple-300 rounded-full bg-purple-500/30">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                    Selectat
+                                                </span>
+                                            @endif
+                                        </div>
+                                        <p class="text-sm text-gray-400">
+                                            @switch($voice['voice_id'])
+                                                @case('OlBp4oyr3FBAGEAtJOnU')
+                                                    Voce calmă și profundă, perfectă pentru narațiuni, audiobook-uri și
+                                                    informații generale.
+                                                @break
+
+                                                @case('gbLy9ep70G3JW53cTzFC')
+                                                    Voce feminină de vârstă mijlocie, narând pe un ton conversațional.
+                                                @break
+
+                                                @case('4zwat5xS9O6SetLUEbxv')
+                                                    Voce feminină tânără cu un ton încrezător, perfectă pentru podcast-uri și
+                                                    reclame.
+                                                @break
+
+                                                @case('KxGkxCicfy28RgQTZuHk')
+                                                    Voce profesională care aduce viață reclamelor și conținutului pentru social
+                                                    media.
+                                                @break
+
+                                                @default
+                                                    Voce premium de înaltă calitate.
+                                            @endswitch
+                                        </p>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            @if ($creditType !== 'paid')
+                                <div class="p-3 mt-4 border rounded-lg bg-yellow-900/20 border-yellow-500/20">
                                     <p class="flex items-start gap-2 text-sm text-yellow-400">
                                         <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none"
                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -343,20 +410,23 @@
                                     </p>
                                 </div>
                             @endif
-                            <p class="mt-2 text-sm text-yellow-400">
-                                <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                @if ($creditType === 'paid')
-                                    Folosești voci premium, beneficiu inclus în pachetele plătite.
-                                @else
-                                    Pentru a accesa voci premium, achiziționează un pachet premium.
-                                @endif
-                            </p>
                         </div>
-                    </div>
+                    @endif
+
+                    <p class="mt-2 text-sm text-yellow-400">
+                        <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        @if ($creditType === 'paid')
+                            Folosești voci premium, beneficiu inclus în pachetele plătite.
+                        @else
+                            Pentru a accesa mai multe voci, achiziționează un pachet premium.
+                        @endif
+                    </p>
+
+
                 </div>
 
                 <!-- Generate Button & Loading State -->

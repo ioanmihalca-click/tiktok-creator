@@ -103,6 +103,29 @@ class CreateTikTok extends Component
             Log::error('Error in CreateTikTok mount:', ['error' => $e->getMessage()]);
         }
     }
+
+    public function selectVoice($voiceId)
+    {
+        // Verifică dacă vocea este o voce premium
+        $isPremiumVoice = false;
+
+        if (!empty($this->availableVoices['premium'])) {
+            foreach ($this->availableVoices['premium'] as $voice) {
+                if ($voice['voice_id'] === $voiceId) {
+                    $isPremiumVoice = true;
+                    break;
+                }
+            }
+        }
+
+        // Dacă este o voce premium și utilizatorul nu are credite premium, nu face nimic
+        if ($isPremiumVoice && $this->creditType !== 'paid') {
+            return;
+        }
+
+        $this->selectedVoiceId = $voiceId;
+    }
+
     public function generate()
     {
         // Verificăm dacă utilizatorul are credite disponibile
