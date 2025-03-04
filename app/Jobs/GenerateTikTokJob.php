@@ -87,7 +87,8 @@ class GenerateTikTokJob implements ShouldQueue
                     throw new Exception("Image prompt for scene {$index} is missing");
                 }
 
-                $imageResult = $imageService->generateImage($scene['image_prompt']); // Apelăm noua metodă
+                // Apelăm ImageGenerationService->generateImage() - varianta cu polling!
+                $imageResult = $imageService->generateImage($scene['image_prompt']);
 
                 Log::info("Image generation result for scene {$index}", ['result' => $imageResult]);
 
@@ -95,11 +96,10 @@ class GenerateTikTokJob implements ShouldQueue
                     throw new Exception("Image generation failed for scene {$index}: " . ($imageResult['error'] ?? 'Unknown error'));
                 }
 
-                // STOCĂM prediction_id ÎN ARRAY-UL DE IMAGINI!
+                // Stocăm direct URL-ul și Cloudinary ID (NU prediction_id)
                 $images[] = [
-                    'prediction_id' => $imageResult['prediction_id'], // Foarte important!
-                    'url' => null, // Inițializăm cu null
-                    'cloudinary_id' => null, // Inițializăm cu null
+                    'url' => $imageResult['image_url'],
+                    'cloudinary_id' => $imageResult['cloudinary_public_id'],
                     'start' => $index === 0 ? 0 : $script['scenes'][$index - 1]['duration'],
                     'duration' => $scene['duration']
                 ];
@@ -107,9 +107,6 @@ class GenerateTikTokJob implements ShouldQueue
                     $images[$index]['start'] +=  $images[$index - 1]['start'];
                 }
             }
-            // Stocăm prediction ID-ul *ultimei* imagini generate în VideoProject (opțional, dar util)
-            //$project->update(['temp_prediction_id' => $imageResult['prediction_id']]);
-
 
             Log::info('Images generated', ['images' => $images]);
 
