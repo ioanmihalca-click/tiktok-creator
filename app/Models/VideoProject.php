@@ -18,7 +18,6 @@ class VideoProject extends Model
         'script',
         'settings',
         'status',
-        'image_url',
         'image_cloudinary_id',
         'audio_url',
         'audio_cloudinary_id',

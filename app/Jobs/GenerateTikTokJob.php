@@ -92,7 +92,6 @@ class GenerateTikTokJob implements ShouldQueue
 
                 $project->update([
                     'script' => $script,
-                    'image_url' => null,          // Setam la null vechiul camp
                     'image_cloudinary_id' => null, // Setam la null vechiul camp
                     'audio_url' => null, // Setam la null inainte de a genera din nou
                     'audio_cloudinary_id' => null,
@@ -104,7 +103,6 @@ class GenerateTikTokJob implements ShouldQueue
                     'title' => $this->title ?? $categoryName . " TikTok",
                     'script' => $script,
                     'status' => 'processing',
-                    'image_url' => null,
                     'image_cloudinary_id' => null,
                     'audio_url' => null,
                     'audio_cloudinary_id' => null,
@@ -136,7 +134,7 @@ class GenerateTikTokJob implements ShouldQueue
                 }
 
                 $project->images()->create([
-                    'url' => $imageResult['image_url'],
+
                     'cloudinary_id' => $imageResult['cloudinary_public_id'],
                     'start' => $startTime,
                     'duration' => $scene['duration'],
