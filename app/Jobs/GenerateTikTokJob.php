@@ -23,19 +23,8 @@ class GenerateTikTokJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Numărul maxim de încercări pentru acest job.
-     *
-     * @var int
-     */
     public $tries = 2;
-
-    /**
-     * Timeout-ul în secunde.
-     *
-     * @var int
-     */
-    public $timeout = 600; // 10 minute
+    public $timeout = 600;
 
     protected $user;
     protected $categorySlug;
@@ -43,15 +32,6 @@ class GenerateTikTokJob implements ShouldQueue
     protected $existingProjectId;
     protected $voiceId;
 
-    /**
-     * Create a new job instance.
-     *
-     * @param User $user
-     * @param string $categorySlug
-     * @param string|null $title
-     * @param int|null $existingProjectId ID-ul unui proiect existent
-     * @return void
-     */
     public function __construct(User $user, string $categorySlug, ?string $title = null, ?int $existingProjectId = null, ?string $voiceId = null)
     {
         $this->user = $user;
@@ -61,16 +41,6 @@ class GenerateTikTokJob implements ShouldQueue
         $this->voiceId = $voiceId;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @param CategoryService $categoryService
-     * @param ScriptGenerationService $scriptService
-     * @param ImageGenerationService $imageService
-     * @param NarrationService $narrationService
-     * @param VideoGenerationService $videoService
-     * @return void
-     */
     public function handle(
         CategoryService $categoryService,
         ScriptGenerationService $scriptService,
@@ -86,46 +56,53 @@ class GenerateTikTokJob implements ShouldQueue
         ]);
 
         try {
-            // Verificăm dacă utilizatorul are credite disponibile
             $creditType = $creditService->checkCreditType($this->user);
             if (!$creditType) {
                 throw new Exception("User has no available credits");
             }
 
-            // Determinăm tipul de mediu și setările pentru watermark
             $environmentType = $creditService->getEnvironmentType($this->user);
             $hasWatermark = $creditService->shouldHaveWatermark($this->user);
             DB::beginTransaction();
 
-            // Obținem calea completă a categoriei
             $categoryName = $categoryService->getCategoryFullPath($this->categorySlug);
             if (!$categoryName) {
                 throw new Exception("Category not found: " . $this->categorySlug);
             }
 
-            // Găsim ID-ul categoriei după slug
             $category = $categoryService->getCategoryBySlug($this->categorySlug);
             $categoryId = $category ? $category->id : null;
 
-            // Generăm scriptul - transmitem și user_id pentru History-Based Generation
             $script = $scriptService->generate($categoryName, $this->user->id);
             if (!$script) {
                 throw new Exception("Script generation failed");
             }
 
-            // Generăm imaginea
-            $imageUrl = null;
-            $imageCloudinaryId = null;
-            if (isset($script['background_prompt'])) {
-                $imageResult = $imageService->generateImage($script['background_prompt']);
-                if (!$imageResult['success']) {
-                    throw new Exception("Image generation failed: " . ($imageResult['error'] ?? 'Unknown error'));
+            // MODIFICĂRI AICI: Iterăm prin scene și generăm imaginile
+            $images = [];
+            foreach ($script['scenes'] as $index => $scene) {
+                if (empty($scene['image_prompt'])) {
+                    throw new Exception("Image prompt for scene {$index} is missing");
                 }
-                $imageUrl = $imageResult['image_url'];
-                $imageCloudinaryId = $imageResult['cloudinary_public_id'];
+
+                $imageResult = $imageService->generateImage($scene['image_prompt']);
+                if (!$imageResult['success']) {
+                    throw new Exception("Image generation failed for scene {$index}: " . ($imageResult['error'] ?? 'Unknown error'));
+                }
+
+                // Stocăm informațiile despre imagine într-un array asociativ
+                $images[] = [
+                    'url' => $imageResult['image_url'],
+                    'cloudinary_id' => $imageResult['cloudinary_public_id'],
+                    'start' => $index === 0 ? 0 : $script['scenes'][$index - 1]['duration'], // Calculate start time
+                    'duration' => $scene['duration']
+                ];
+                if ($index > 0) {
+                    $images[$index]['start'] +=  $images[$index - 1]['start'];
+                }
             }
 
-            // Generăm narațiunea audio
+
             $fullNarration = '';
             foreach ($script['scenes'] as $scene) {
                 $fullNarration .= $scene['narration'] . " ";
@@ -140,7 +117,6 @@ class GenerateTikTokJob implements ShouldQueue
             $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
             $audioDuration = $narrationResult['audio_duration'];
 
-            // Verificăm dacă trebuie să utilizăm un proiect existent sau să creăm unul nou
             if ($this->existingProjectId) {
                 $project = VideoProject::find($this->existingProjectId);
 
@@ -148,34 +124,33 @@ class GenerateTikTokJob implements ShouldQueue
                     throw new Exception("Project not found or does not belong to the user");
                 }
 
-                // Actualizăm proiectul existent
                 $project->update([
                     'script' => $script,
-                    'image_url' => $imageUrl,
-                    'image_cloudinary_id' => $imageCloudinaryId ?? null,
+                    'images' => $images, // STOCĂM ARRAY-UL CU IMAGINI
+                    'image_url' => null,          // Setam la null vechiul camp
+                    'image_cloudinary_id' => null, // Setam la null vechiul camp
                     'audio_url' => $audioUrl,
                     'audio_cloudinary_id' => $audioCloudinaryId ?? null,
                     'audio_duration' => $audioDuration ?? null,
-                    'category_id' => $categoryId // Adăugăm categoria
+                    'category_id' => $categoryId
                 ]);
             } else {
-                // Creăm un proiect nou
                 $project = $this->user->videoProjects()->create([
                     'title' => $this->title ?? $categoryName . " TikTok",
                     'script' => $script,
                     'status' => 'processing',
-                    'image_url' => $imageUrl,
-                    'image_cloudinary_id' => $imageCloudinaryId ?? null,
+                    'images' => $images, // STOCĂM ARRAY-UL CU IMAGINI
+                    'image_url' => null, //NU MAI AVEM NEVOIE
+                    'image_cloudinary_id' => null, //NU MAI AVEM NEVOIE
                     'audio_url' => $audioUrl,
                     'audio_cloudinary_id' => $audioCloudinaryId ?? null,
                     'audio_duration' => $audioDuration ?? null,
-                    'category_id' => $categoryId, // Adăugăm categoria
-                    'environment_type' => $environmentType, // Adăugăm tipul de mediu
-                    'has_watermark' => $hasWatermark // Adăugăm setarea pentru watermark
+                    'category_id' => $categoryId,
+                    'environment_type' => $environmentType,
+                    'has_watermark' => $hasWatermark
                 ]);
             }
 
-            // Generăm videoclipul
             $videoResult = $videoService->generate($project);
             if (!$videoResult['success']) {
                 throw new Exception("Video generation failed: " . ($videoResult['error'] ?? 'Unknown error'));
@@ -186,7 +161,6 @@ class GenerateTikTokJob implements ShouldQueue
                 'render_id' => $videoResult['render_id']
             ]);
 
-            // Deducem un credit din contul utilizatorului
             if ($creditType === 'free') {
                 $this->user->userCredit->increment('used_free_credits');
                 $transactionDescription = 'Used 1 free credit for video generation';
@@ -195,16 +169,14 @@ class GenerateTikTokJob implements ShouldQueue
                 $transactionDescription = 'Used 1 paid credit for video generation';
             }
 
-            // Înregistrăm tranzacția
             $this->user->creditTransactions()->create([
                 'transaction_type' => 'usage',
-                'amount' => -1, // Valoare negativă pentru utilizare
+                'amount' => -1,
                 'description' => $transactionDescription
             ]);
 
             DB::commit();
 
-            // Dispatchăm imediat un job pentru a verifica statusul
             CheckTikTokStatusJob::dispatch($project->id)->delay(now()->addSeconds(10));
 
             Log::info('GenerateTikTokJob completed successfully', [
@@ -217,7 +189,6 @@ class GenerateTikTokJob implements ShouldQueue
         } catch (Exception $e) {
             DB::rollBack();
 
-            // Dacă avem un proiect existent, actualizăm statusul la failed
             if ($this->existingProjectId) {
                 try {
                     VideoProject::where('id', $this->existingProjectId)
@@ -237,7 +208,7 @@ class GenerateTikTokJob implements ShouldQueue
                 'trace' => $e->getTraceAsString()
             ]);
 
-            throw $e; // Re-aruncăm excepția pentru a marca job-ul ca eșuat
+            throw $e;
         }
     }
 }

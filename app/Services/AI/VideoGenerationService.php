@@ -18,65 +18,50 @@ class VideoGenerationService
 
     public function __construct()
     {
-        $this->sandboxApiKey = config('services.shotstack.key'); // Folosește cheia existentă pentru sandbox
-        $this->productionApiKey = config('services.shotstack.production_key'); // Adaugă noua cheie pentru producție
-        // Default to sandbox
+        $this->sandboxApiKey = config('services.shotstack.key');
+        $this->productionApiKey = config('services.shotstack.production_key');
         $this->apiKey = $this->sandboxApiKey;
         $this->baseUrl = $this->sandboxBaseUrl;
     }
 
     public function setEnvironment(string $environment)
     {
-        if ($environment === 'production') {
-            $this->apiKey = $this->productionApiKey;
-            $this->baseUrl = $this->productionBaseUrl;
-        } else {
-            $this->apiKey = $this->sandboxApiKey;
-            $this->baseUrl = $this->sandboxBaseUrl;
-        }
+        $this->apiKey = ($environment === 'production') ? $this->productionApiKey : $this->sandboxApiKey;
+        $this->baseUrl = ($environment === 'production') ? $this->productionBaseUrl : $this->sandboxBaseUrl;
     }
 
     public function generate($videoProject)
     {
-        // Determine environment based on project settings
         $this->setEnvironment($videoProject->environment_type);
 
         try {
             Log::info('Starting video generation', ['project_id' => $videoProject->id]);
 
-            if (is_string($videoProject->script)) {
-                $script = json_decode($videoProject->script, true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new Exception('Invalid JSON format in videoProject->script: ' . json_last_error_msg());
-                }
-            } else {
-                $script = $videoProject->script;
+            $script = is_string($videoProject->script) ? json_decode($videoProject->script, true) : $videoProject->script;
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new Exception('Invalid JSON format in videoProject->script: ' . json_last_error_msg());
             }
 
-            // Folosim durata audio REALĂ, dacă există; altfel, fallback (cu marjă, dacă nu folosim getID3):
+            // Folosim durata audio REALĂ, dacă există
             $videoDuration = $videoProject->audio_duration ?? (float) ($script['total_duration'] ?? 15) + 2;
 
-            // Initializam array de tracks
             $tracks = [];
 
-            // Add watermark if needed - Track 1 pentru logo
             if ($videoProject->has_watermark) {
-                $tracks[] = [
-                    'clips' => $this->generateLogoClip($videoDuration)
-                ];
+                $tracks[] = ['clips' => $this->generateLogoClip($videoDuration)];
             }
 
-            // Track 2 pentru conținutul principal (imagine, text, audio)
+            // MODIFICARE MAJORĂ AICI: Creăm clipurile pentru imagini și text *împreună*
             $tracks[] = [
                 'clips' => array_merge(
-                    $this->generateImageClip($videoProject, $videoDuration),
+                    $this->generateImageClips($videoProject), // Folosim metoda corectată
                     $this->generateTextClips($script),
                     $this->generateAudioClip($videoProject, $videoDuration)
                 )
             ];
 
             $timeline = [
-                'background' => '#000000', // Opțional, culoarea de fundal a videoclipului
+                'background' => '#000000',
                 'tracks' => $tracks
             ];
 
@@ -86,7 +71,7 @@ class VideoGenerationService
                 'aspectRatio' => '9:16'
             ];
 
-            $response = Http::timeout(120)->withHeaders([ // Timeout mai mare
+            $response = Http::timeout(120)->withHeaders([
                 'x-api-key'    => $this->apiKey,
                 'Content-Type' => 'application/json'
             ])->post($this->baseUrl . '/render', [
@@ -103,7 +88,7 @@ class VideoGenerationService
             Log::info('Video render started', [
                 'project_id' => $videoProject->id,
                 'render_id'  => $renderId,
-                'timeline'   => $timeline, // Loghează timeline-ul
+                'timeline'   => $timeline,
                 'output'     => $output
             ]);
 
@@ -126,37 +111,39 @@ class VideoGenerationService
         }
     }
 
-    private function generateImageClip($videoProject, $videoDuration)
+    // MODIFICARE MAJORĂ: Acum generăm *mai multe* clipuri de imagine, câte unul pentru fiecare scenă
+    private function generateImageClips($videoProject)
     {
-        return [
-            [
-                'asset'  => [
+        $imageClips = [];
+
+        // Verificăm dacă avem datele despre imagini
+        if (empty($videoProject->images) || !is_array($videoProject->images)) {
+            Log::warning('No image data found for project', ['project_id' => $videoProject->id]);
+            return []; // Sau o valoare default, în funcție de ce dorești să faci dacă nu există imagini
+        }
+        foreach ($videoProject->images as $imageData) {
+            $imageClips[] = [
+                'asset' => [
                     'type' => 'image',
-                    'src'  => $videoProject->image_url
+                    'src' => $imageData['url'], // Folosim URL-ul din array-ul de imagini
                 ],
-                'start'  => 0,
-                'length' => $videoDuration, // Durata exactă a videoclipului
-                'fit'    => 'cover',        // Acoperă întregul cadru (crop dacă e necesar)
-                'effect' => 'zoomIn'      // Efect de zoom (opțional)
-            ]
-        ];
+                'start' => $imageData['start'], // Folosim start time-ul din array
+                'length' => $imageData['duration'],   // Folosim durata din array
+                'fit' => 'cover',
+                'effect' => 'zoomIn' // Păstrăm efectul de zoom
+            ];
+        }
+        return $imageClips;
     }
+
+
     private function generateAudioClip($videoProject, $videoDuration)
     {
-
-        if (!$videoProject->audio_url) {
-            return []; // Returneaza un array gol daca nu exista audio
-        }
-
-        return [
+        return empty($videoProject->audio_url) ? [] : [
             [
-                'asset' => [
-                    'type' => 'audio',
-                    'src' => $videoProject->audio_url,
-                ],
+                'asset' => ['type' => 'audio', 'src' => $videoProject->audio_url],
                 'start' => 0,
-                'length' => $videoDuration, // Durata exactă a videoclipului
-                // NU mai punem effect aici
+                'length' => $videoDuration,
             ]
         ];
     }
@@ -164,7 +151,7 @@ class VideoGenerationService
     private function generateTextClips($script)
     {
         $clips = [];
-        $currentTime = 0; // Timpul curent (începe de la 0)
+        $currentTime = 0;
 
         if (!isset($script['scenes']) || !is_array($script['scenes'])) {
             Log::warning('Invalid script format: Missing or invalid "scenes" array.', ['script' => $script]);
@@ -210,41 +197,34 @@ class VideoGenerationService
 
             $clips[] = [
                 'asset'     => $htmlAsset,
-                'start'     => $currentTime,       // Timpul de start al scenei curente
-                'length'    => $scene['duration'], // Durata scenei
-                'transition' => ['in' => 'fade', 'out' => 'fade'], // Tranziții fade (opțional)
+                'start'     => $currentTime,
+                'length'    => $scene['duration'],
+                'transition' => ['in' => 'fade', 'out' => 'fade'],
             ];
 
-            $currentTime += $scene['duration'];  // Trecem la următoarea scenă
+            $currentTime += $scene['duration'];
         }
 
         return $clips;
     }
 
-    /**
-     * Generează clipul pentru logo (watermark).
-     *
-     * @param float $videoDuration Durata totală a videoclipului.
-     * @return array
-     */
     private function generateLogoClip($videoDuration)
     {
         return [
             [
                 'asset' => [
                     'type'  => 'image',
-                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1739911905/logo-transparent_xiqqe0.png', // URL-ul logo-ului
+                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1739911905/logo-transparent_xiqqe0.png',
                 ],
-                'start'  => 0,               // Începe de la începutul videoclipului
-                'length' => $videoDuration,  // Se afișează pe toată durata
-                'fit'    => 'contain',       // Logo-ul este afișat complet, fără crop
-                'position' => 'top',         // Centrat sus
-                'opacity' => 0.5,            // Opacitate 50%
+                'start'  => 0,
+                'length' => $videoDuration,
+                'fit'    => 'contain',
+                'position' => 'top',
+                'opacity' => 0.5,
                 'scale'  => 0.7
             ]
         ];
     }
-
 
     public function checkStatus($renderId)
     {
@@ -293,16 +273,20 @@ class VideoGenerationService
     public function cleanupResources($project)
     {
         try {
-            // Cleanup imagine
-            if ($project->image_cloudinary_id) {
-                Log::info('Attempting to delete image from Cloudinary', [
-                    'image_cloudinary_id' => $project->image_cloudinary_id
-                ]);
-                Cloudinary::destroy($project->image_cloudinary_id);
-                Log::info('Cleaned up image from Cloudinary', [
-                    'project_id' => $project->id,
-                    'cloudinary_id' => $project->image_cloudinary_id
-                ]);
+            // Cleanup imagini
+            if ($project->images && is_array($project->images)) { // Verifică dacă există și este array
+                foreach ($project->images as $image) {
+                    if (isset($image['cloudinary_id'])) { // Verifică dacă există cloudinary_id
+                        Log::info('Attempting to delete image from Cloudinary', [
+                            'image_cloudinary_id' => $image['cloudinary_id']
+                        ]);
+                        Cloudinary::destroy($image['cloudinary_id']);
+                        Log::info('Cleaned up image from Cloudinary', [
+                            'project_id' => $project->id,
+                            'cloudinary_id' => $image['cloudinary_id']
+                        ]);
+                    }
+                }
             }
 
             // Cleanup audio - specifică tipul "video" pentru resursele audio
@@ -320,6 +304,7 @@ class VideoGenerationService
 
             // Update project to clear Cloudinary IDs
             $project->update([
+                'images' => null, // Setam images la null
                 'image_cloudinary_id' => null,
                 'audio_cloudinary_id' => null
             ]);
