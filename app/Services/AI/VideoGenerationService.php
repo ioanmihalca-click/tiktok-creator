@@ -237,7 +237,7 @@ class VideoGenerationService
             [
                 'asset' => [
                     'type'  => 'image',
-                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1739911905/logo-transparent_xiqqe0.png',
+                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1740996260/logo-free_nssz47.png',
                 ],
                 'start'  => 0,
                 'length' => $videoDuration,
