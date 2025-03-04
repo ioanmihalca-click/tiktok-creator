@@ -328,13 +328,7 @@
                                         </optgroup>
                                     @endif
                                 </select>
-                                <div
-                                    class="absolute inset-y-0 right-0 flex items-center px-2 text-purple-400 pointer-events-none">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+
                             </div>
 
                             @if ($creditType !== 'paid' && !empty($availableVoices['premium']))
