@@ -58,22 +58,24 @@ class ScriptGenerationService
 
             $totalDuration = 0;
             foreach ($script['scenes'] as &$scene) {
-                // NU mai ștergem start_time, pentru că s-ar putea să avem nevoie de el
-                // unset($scene['start_time']);
+
                 $words = str_word_count($scene['narration']);
                 $wordsPerSecond = 2.3;
                 $scene['duration'] = max(1, round($words / $wordsPerSecond));
-                $totalDuration += $scene['duration'];
+                $totalDuration += $scene['duration']; // Corect
 
-                // NE ASIGURĂM CĂ AVEM TOATE CÂMPURILE NECESARE, INCLUSIV 'image_prompt'
                 $scene = [
                     'text' => $scene['text'] ?? '',
                     'duration' => $scene['duration'],
                     'narration' => $scene['narration'] ?? '',
-                    'image_prompt' => $scene['image_prompt'] ?? '' // FOARTE IMPORTANT: Promptul pentru imagine!
+                    'image_prompt' => $scene['image_prompt'] ?? ''
                 ];
             }
             unset($scene);
+
+            $script['total_duration'] = $totalDuration; // Corect
+
+            return $script;
 
             $script['total_duration'] = $totalDuration;
 

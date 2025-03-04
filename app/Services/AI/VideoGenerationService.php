@@ -170,61 +170,48 @@ class VideoGenerationService
     private function generateTextClips($script)
     {
         $clips = [];
-        $currentTime = 0; // Initial time
+        $currentTime = 0;
 
         if (!isset($script['scenes']) || !is_array($script['scenes'])) {
             Log::warning('Invalid script format: Missing or invalid "scenes" array.', ['script' => $script]);
             return [];
         }
 
-        foreach ($script['scenes'] as $scene) {
+        foreach ($script['scenes'] as $index => $scene) { // Adăugăm indexul
+            Log::info('Processing text scene', ['index' => $index, 'scene' => $scene]);
+
             if (!isset($scene['text'], $scene['duration'])) {
                 Log::warning('Invalid scene format: Missing required fields.', ['scene' => $scene]);
                 continue;
             }
 
-            $words = explode(" ", $scene['text']);
-            $lines = [];
-            $currentLine = "";
-            $maxLineWidth = 25;
-
-            foreach ($words as $word) {
-                if (strlen($currentLine) + strlen($word) + 1 <= $maxLineWidth) {
-                    $currentLine .= ($currentLine === "" ? "" : " ") . $word;
-                } else {
-                    $lines[] = $currentLine;
-                    $currentLine = $word;
-                }
-            }
-            $lines[] = $currentLine;
-
-
-            $html = '<div style="width: 100%; text-align: center; position: absolute; bottom: 20px;">';
-            foreach ($lines as $line) {
-                $html .= '<p style="margin: 5px 0; padding: 10px; font-size: 40px; font-family: Roboto, sans-serif; color: white; background-color: rgba(0, 0, 0, 0.7); border-radius: 15px; display: inline-block; text-transform: uppercase;">' .
-                    htmlspecialchars($line) .
-                    '</p>';
-            }
+            // Simplificăm HTML-ul și folosim position: absolute *corect*:
+            $html = '<div style="position: absolute; width: 80%; left: 10%; top: 70%;  color: yellow; font-size: 30px; font-family: Arial, sans-serif;  text-align: center; background-color: rgba(0,0,0,0.5);">';
+            $html .= htmlspecialchars($scene['text']); // O singură linie, fără împărțire, fără <p>
             $html .= '</div>';
+
+            Log::info('Text HTML', ['html' => $html]); // Verificăm HTML-ul generat
 
             $htmlAsset = [
                 'type'      => 'html',
                 'html'      => $html,
-                'width'     => 900,
-                'height'    => 500,
+                'width'     => 854, // Setăm lățimea la 854 (pentru 9:16, la rezoluția HD)
+                'height'    => 480, // Setăm înălțimea la 480
                 'background' => 'transparent'
             ];
 
             $clips[] = [
                 'asset'     => $htmlAsset,
-                'start'     => $currentTime, // Use the calculated current time
+                'start'     => $currentTime,
                 'length'    => $scene['duration'],
                 'transition' => ['in' => 'fade', 'out' => 'fade'],
             ];
 
-            $currentTime += $scene['duration']; // Increment current time
+            Log::info('Text clip generated', ['clip' => $clips[$index] ?? null]); // Loghează clipul generat
+            $currentTime += $scene['duration'];
         }
 
+        Log::info('All text clips generated', ['clips' => $clips]);
         return $clips;
     }
 
