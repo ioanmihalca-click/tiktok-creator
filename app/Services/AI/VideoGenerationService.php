@@ -37,37 +37,35 @@ class VideoGenerationService
         try {
             Log::info('Starting video generation', ['project_id' => $videoProject->id]);
 
-            // IMPORTANT: Forțează încărcarea relației images
             $videoProject->load('images');
 
             Log::info('Video project loaded with images', [
                 'project_id' => $videoProject->id,
-                'image_count' => $videoProject->images->count(), // Numărul de imagini
-                'images' => $videoProject->images->toArray() // Toate datele despre imagini
+                'image_count' => $videoProject->images->count(),
+                'images' => $videoProject->images->toArray()
             ]);
-
 
             $script = is_string($videoProject->script) ? json_decode($videoProject->script, true) : $videoProject->script;
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception('Invalid JSON format in videoProject->script: ' . json_last_error_msg());
             }
 
-            $videoDuration = $videoProject->audio_duration ?? (float) ($script['total_duration'] ?? 15) + 2;
+            $videoDuration = $videoProject->audio_duration; // Corect - durata EXACTĂ
 
             $tracks = [];
 
-            // Logo track (if needed)
+            // 1. Adaugă track-ul pentru LOGO (dacă există)
             if ($videoProject->has_watermark) {
                 $tracks[] = ['clips' => $this->generateLogoClip($videoDuration)];
             }
 
-            // Background images track
-            $tracks[] = ['clips' => $this->generateImageClips($videoProject)];
-
-            // Text track
+            // 2. Adaugă track-ul pentru TEXT
             $tracks[] = ['clips' => $this->generateTextClips($script)];
 
-            // Audio track
+            // 3. Adaugă track-ul pentru IMAGINI
+            $tracks[] = ['clips' => $this->generateImageClips($videoProject)];
+
+            // 4. Adaugă track-ul pentru AUDIO
             $tracks[] = ['clips' => $this->generateAudioClip($videoProject, $videoDuration)];
 
 
@@ -82,7 +80,7 @@ class VideoGenerationService
                 'aspectRatio' => '9:16'
             ];
 
-            Log::info('Shotstack timeline', ['timeline' => $timeline]); // Loghează timeline-ul
+            Log::info('Shotstack timeline', ['timeline' => $timeline]);
 
             $response = Http::timeout(120)->withHeaders([
                 'x-api-key'    => $this->apiKey,
@@ -172,7 +170,7 @@ class VideoGenerationService
     private function generateTextClips($script)
     {
         $clips = [];
-        $currentTime = 0;
+        $currentTime = 0; // Initial time
 
         if (!isset($script['scenes']) || !is_array($script['scenes'])) {
             Log::warning('Invalid script format: Missing or invalid "scenes" array.', ['script' => $script]);
@@ -185,13 +183,10 @@ class VideoGenerationService
                 continue;
             }
 
-            // Use the scene's start time if available, otherwise use $currentTime
-            $startTime = isset($scene['start_time']) ? $scene['start_time'] : $currentTime;
-
             $words = explode(" ", $scene['text']);
             $lines = [];
             $currentLine = "";
-            $maxLineWidth = 25; // You can adjust this value
+            $maxLineWidth = 25;
 
             foreach ($words as $word) {
                 if (strlen($currentLine) + strlen($word) + 1 <= $maxLineWidth) {
@@ -201,7 +196,8 @@ class VideoGenerationService
                     $currentLine = $word;
                 }
             }
-            $lines[] = $currentLine; // Add the last line
+            $lines[] = $currentLine;
+
 
             $html = '<div style="width: 100%; text-align: center; position: absolute; bottom: 20px;">';
             foreach ($lines as $line) {
@@ -214,23 +210,24 @@ class VideoGenerationService
             $htmlAsset = [
                 'type'      => 'html',
                 'html'      => $html,
-                'width'     => 900, // Adjust as needed
-                'height'    => 500, // Adjust as needed
+                'width'     => 900,
+                'height'    => 500,
                 'background' => 'transparent'
             ];
 
             $clips[] = [
                 'asset'     => $htmlAsset,
-                'start'     => $startTime, // Use calculated start time
+                'start'     => $currentTime, // Use the calculated current time
                 'length'    => $scene['duration'],
-                'transition' => ['in' => 'fade', 'out' => 'fade'], // Optional transitions
+                'transition' => ['in' => 'fade', 'out' => 'fade'],
             ];
 
-            $currentTime += $scene['duration']; // Increment current time for next clip
+            $currentTime += $scene['duration']; // Increment current time
         }
 
         return $clips;
     }
+
     private function generateLogoClip($videoDuration)
     {
         return [

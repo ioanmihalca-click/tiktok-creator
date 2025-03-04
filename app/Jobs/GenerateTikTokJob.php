@@ -156,12 +156,12 @@ class GenerateTikTokJob implements ShouldQueue
 
             $audioUrl = $narrationResult['audio_url'];
             $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
-            $audioDuration = $narrationResult['audio_duration'];
+            $audioDuration = $narrationResult['audio_duration']; // Durata EXACTĂ (de la getID3)
 
             $project->update([
                 'audio_url' => $audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId,
-                'audio_duration' => $audioDuration,
+                'audio_duration' => $audioDuration, // Salvăm durata EXACTĂ
             ]);
 
 
