@@ -120,10 +120,11 @@ class VideoGenerationService
             $imageClips[] = [
                 'asset' => [
                     'type' => 'image',
-                    'src' => $image->url, // Folosim $image->url
+                    // Folosim corect câmpul cloudinary_id sau construim URL-ul complet dacă este necesar
+                    'src' => $image->cloudinary_id ? "https://res.cloudinary.com/yourcloudname/image/upload/{$image->cloudinary_id}" : null,
                 ],
-                'start' => $image->start, // Folosim $image->start
-                'length' => $image->duration, // Folosim $image->duration
+                'start' => $image->start,
+                'length' => $image->duration,
                 'fit' => 'cover',
                 'effect' => 'zoomIn'
             ];

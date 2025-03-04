@@ -10,7 +10,14 @@ class VideoImage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['video_project_id', 'url', 'cloudinary_id', 'start', 'duration', 'order'];
+    protected $fillable = [
+        'video_project_id',
+        'url',
+        'cloudinary_id',
+        'start',
+        'duration',
+        'order'
+    ];
 
     public function videoProject(): BelongsTo
     {

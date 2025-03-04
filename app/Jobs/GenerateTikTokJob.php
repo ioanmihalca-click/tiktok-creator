@@ -90,10 +90,12 @@ class GenerateTikTokJob implements ShouldQueue
                     $image->delete();
                 }
 
-                $project->update([
+                $project->update([  // <--- Aici era problema!
                     'script' => $script,
-                    'image_cloudinary_id' => null, // Setam la null vechiul camp
-                    'audio_url' => null, // Setam la null inainte de a genera din nou
+                    // ELIMINĂ COMPLET ACESTE LINII:
+                    // 'image_url' => null,          
+                    // 'image_cloudinary_id' => null,
+                    'audio_url' => null, // Corect - setăm la null înainte de generare
                     'audio_cloudinary_id' => null,
                     'audio_duration' => null,
                     'category_id' => $categoryId
@@ -103,7 +105,9 @@ class GenerateTikTokJob implements ShouldQueue
                     'title' => $this->title ?? $categoryName . " TikTok",
                     'script' => $script,
                     'status' => 'processing',
-                    'image_cloudinary_id' => null,
+                    // ELIMINĂ ACESTE LINII:
+                    //'image_url' => null,
+                    //'image_cloudinary_id' => null,
                     'audio_url' => null,
                     'audio_cloudinary_id' => null,
                     'audio_duration' => null,
@@ -134,7 +138,7 @@ class GenerateTikTokJob implements ShouldQueue
                 }
 
                 $project->images()->create([
-
+                    'url' => $imageResult['image_url'],
                     'cloudinary_id' => $imageResult['cloudinary_public_id'],
                     'start' => $startTime,
                     'duration' => $scene['duration'],
@@ -157,7 +161,7 @@ class GenerateTikTokJob implements ShouldQueue
             $audioDuration = $narrationResult['audio_duration'];
 
 
-            $project->update([
+            $project->update([ // Actualizam doar ce e necesar
                 'audio_url' => $audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId,
                 'audio_duration' => $audioDuration,
