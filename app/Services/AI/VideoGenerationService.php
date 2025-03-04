@@ -37,28 +37,39 @@ class VideoGenerationService
         try {
             Log::info('Starting video generation', ['project_id' => $videoProject->id]);
 
+            // IMPORTANT: Forțează încărcarea relației images
+            $videoProject->load('images');
+
+            Log::info('Video project loaded with images', [
+                'project_id' => $videoProject->id,
+                'image_count' => $videoProject->images->count(), // Numărul de imagini
+                'images' => $videoProject->images->toArray() // Toate datele despre imagini
+            ]);
+
+
             $script = is_string($videoProject->script) ? json_decode($videoProject->script, true) : $videoProject->script;
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception('Invalid JSON format in videoProject->script: ' . json_last_error_msg());
             }
 
-            // Folosim durata audio REALĂ, dacă există
             $videoDuration = $videoProject->audio_duration ?? (float) ($script['total_duration'] ?? 15) + 2;
 
             $tracks = [];
 
+            // Logo track (if needed)
             if ($videoProject->has_watermark) {
                 $tracks[] = ['clips' => $this->generateLogoClip($videoDuration)];
             }
 
-            // MODIFICARE MAJORĂ AICI: Creăm clipurile pentru imagini și text *împreună*
-            $tracks[] = [
-                'clips' => array_merge(
-                    $this->generateImageClips($videoProject), // Folosim metoda corectată
-                    $this->generateTextClips($script),
-                    $this->generateAudioClip($videoProject, $videoDuration)
-                )
-            ];
+            // Background images track
+            $tracks[] = ['clips' => $this->generateImageClips($videoProject)];
+
+            // Text track
+            $tracks[] = ['clips' => $this->generateTextClips($script)];
+
+            // Audio track
+            $tracks[] = ['clips' => $this->generateAudioClip($videoProject, $videoDuration)];
+
 
             $timeline = [
                 'background' => '#000000',
@@ -70,6 +81,8 @@ class VideoGenerationService
                 'resolution'  => 'hd',
                 'aspectRatio' => '9:16'
             ];
+
+            Log::info('Shotstack timeline', ['timeline' => $timeline]); // Loghează timeline-ul
 
             $response = Http::timeout(120)->withHeaders([
                 'x-api-key'    => $this->apiKey,
@@ -87,9 +100,7 @@ class VideoGenerationService
 
             Log::info('Video render started', [
                 'project_id' => $videoProject->id,
-                'render_id'  => $renderId,
-                'timeline'   => $timeline,
-                'output'     => $output
+                'render_id'  => $renderId
             ]);
 
             return [
@@ -100,7 +111,7 @@ class VideoGenerationService
             Log::error('Video generation failed', [
                 'error'      => $e->getMessage(),
                 'project_id' => $videoProject->id,
-                'timeline'   => $timeline ?? null,
+                'timeline'   => $timeline ?? null,  // Loghează timeline-ul și în caz de eroare
                 'output'     => $output ?? null
             ]);
 
@@ -115,19 +126,33 @@ class VideoGenerationService
     {
         $imageClips = [];
 
-        // Folosim relația $videoProject->images:
-        foreach ($videoProject->images as $image) { // $image este acum un obiect VideoImage
+        Log::info('Generating image clips', [
+            'project_id' => $videoProject->id,
+            'image_count' => $videoProject->images->count() // Numărul de imagini
+        ]);
+
+        foreach ($videoProject->images as $image) {
+            Log::info('Processing image for clip', [
+                'image_id' => $image->id,
+                'url' => $image->url,
+                'start' => $image->start,
+                'duration' => $image->duration
+            ]);
+
             $imageClips[] = [
                 'asset' => [
                     'type' => 'image',
-                    'src' => $image->url, // Folosim $image->url
+                    'src' => $image->url,
                 ],
-                'start' => $image->start, // Folosim $image->start
-                'length' => $image->duration, // Folosim $image->duration
+                'start' => $image->start,
+                'length' => $image->duration,
                 'fit' => 'cover',
                 'effect' => 'zoomIn'
             ];
         }
+        Log::info('Image clips generated', [
+            'clip_count' => count($imageClips) // Numărul de clipuri generate
+        ]);
 
         return $imageClips;
     }
@@ -160,10 +185,13 @@ class VideoGenerationService
                 continue;
             }
 
+            // Use the scene's start time if available, otherwise use $currentTime
+            $startTime = isset($scene['start_time']) ? $scene['start_time'] : $currentTime;
+
             $words = explode(" ", $scene['text']);
             $lines = [];
             $currentLine = "";
-            $maxLineWidth = 25;
+            $maxLineWidth = 25; // You can adjust this value
 
             foreach ($words as $word) {
                 if (strlen($currentLine) + strlen($word) + 1 <= $maxLineWidth) {
@@ -173,7 +201,7 @@ class VideoGenerationService
                     $currentLine = $word;
                 }
             }
-            $lines[] = $currentLine;
+            $lines[] = $currentLine; // Add the last line
 
             $html = '<div style="width: 100%; text-align: center; position: absolute; bottom: 20px;">';
             foreach ($lines as $line) {
@@ -186,24 +214,23 @@ class VideoGenerationService
             $htmlAsset = [
                 'type'      => 'html',
                 'html'      => $html,
-                'width'     => 900,
-                'height'    => 500,
+                'width'     => 900, // Adjust as needed
+                'height'    => 500, // Adjust as needed
                 'background' => 'transparent'
             ];
 
             $clips[] = [
                 'asset'     => $htmlAsset,
-                'start'     => $currentTime,
+                'start'     => $startTime, // Use calculated start time
                 'length'    => $scene['duration'],
-                'transition' => ['in' => 'fade', 'out' => 'fade'],
+                'transition' => ['in' => 'fade', 'out' => 'fade'], // Optional transitions
             ];
 
-            $currentTime += $scene['duration'];
+            $currentTime += $scene['duration']; // Increment current time for next clip
         }
 
         return $clips;
     }
-
     private function generateLogoClip($videoDuration)
     {
         return [
@@ -221,7 +248,6 @@ class VideoGenerationService
             ]
         ];
     }
-
     public function checkStatus($renderId)
     {
         try {
@@ -297,12 +323,8 @@ class VideoGenerationService
                 ]);
             }
 
-            // Update project to clear Cloudinary IDs
-
             $project->update([
-
-                'image_cloudinary_id' => null,
-                'audio_cloudinary_id' => null
+                'audio_cloudinary_id' => null // Doar audio_cloudinary_id trebuie setat la null aici
             ]);
 
             return true;
