@@ -552,6 +552,12 @@
                             <li class="flex items-center gap-3">
                                 <i
                                     class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
+                                <span class="transition-colors duration-300 group-hover:text-gray-300">O voce de
+                                    narare</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i
+                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
                                 <span class="transition-colors duration-300 group-hover:text-gray-300">Rezoluție
                                     720p</span>
                             </li>
@@ -561,12 +567,7 @@
                                 <span class="transition-colors duration-300 group-hover:text-gray-300">Watermark
                                     inclus</span>
                             </li>
-                            <li class="flex items-center gap-3">
-                                <i
-                                    class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-110"></i>
-                                <span class="transition-colors duration-300 group-hover:text-gray-300">Acces la
-                                    funcțiile de bază</span>
-                            </li>
+
                         </ul>
                         <a href="{{ route('register') }}"
                             class="relative block w-full px-6 py-3 overflow-hidden text-lg font-medium text-center text-white transition-all duration-300 rounded-xl bg-white/10 hover:bg-white/20 hover:shadow-lg hover:shadow-white/5 group-hover:bg-gradient-to-r group-hover:from-purple-600/80 group-hover:to-blue-600/80">
@@ -602,7 +603,7 @@
                             <li class="flex items-center gap-3">
                                 <i
                                     class="text-green-400 transition-transform duration-300 ri-checkbox-circle-fill group-hover:scale-125"></i>
-                                <span class="text-gray-300">Mai multe voci și accente</span>
+                                <span class="text-gray-300">5 voci de narare</span>
                             </li>
                             <li class="flex items-center gap-3">
                                 <i
