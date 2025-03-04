@@ -43,4 +43,9 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
+
+    'replicate' => [
+        'key' => env('REPLICATE_API_TOKEN'),
+        'webhook_secret' => env('REPLICATE_WEBHOOK_SECRET'),
+    ],
 ];

@@ -4,9 +4,7 @@ use App\Livewire\TikTokList;
 use App\Livewire\CreateTikTok;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CreditController;
-use App\Http\Controllers\StripeWebhookController;
-use App\Http\Controllers\SubscriberController;
-use App\Http\Controllers\VideoDownloadController;
+use App\Http\Controllers\ReplicateWebhookController;
 
 // Ruta publică pentru pagina de start
 Route::get('/', function () {
@@ -38,5 +36,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/history', [CreditController::class, 'history'])->name('credits.history');
     });
 });
+
+// Rutele pentru webhook-uri
+
+Route::post('/api/replicate-webhook', [ReplicateWebhookController::class, 'handle']);
 
 require __DIR__ . '/auth.php';

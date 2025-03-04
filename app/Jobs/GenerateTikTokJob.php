@@ -81,26 +81,37 @@ class GenerateTikTokJob implements ShouldQueue
             // MODIFICĂRI AICI: Iterăm prin scene și generăm imaginile
             $images = [];
             foreach ($script['scenes'] as $index => $scene) {
+                Log::info("Processing scene {$index}", ['scene' => $scene]);
+
                 if (empty($scene['image_prompt'])) {
                     throw new Exception("Image prompt for scene {$index} is missing");
                 }
 
-                $imageResult = $imageService->generateImage($scene['image_prompt']);
+                $imageResult = $imageService->generateImage($scene['image_prompt']); // Apelăm noua metodă
+
+                Log::info("Image generation result for scene {$index}", ['result' => $imageResult]);
+
                 if (!$imageResult['success']) {
                     throw new Exception("Image generation failed for scene {$index}: " . ($imageResult['error'] ?? 'Unknown error'));
                 }
 
-                // Stocăm informațiile despre imagine într-un array asociativ
+                // STOCĂM prediction_id ÎN ARRAY-UL DE IMAGINI!
                 $images[] = [
-                    'url' => $imageResult['image_url'],
-                    'cloudinary_id' => $imageResult['cloudinary_public_id'],
-                    'start' => $index === 0 ? 0 : $script['scenes'][$index - 1]['duration'], // Calculate start time
+                    'prediction_id' => $imageResult['prediction_id'], // Foarte important!
+                    'url' => null, // Inițializăm cu null
+                    'cloudinary_id' => null, // Inițializăm cu null
+                    'start' => $index === 0 ? 0 : $script['scenes'][$index - 1]['duration'],
                     'duration' => $scene['duration']
                 ];
                 if ($index > 0) {
                     $images[$index]['start'] +=  $images[$index - 1]['start'];
                 }
             }
+            // Stocăm prediction ID-ul *ultimei* imagini generate în VideoProject (opțional, dar util)
+            //$project->update(['temp_prediction_id' => $imageResult['prediction_id']]);
+
+
+            Log::info('Images generated', ['images' => $images]);
 
 
             $fullNarration = '';
