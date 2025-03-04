@@ -41,6 +41,7 @@ class GenerateTikTokJob implements ShouldQueue
     protected $categorySlug;
     protected $title;
     protected $existingProjectId;
+    protected $voiceId;
 
     /**
      * Create a new job instance.
@@ -51,12 +52,13 @@ class GenerateTikTokJob implements ShouldQueue
      * @param int|null $existingProjectId ID-ul unui proiect existent
      * @return void
      */
-    public function __construct(User $user, string $categorySlug, ?string $title = null, ?int $existingProjectId = null)
+    public function __construct(User $user, string $categorySlug, ?string $title = null, ?int $existingProjectId = null, ?string $voiceId = null)
     {
         $this->user = $user;
         $this->categorySlug = $categorySlug;
         $this->title = $title;
         $this->existingProjectId = $existingProjectId;
+        $this->voiceId = $voiceId;
     }
 
     /**
@@ -129,7 +131,7 @@ class GenerateTikTokJob implements ShouldQueue
                 $fullNarration .= $scene['narration'] . " ";
             }
 
-            $narrationResult = $narrationService->generate($fullNarration);
+            $narrationResult = $narrationService->generate($fullNarration, $this->voiceId);
             if ($narrationResult['status'] !== 'success') {
                 throw new Exception("Narration generation failed");
             }

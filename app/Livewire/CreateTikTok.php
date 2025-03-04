@@ -3,16 +3,17 @@
 namespace App\Livewire;
 
 use Exception;
+use App\Models\User;
 use Livewire\Component;
+use App\Models\VideoProject;
 use App\Jobs\GenerateTikTokJob;
+use App\Services\CreditService;
 use App\Jobs\CheckTikTokStatusJob;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\AI\CategoryService;
-use App\Services\CreditService;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\VideoProject;
+use App\Services\AI\NarrationService;
 use App\Models\UserCredit; // Asigură-te că ai acest import!
 
 
@@ -34,16 +35,21 @@ class CreateTikTok extends Component
     public bool $initialProcessingComplete = false;
 
     private CategoryService $categoryService;
-    private CreditService $creditService; // Corect
+    private CreditService $creditService;
+    private NarrationService $narrationService;
 
-    public bool $hasCredits = false; // Corect
-    public string $creditType = ''; // Corect
+    public bool $hasCredits = false;
+    public string $creditType = '';
+
+    public $availableVoices = [];
+    public $selectedVoiceId = null;
 
 
-    public function boot(CategoryService $categoryService, CreditService $creditService) // Folosim boot()
+    public function boot(CategoryService $categoryService, CreditService $creditService, NarrationService $narrationService)
     {
         $this->categoryService = $categoryService;
         $this->creditService = $creditService;
+        $this->narrationService = $narrationService;
     }
 
     public function mount()
@@ -65,6 +71,14 @@ class CreateTikTok extends Component
 
                 $this->creditType = $this->creditService->checkCreditType($user);
                 $this->hasCredits = (bool) $this->creditType;
+
+                // Încarcă vocile disponibile
+                $this->availableVoices = $this->creditService->getAvailableVoices($user, $this->narrationService);
+
+                // Setează vocea implicită
+                if (!empty($this->availableVoices['free'])) {
+                    $this->selectedVoiceId = $this->availableVoices['free'][0]['voice_id'];
+                }
 
 
                 $lastProject = $user->videoProjects()
@@ -141,7 +155,8 @@ class CreateTikTok extends Component
             $this->projectId = $initialProject->id;
 
             // Dispatch job-ul pentru generarea TikTok
-            GenerateTikTokJob::dispatch($user, $this->categorySlug, $this->title, $initialProject->id);
+
+            GenerateTikTokJob::dispatch($user, $this->categorySlug, $this->title, $initialProject->id, $this->selectedVoiceId);
 
             // Nu mai schimbăm currentStep aici - rămâne în starea inițială
             // Pentru a permite vizualizarea modalului pentru o perioadă mai lungă de timp

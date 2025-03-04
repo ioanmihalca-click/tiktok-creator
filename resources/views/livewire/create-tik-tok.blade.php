@@ -286,6 +286,54 @@
                     </div>
                 </div>
 
+                <!-- Voci premium -->
+                <div class="p-6 mt-8 border rounded-xl bg-white/5 backdrop-blur-sm border-white/10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-200">
+                            <span class="flex items-center gap-3">
+                                <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                                </svg>
+                                Opțiuni de narare
+                            </span>
+                        </h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm text-gray-400">Voce pentru narare</label>
+                            <select wire:model="selectedVoiceId"
+                                class="w-full px-4 py-3 mt-1 text-white transition-all duration-200 border bg-white/5 border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                @foreach ($availableVoices['free'] as $voice)
+                                    <option value="{{ $voice['voice_id'] }}">{{ $voice['name'] }} (Gratuit)</option>
+                                @endforeach
+
+                                @if ($creditType === 'paid' && !empty($availableVoices['premium']))
+                                    <optgroup label="Voci Premium">
+                                        @foreach ($availableVoices['premium'] as $voice)
+                                            <option value="{{ $voice['voice_id'] }}">{{ $voice['name'] }} (Premium)
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
+                            </select>
+
+                            @if ($creditType !== 'paid' && !empty($availableVoices['premium']))
+                                <p class="mt-2 text-sm text-yellow-400">
+                                    <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Pentru a accesa voci premium, achiziționează un pachet premium.
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Generate Button & Loading State -->
                 <div class="relative mt-8">
                     <button type="button" wire:click="generate"

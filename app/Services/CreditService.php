@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\CreditTransaction;
 use Illuminate\Support\Facades\DB;
+use App\Services\AI\NarrationService;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 
 class CreditService
@@ -73,5 +74,17 @@ class CreditService
     {
         $creditType = $this->checkCreditType($user);
         return $creditType === 'free';
+    }
+
+    // Metodă pentru a determina vocile disponibile
+    public function getAvailableVoices(User $user, NarrationService $narrationService)
+    {
+        $creditType = $this->checkCreditType($user);
+
+        if ($creditType === 'paid') {
+            return $narrationService->getAvailableVoices(true); // Include vocile premium
+        } else {
+            return $narrationService->getAvailableVoices(false); // Doar vocile gratuite
+        }
     }
 }

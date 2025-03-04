@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use getID3; 
+use getID3;
 
 class NarrationService
 {
@@ -15,13 +15,27 @@ class NarrationService
     protected $baseUrl = 'https://api.elevenlabs.io/v1';
     protected $defaultVoiceId = 'S98OhkhaxeAKHEbhoLi7';
 
+    private $freeVoiceIds = [
+        'S98OhkhaxeAKHEbhoLi7' // Vocea implicită curentă
+    ];
+
+    private $premiumVoiceIds = [
+        'premium_voice_id_1',
+        'premium_voice_id_2',
+        'premium_voice_id_3',
+        'premium_voice_id_4',
+    ];
+
     public function __construct()
     {
         $this->apiKey = config('services.elevenlabs.key');
     }
 
-    public function generate(string $text, string $voiceId = null): array
+    public function generate(string $text, ?string $voiceId = null): array
     {
+        // Folosește vocea implicită dacă nu este specificat un ID
+        $voiceId = $voiceId ?? $this->defaultVoiceId;
+
         try {
             Log::info('Starting narration generation', ['text' => $text]);
 
@@ -78,7 +92,6 @@ class NarrationService
                 'cloudinary_public_id' => $uploadResult->getPublicId(),
                 'audio_duration' => $audioDuration // Returnăm și durata!
             ];
-
         } catch (Exception $e) {
             Log::error('Narration generation failed', [
                 'error' => $e->getMessage(),
@@ -88,9 +101,9 @@ class NarrationService
         }
     }
 
-    public function getAvailableVoices(): array
+    public function getAvailableVoices(bool $includePremium = false): array
     {
-        return cache()->remember('elevenlabs_voices', 3600, function () {
+        $voices = cache()->remember('elevenlabs_voices', 3600, function () {
             try {
                 $response = Http::withHeaders([
                     'xi-api-key' => $this->apiKey
@@ -106,5 +119,20 @@ class NarrationService
                 return [];
             }
         });
+
+        $result = [
+            'free' => [],
+            'premium' => []
+        ];
+
+        foreach ($voices as $voice) {
+            if (in_array($voice['voice_id'], $this->freeVoiceIds)) {
+                $result['free'][] = $voice;
+            } elseif (in_array($voice['voice_id'], $this->premiumVoiceIds)) {
+                $result['premium'][] = $voice;
+            }
+        }
+
+        return $includePremium ? $result : ['free' => $result['free']];
     }
 }
