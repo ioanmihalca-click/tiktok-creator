@@ -287,7 +287,7 @@
                 </div>
 
                 <!-- Voci narare -->
-                <div class="p-6 mx-auto mt-8 border rounded-xl bg-white/5 backdrop-blur-sm border-white/10">
+                <div class="p-6 mt-8 border rounded-xl bg-white/5 backdrop-blur-sm border-white/10">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-lg font-medium text-gray-200">
                             <span class="flex items-center gap-3">
