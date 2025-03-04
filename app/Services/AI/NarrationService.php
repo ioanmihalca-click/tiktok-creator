@@ -20,10 +20,10 @@ class NarrationService
     ];
 
     private $premiumVoiceIds = [
-        'premium_voice_id_1',
-        'premium_voice_id_2',
-        'premium_voice_id_3',
-        'premium_voice_id_4',
+        'OlBp4oyr3FBAGEAtJOnU',
+        'gbLy9ep70G3JW53cTzFC',
+        '4zwat5xS9O6SetLUEbxv',
+        'KxGkxCicfy28RgQTZuHk',
     ];
 
     public function __construct()

@@ -304,32 +304,63 @@
                     <div class="space-y-4">
                         <div>
                             <label class="text-sm text-gray-400">Voce pentru narare</label>
-                            <select wire:model="selectedVoiceId"
-                                class="w-full px-4 py-3 mt-1 text-white transition-all duration-200 border bg-white/5 border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                @foreach ($availableVoices['free'] as $voice)
-                                    <option value="{{ $voice['voice_id'] }}">{{ $voice['name'] }} (Gratuit)</option>
-                                @endforeach
-
-                                @if ($creditType === 'paid' && !empty($availableVoices['premium']))
-                                    <optgroup label="Voci Premium">
-                                        @foreach ($availableVoices['premium'] as $voice)
-                                            <option value="{{ $voice['voice_id'] }}">{{ $voice['name'] }} (Premium)
+                            <div class="relative">
+                                <select wire:model="selectedVoiceId"
+                                    class="block w-full px-4 py-3 mt-1 text-white transition-all duration-200 border appearance-none bg-gray-800/80 border-purple-500/30 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <optgroup label="Voci Gratuite" class="text-white bg-gray-800">
+                                        @foreach ($availableVoices['free'] as $voice)
+                                            <option value="{{ $voice['voice_id'] }}"
+                                                class="px-2 py-1 text-white bg-gray-800">
+                                                {{ $voice['name'] }} (Gratuit)
                                             </option>
                                         @endforeach
                                     </optgroup>
-                                @endif
-                            </select>
+
+                                    @if ($creditType === 'paid' && !empty($availableVoices['premium']))
+                                        <optgroup label="Voci Premium"
+                                            class="font-medium text-purple-300 bg-gray-800">
+                                            @foreach ($availableVoices['premium'] as $voice)
+                                                <option value="{{ $voice['voice_id'] }}"
+                                                    class="px-2 py-1 text-purple-300 bg-gray-800">
+                                                    {{ $voice['name'] }} (Premium)
+                                                </option>
+                                            @endforeach
+                                        </optgroup>
+                                    @endif
+                                </select>
+                                <div
+                                    class="absolute inset-y-0 right-0 flex items-center px-2 text-purple-400 pointer-events-none">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
 
                             @if ($creditType !== 'paid' && !empty($availableVoices['premium']))
-                                <p class="mt-2 text-sm text-yellow-400">
-                                    <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Pentru a accesa voci premium, achiziționează un pachet premium.
-                                </p>
+                                <div class="p-3 mt-3 border rounded-lg bg-yellow-900/20 border-yellow-500/20">
+                                    <p class="flex items-start gap-2 text-sm text-yellow-400">
+                                        <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none"
+                                            stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Pentru a accesa voci premium, achiziționează un pachet premium.</span>
+                                    </p>
+                                </div>
                             @endif
+                            <p class="mt-2 text-sm text-yellow-400">
+                                <svg class="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                @if ($creditType === 'paid')
+                                    Folosești voci premium, beneficiu inclus în pachetele plătite.
+                                @else
+                                    Pentru a accesa voci premium, achiziționează un pachet premium.
+                                @endif
+                            </p>
                         </div>
                     </div>
                 </div>
