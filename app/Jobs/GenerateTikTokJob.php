@@ -90,12 +90,10 @@ class GenerateTikTokJob implements ShouldQueue
                     $image->delete();
                 }
 
-                $project->update([  // <--- Aici era problema!
+                $project->update([
                     'script' => $script,
-                    // ELIMINĂ COMPLET ACESTE LINII:
-                    // 'image_url' => null,          
-                    // 'image_cloudinary_id' => null,
-                    'audio_url' => null, // Corect - setăm la null înainte de generare
+
+                    'audio_url' => null,
                     'audio_cloudinary_id' => null,
                     'audio_duration' => null,
                     'category_id' => $categoryId
@@ -105,9 +103,7 @@ class GenerateTikTokJob implements ShouldQueue
                     'title' => $this->title ?? $categoryName . " TikTok",
                     'script' => $script,
                     'status' => 'processing',
-                    // ELIMINĂ ACESTE LINII:
-                    //'image_url' => null,
-                    //'image_cloudinary_id' => null,
+
                     'audio_url' => null,
                     'audio_cloudinary_id' => null,
                     'audio_duration' => null,

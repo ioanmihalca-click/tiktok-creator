@@ -16,6 +16,7 @@ return new class extends Migration
             $table->json('settings')->nullable();
             $table->string('status')->default('draft');
             $table->string('audio_url')->nullable();
+            $table->string('audio_cloudinary_id')->nullable();
             $table->string('video_url')->nullable();
             $table->timestamps();
             $table->softDeletes();
