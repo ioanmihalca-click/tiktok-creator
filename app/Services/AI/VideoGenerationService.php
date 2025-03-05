@@ -138,8 +138,31 @@ class VideoGenerationService
     private function generateImageClips($videoProject)
     {
         $imageClips = [];
+        $imageCount = count($videoProject->images);
 
-        foreach ($videoProject->images as $image) {
+        foreach ($videoProject->images as $index => $image) {
+            // Determine which transition to use based on image position
+            $transition = null;
+
+            if ($index < $imageCount - 1) { // Not the last image
+                if ($index % 2 == 0) { // Even index (first, third, etc.)
+                    $transition = [
+                        'in' => 'fade',
+                        'out' => 'shuffleTopRight'
+                    ];
+                } else { // Odd index (second, fourth, etc.)
+                    $transition = [
+                        'in' => 'fade',
+                        'out' => 'shuffleTopLeft'
+                    ];
+                }
+            } else {
+                // Last image only has in transition
+                $transition = [
+                    'in' => 'fade',
+                    'out' => 'fade'
+                ];
+            }
 
             $imageClips[] = [
                 'asset' => [
@@ -149,7 +172,8 @@ class VideoGenerationService
                 'start' => $image->start,
                 'length' => $image->duration,
                 'fit' => 'cover',
-                'effect' => 'zoomIn'
+                'effect' => 'zoomIn',
+                'transition' => $transition
             ];
         }
 
