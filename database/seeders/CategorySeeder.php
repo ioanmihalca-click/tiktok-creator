@@ -305,7 +305,7 @@ class CategorySeeder extends Seeder
                         'subcategories' => [
                             'lectii-gramatica' => ['name' => 'De gramatică', 'description' => 'Mini-lecții de gramatică.'],
                             'lectii-cultura' => ['name' => 'De cultură generală', 'description' => 'Mini-lecții de cultură generală.'],
-                            'lectii-istorie' => ['name' => 'De istorie', 'description' => 'Mini-lecții de istorie.'],
+                            'lectii-istorie-românia' => ['name' => 'Istoria României', 'description' => 'Mini-lecții de istoria României.'],
                             'lectii-geografie' => ['name' => 'De geografie', 'description' => 'Mini-lecții de geografie.'],
 
                         ]
@@ -361,16 +361,6 @@ class CategorySeeder extends Seeder
             ],
 
 
-
-            // 'drama-gossip' => [
-            //     'name' => 'Drama & Gossip',
-            //     'description' => 'Imagine intrigantă cu poveste narată.',
-            //     'subcategories' => [
-            //         'povesti-scandal' => ['name' => 'Povești de Scandal', 'description' => 'Scenă dramatică (ex. ceartă) cu twist.'],
-            //         'secrete' => ['name' => 'Secrete Dezvăluite', 'description' => 'Obiect misterios, ton captivant.']
-            //     ]
-            // ],
-
             'fitness-rapid' => [
                 'name' => 'Fitness Rapid',
                 'description' => 'Imagine cu tematică sănătoasă și sfat narat.',
@@ -379,20 +369,6 @@ class CategorySeeder extends Seeder
                     'exercitii' => ['name' => 'Exerciții Simple', 'description' => 'Gantere, poziție yoga, voce clară.']
                 ]
             ],
-
-            // 'diy-simplu' => [
-            //     'name' => 'DIY Simplu',
-            //     'description' => 'Imagine cu materiale sau rezultat și instrucțiuni narate.',
-            //     'subcategories' => [
-            //         'decor' => ['name' => 'Decor cu 5 Lei', 'description' => 'Floare din hârtie, ton creativ.'],
-            //         'organizare' => ['name' => 'Hacks de Organizare', 'description' => 'Cutie decorată, voce practică.'],
-            //         'moda-diy' => ['name' => 'Modă DIY', 'description' => 'Transformări de haine, accesorii hand-made, personalizări simple.'],
-            //         'cadouri-diy' => ['name' => 'Cadouri DIY', 'description' => 'Idei de cadouri făcute manual, ambalaje creative.'],
-            //         'reciclare-creativa' => ['name' => 'Reciclare Creativă', 'description' => 'Transformarea obiectelor vechi în obiecte utile sau decorative.'],
-            //         'gradinarit-urban' => ['name' => 'Grădinărit Urban', 'description' => 'Plante în spații mici, ghivece creative, mini-grădini.'],
-
-            //     ]
-            // ],
 
             'liste' => [
                 'name' => 'Liste (Top-uri)',
