@@ -37,7 +37,7 @@ class NarrationService
         $voiceId = $voiceId ?? $this->defaultVoiceId;
 
         try {
-            Log::info('Starting narration generation', ['text' => $text]);
+
 
             $voiceId = $voiceId ?? $this->defaultVoiceId;
 
@@ -65,17 +65,11 @@ class NarrationService
             file_put_contents($tempFile, $response->body());
 
             // OBȚINEM DURATA REALĂ:
-            // În NarrationService.php, la calcularea duratei audio
+
             $getID3 = new getID3;
             $fileInfo = $getID3->analyze($tempFile);
             $audioDuration = $fileInfo['playtime_seconds']; // Durata în secunde
 
-            // Adaugă acest log
-            Log::info('Audio duration calculated by getID3', [
-                'duration' => $audioDuration,
-                'duration_type' => gettype($audioDuration),
-                'fileInfo_keys' => array_keys($fileInfo)
-            ]);
 
             // Setăm timeout mai mare pentru Cloudinary
             Config::set('cloudinary.upload_timeout', 60);
@@ -88,16 +82,6 @@ class NarrationService
             ]);
 
             unlink($tempFile); // Ștergem fișierul temporar
-
-            Log::info('Narration uploaded to Cloudinary', [
-                'cloudinary_url' => $uploadResult->getSecurePath()
-            ]);
-
-            Log::info('Returning narration result with duration', [
-                'audio_duration' => $audioDuration,
-                'audio_duration_exists' => isset($audioDuration)
-            ]);
-
 
             return [
                 'status' => 'success',

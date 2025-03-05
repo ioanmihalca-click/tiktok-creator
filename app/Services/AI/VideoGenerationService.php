@@ -35,15 +35,8 @@ class VideoGenerationService
         $this->setEnvironment($videoProject->environment_type);
 
         try {
-            Log::info('Starting video generation', ['project_id' => $videoProject->id]);
 
             $videoProject->load('images');
-
-            Log::info('Video project loaded with images', [
-                'project_id' => $videoProject->id,
-                'image_count' => $videoProject->images->count(),
-                'images' => $videoProject->images->toArray()
-            ]);
 
             $script = is_string($videoProject->script) ? json_decode($videoProject->script, true) : $videoProject->script;
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -62,12 +55,6 @@ class VideoGenerationService
                 foreach ($script['scenes'] as &$scene) {
                     $scene['duration'] = $baseDuration;
                 }
-
-                Log::info('Set equal scene durations based on audio length', [
-                    'audio_duration' => $videoDuration,
-                    'scene_count' => $sceneCount,
-                    'duration_per_scene' => $baseDuration
-                ]);
             }
 
             // Verifică dacă durata este validă
@@ -115,8 +102,6 @@ class VideoGenerationService
                 'aspectRatio' => '9:16'
             ];
 
-            Log::info('Shotstack timeline', ['timeline' => $timeline]);
-
             $response = Http::timeout(120)->withHeaders([
                 'x-api-key'    => $this->apiKey,
                 'Content-Type' => 'application/json'
@@ -130,11 +115,6 @@ class VideoGenerationService
             }
 
             $renderId = $response->json()['response']['id'];
-
-            Log::info('Video render started', [
-                'project_id' => $videoProject->id,
-                'render_id'  => $renderId
-            ]);
 
             return [
                 'success'   => true,
@@ -159,18 +139,7 @@ class VideoGenerationService
     {
         $imageClips = [];
 
-        Log::info('Generating image clips', [
-            'project_id' => $videoProject->id,
-            'image_count' => $videoProject->images->count() // Numărul de imagini
-        ]);
-
         foreach ($videoProject->images as $image) {
-            Log::info('Processing image for clip', [
-                'image_id' => $image->id,
-                'url' => $image->url,
-                'start' => $image->start,
-                'duration' => $image->duration
-            ]);
 
             $imageClips[] = [
                 'asset' => [
@@ -183,9 +152,6 @@ class VideoGenerationService
                 'effect' => 'zoomIn'
             ];
         }
-        Log::info('Image clips generated', [
-            'clip_count' => count($imageClips) // Numărul de clipuri generate
-        ]);
 
         return $imageClips;
     }
@@ -268,8 +234,6 @@ class VideoGenerationService
         // Convertește și validează durata
         $duration = is_numeric($videoDuration) ? (float)$videoDuration : 0;
         $duration = max(0.1, $duration);
-
-        Log::info('Generating logo clip with duration', ['duration' => $duration]);
 
         return [
             [

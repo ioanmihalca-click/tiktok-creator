@@ -12,7 +12,6 @@ class ScriptGenerationService
     public function generate(string $fullCategoryPath, ?int $userId = null)
     {
         try {
-            Log::info('Starting script generation', ['category' => $fullCategoryPath, 'user_id' => $userId]);
 
             $previousPrompts = $this->getPreviousPromptsForCategory($fullCategoryPath, $userId);
             $systemPrompt = $this->getSystemPrompt();
@@ -40,7 +39,6 @@ class ScriptGenerationService
             ]);
 
             $content = $result->content[0]->text;
-            Log::info('Script generated successfully', ['content' => $content]);
 
             $script = json_decode($content, true);
 
@@ -145,7 +143,7 @@ Ești un creator de conținut expert în realizarea de scripturi virale pentru T
 
 **IMPORTANT PENTRU IMAGINI:
 - Toate prompturile pentru imagini trebuie să fie în limba engleză
-- Adaugă întotdeauna 'no text' și 'no people' în prompturile pentru imagini
+- Adaugă întotdeauna 'no text' în prompturile pentru imagini
 - Asigură-te că imaginile sunt potrivite pentru conținutul TikTok**
 
 Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea structură:
@@ -155,19 +153,19 @@ Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea stru
             "text": "textul care apare pe ecran",
             "duration": durata în secunde,
             "narration": "textul pentru narare",
-            "image_prompt": "prompt în engleză pentru generarea imaginii CU 'no text, no people'"
+            "image_prompt": "prompt în engleză pentru generarea imaginii CU 'no text'"
         },
         {
             "text": "textul care apare pe ecran pentru scena 2",
             "duration": durata în secunde,
             "narration": "textul pentru narare pentru scena 2",
-            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 2 CU 'no text, no people'"
+            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 2 CU 'no text'"
         },
         {
             "text": "textul care apare pe ecran pentru scena 3",
             "duration": durata în secunde,
             "narration": "textul pentru narare pentru scena 3",
-            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 3 'no text, no people'"
+            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 3 'no text'"
         }
     ],
     "hashtags": ["#tag1", "#tag2"]

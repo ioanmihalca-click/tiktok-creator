@@ -16,7 +16,7 @@ class ImageGenerationService
     public function generateImage(string $prompt)
     {
         try {
-            Log::info('Starting image generation with Replicate', ['prompt' => $prompt]);
+
 
             $prediction = Replicate::createModelPrediction(
                 $this->modelOwner,
@@ -37,7 +37,7 @@ class ImageGenerationService
             );
 
             $predictionId = $prediction['id'];
-            Log::info('Replicate prediction created', ['prediction_id' => $predictionId]);
+
 
             $maxAttempts = 30;
             $attempts = 0;
@@ -47,7 +47,7 @@ class ImageGenerationService
                 $attempts++;
 
                 $result = Replicate::getPrediction($predictionId);
-                Log::info("Polling attempt {$attempts}", ['result' => $result]);
+
 
                 if (isset($result['status']) && $result['status'] === 'succeeded' && isset($result['output'][0])) {
                     $imageUrl = $result['output'][0];
@@ -64,7 +64,6 @@ class ImageGenerationService
                             'resource_type' => 'image'
                         ]);
 
-                        Log::info('Image uploaded to Cloudinary', ['cloudinary_url' => $uploadResult->getSecurePath()]);
 
                         return [
                             'success' => true,
