@@ -143,6 +143,11 @@ Ești un creator de conținut expert în realizarea de scripturi virale pentru T
 
 **IMPARTE SCRIPTUL IN 3 SCENE DISTINCTE. Fiecare scena trebuie sa contina un prompt de imagine in limba engleza, textul pentru ecran, durata si naratiunea.**
 
+**IMPORTANT PENTRU IMAGINI:
+- Toate prompturile pentru imagini trebuie să fie în limba engleză
+- Adaugă întotdeauna 'no text' și 'no people' în prompturile pentru imagini
+- Asigură-te că imaginile sunt potrivite pentru conținutul TikTok**
+
 Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea structură:
 {
     "scenes": [
@@ -150,19 +155,19 @@ Răspunsul tău trebuie să fie întotdeauna în format JSON cu următoarea stru
             "text": "textul care apare pe ecran",
             "duration": durata în secunde,
             "narration": "textul pentru narare",
-            "image_prompt": "prompt în engleză pentru generarea imaginii"
+            "image_prompt": "prompt în engleză pentru generarea imaginii CU 'no text, no people'"
         },
         {
             "text": "textul care apare pe ecran pentru scena 2",
             "duration": durata în secunde,
             "narration": "textul pentru narare pentru scena 2",
-            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 2"
+            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 2 CU 'no text, no people'"
         },
         {
             "text": "textul care apare pe ecran pentru scena 3",
             "duration": durata în secunde,
             "narration": "textul pentru narare pentru scena 3",
-            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 3"
+            "image_prompt": "prompt în engleză pentru generarea imaginii pentru scena 3 'no text, no people'"
         }
     ],
     "hashtags": ["#tag1", "#tag2"]
