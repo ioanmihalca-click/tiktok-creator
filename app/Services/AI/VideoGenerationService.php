@@ -39,24 +39,56 @@ class VideoGenerationService
 
             $videoProject->load('images');
 
-            Log::info('Video project loaded with images', [
-                'project_id' => $videoProject->id,
-                'image_count' => $videoProject->images->count(),
-                'images' => $videoProject->images->toArray()
-            ]);
-
             $script = is_string($videoProject->script) ? json_decode($videoProject->script, true) : $videoProject->script;
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception('Invalid JSON format in videoProject->script: ' . json_last_error_msg());
             }
 
-            $videoDuration = $videoProject->audio_duration; // Corect - durata EXACTĂ
+            $videoDuration = $videoProject->audio_duration;
+
+            // Adaugă un log detaliat pentru a vedea valoarea exactă
+            Log::info('Video duration info', [
+                'project_id' => $videoProject->id,
+                'audio_duration' => $videoDuration,
+                'audio_duration_type' => gettype($videoDuration),
+                'is_null' => $videoDuration === null ? 'yes' : 'no',
+                'audio_url' => $videoProject->audio_url,
+                'audio_cloudinary_id' => $videoProject->audio_cloudinary_id
+            ]);
+
+            // Verifică dacă cumva durata este un string și nu poate fi convertită
+            if (is_string($videoDuration)) {
+                $videoDuration = floatval($videoDuration);
+                Log::info('Converted string duration to float', ['new_duration' => $videoDuration]);
+            }
+
+            // Verifică și repară dacă durata este totuși null sau zero
+            if ($videoDuration === null || $videoDuration <= 0) {
+                Log::warning('Invalid video duration, calculating from script', ['project_id' => $videoProject->id]);
+
+                $videoDuration = 0;
+                if (isset($script['scenes']) && is_array($script['scenes'])) {
+                    foreach ($script['scenes'] as $scene) {
+                        $videoDuration += $scene['duration'] ?? 0;
+                    }
+                }
+
+                // Asigură-te că avem cel puțin o valoare validă
+                $videoDuration = max(1, $videoDuration);
+
+                Log::info('Calculated duration from scenes', ['duration' => $videoDuration]);
+            }
 
             $tracks = [];
 
+            // Adaugă un log înainte de a construi primul track
+            Log::info('Building tracks with duration', ['video_duration' => $videoDuration]);
+
             // 1. Adaugă track-ul pentru LOGO (dacă există)
             if ($videoProject->has_watermark) {
-                $tracks[] = ['clips' => $this->generateLogoClip($videoDuration)];
+                $logoClips = $this->generateLogoClip($videoDuration);
+                Log::info('Generated logo clip', ['clips' => $logoClips]);
+                $tracks[] = ['clips' => $logoClips];
             }
 
             // 2. Adaugă track-ul pentru TEXT
@@ -186,7 +218,7 @@ class VideoGenerationService
             }
 
             // Simplificăm HTML-ul și folosim position: absolute *corect*:
-            $html = '<div style="position: absolute; width: 80%; left: 10%; top: 70%;  color: yellow; font-size: 30px; font-family: Arial, sans-serif;  text-align: center; background-color: rgba(0,0,0,0.5);">';
+            $html = '<div style="position: absolute; width: 70%; left: 10%; top: 70%;  color: yellow; font-size: 30px; font-family: Arial, sans-serif;  text-align: center; background-color: rgba(0,0,0,0.5);">';
             $html .= htmlspecialchars($scene['text']); // O singură linie, fără împărțire, fără <p>
             $html .= '</div>';
 
@@ -217,6 +249,12 @@ class VideoGenerationService
 
     private function generateLogoClip($videoDuration)
     {
+        // Convertește și validează durata
+        $duration = is_numeric($videoDuration) ? (float)$videoDuration : 0;
+        $duration = max(0.1, $duration); // Asigură-te că durata nu este zero
+
+        Log::info('Generating logo clip with duration', ['duration' => $duration]);
+
         return [
             [
                 'asset' => [
@@ -224,14 +262,19 @@ class VideoGenerationService
                     'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1741154703/logo-clips_umdxz3.png',
                 ],
                 'start'  => 0,
-                'length' => $videoDuration,
+                'length' => $duration,
                 'fit'    => 'contain',
-                'position' => 'top',
+                "offset" => [
+                    "x" => 0,
+                    "y" => 0.25
+                ],
+                "position" => "center",
                 'opacity' => 0.5,
-                'scale'  => 0.7
+                'scale'  => 0.15
             ]
         ];
     }
+
     public function checkStatus($renderId)
     {
         try {
