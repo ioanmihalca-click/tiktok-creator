@@ -205,42 +205,59 @@ class VideoGenerationService
     private function generateTextClips($script)
     {
         $clips = [];
-        $currentTime = 0;
+        $currentTime = 0; // Timpul curent (începe de la 0)
 
         if (!isset($script['scenes']) || !is_array($script['scenes'])) {
             Log::warning('Invalid script format: Missing or invalid "scenes" array.', ['script' => $script]);
             return [];
         }
 
-        foreach ($script['scenes'] as $index => $scene) {
-            Log::info('Processing text scene', ['index' => $index, 'scene' => $scene]);
-
+        foreach ($script['scenes'] as $scene) {
             if (!isset($scene['text'], $scene['duration'])) {
                 Log::warning('Invalid scene format: Missing required fields.', ['scene' => $scene]);
                 continue;
             }
 
-            // Revenire la HtmlAsset cu un design îmbunătățit
-            $html = '<div style="position: absolute; width: 85%; left: 7.5%; bottom: 15%; color: white; font-size: 28px; font-family: Arial, sans-serif; text-align: center; background-color: rgba(0,0,0,0.7); padding: 12px; border-radius: 8px; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.4;">';
-            $html .= htmlspecialchars($scene['text']);
+            $words = explode(" ", $scene['text']);
+            $lines = [];
+            $currentLine = "";
+            $maxLineWidth = 25;
+
+            foreach ($words as $word) {
+                if (strlen($currentLine) + strlen($word) + 1 <= $maxLineWidth) {
+                    $currentLine .= ($currentLine === "" ? "" : " ") . $word;
+                } else {
+                    $lines[] = $currentLine;
+                    $currentLine = $word;
+                }
+            }
+
+            $lines[] = $currentLine;
+
+            $html = '<div style="width: 100%; text-align: center; position: absolute; bottom: 20px;">';
+            foreach ($lines as $line) {
+                $html .= '<p style="margin: 5px 0; padding: 10px; font-size: 40px; font-family: Roboto, sans-serif; color: white; background-color: rgba(0, 0, 0, 0.7); border-radius: 15px; display: inline-block; text-transform: uppercase;">' .
+                    htmlspecialchars($line) .
+                    '</p>';
+            }
             $html .= '</div>';
 
             $htmlAsset = [
-                'type' => 'html',
-                'html' => $html,
-                'width' => 854,
-                'height' => 480,
+                'type'      => 'html',
+                'html'      => $html,
+                'width'     => 900,
+                'height'    => 500,
                 'background' => 'transparent'
             ];
 
             $clips[] = [
-                'asset' => $htmlAsset,
-                'start' => $currentTime,
-                'length' => $scene['duration'],
-                'transition' => ['in' => 'fade', 'out' => 'fade'],
+                'asset'     => $htmlAsset,
+                'start'     => $currentTime,       // Timpul de start al scenei curente
+                'length'    => $scene['duration'], // Durata scenei
+                'transition' => ['in' => 'fade', 'out' => 'fade'], // Tranziții fade (opțional)
             ];
 
-            $currentTime += $scene['duration'];
+            $currentTime += $scene['duration'];  // Trecem la următoarea scenă
         }
 
         return $clips;
