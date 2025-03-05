@@ -150,36 +150,39 @@ class GenerateTikTokJob implements ShouldQueue
             }
 
             $narrationResult = $narrationService->generate($fullNarration, $this->voiceId);
+            Log::info('Narration generation completed', [
+                'status' => $narrationResult['status'] ?? 'unknown',
+                'has_audio_duration' => isset($narrationResult['audio_duration']),
+                'audio_duration' => $narrationResult['audio_duration'] ?? null,
+                'audio_duration_type' => isset($narrationResult['audio_duration']) ? gettype($narrationResult['audio_duration']) : 'not_set'
+            ]);
+
             if ($narrationResult['status'] !== 'success') {
                 throw new Exception("Narration generation failed");
             }
 
             $audioUrl = $narrationResult['audio_url'];
             $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
-            $audioDuration = $narrationResult['audio_duration']; // Durata EXACTĂ (de la getID3)
+            $audioDuration = $narrationResult['audio_duration']; // Durata EXACTĂ
 
-            // Adaugă aceste log-uri pentru debugging
-            Log::info('Narration result details', [
-                'status' => $narrationResult['status'],
-                'audio_url' => $narrationResult['audio_url'],
-                'audio_duration' => $narrationResult['audio_duration'],
-                'audio_duration_type' => gettype($narrationResult['audio_duration'])
+            Log::info('Preparing to update project with audio data', [
+                'project_id' => $project->id,
+                'audio_duration' => $audioDuration,
+                'audio_duration_type' => gettype($audioDuration)
             ]);
 
-            // Verifică dacă durata este salvată corect
-            $project->update([
+            $updateResult = $project->update([
                 'audio_url' => $audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId,
-                'audio_duration' => $audioDuration,
+                'audio_duration' => $audioDuration, // Salvăm durata EXACTĂ
             ]);
 
-            // Adaugă un log după update pentru a verifica dacă durata a fost salvată
-            $updatedProject = VideoProject::find($project->id);
-            Log::info('Project after audio update', [
-                'project_id' => $updatedProject->id,
-                'audio_duration' => $updatedProject->audio_duration,
-                'audio_duration_type' => gettype($updatedProject->audio_duration)
+            Log::info('Project update result after adding audio', [
+                'project_id' => $project->id,
+                'update_success' => $updateResult,
+                'updated_fields' => ['audio_url', 'audio_cloudinary_id', 'audio_duration']
             ]);
+
 
 
             DB::commit(); // Commit *înainte* de a genera video

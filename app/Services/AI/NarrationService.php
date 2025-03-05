@@ -70,9 +70,11 @@ class NarrationService
             $fileInfo = $getID3->analyze($tempFile);
             $audioDuration = $fileInfo['playtime_seconds']; // Durata în secunde
 
-            Log::info('Audio duration calculated', [
+            // Adaugă acest log
+            Log::info('Audio duration calculated by getID3', [
                 'duration' => $audioDuration,
-                'duration_type' => gettype($audioDuration)
+                'duration_type' => gettype($audioDuration),
+                'fileInfo_keys' => array_keys($fileInfo)
             ]);
 
             // Setăm timeout mai mare pentru Cloudinary
@@ -90,6 +92,12 @@ class NarrationService
             Log::info('Narration uploaded to Cloudinary', [
                 'cloudinary_url' => $uploadResult->getSecurePath()
             ]);
+
+            Log::info('Returning narration result with duration', [
+                'audio_duration' => $audioDuration,
+                'audio_duration_exists' => isset($audioDuration)
+            ]);
+
 
             return [
                 'status' => 'success',

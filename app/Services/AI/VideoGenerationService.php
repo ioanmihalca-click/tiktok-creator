@@ -217,38 +217,24 @@ class VideoGenerationService
                 continue;
             }
 
-            // Folosim TextAsset cu poziționare centrală și text alb
-            $textAsset = [
-                'type' => 'text',
-                'text' => $scene['text'],
-                'width' => 680, // Lățimea zonei de text 
-                'height' => 200, // Înălțimea zonei de text
-                'font' => [
-                    'family' => 'Open Sans',
-                    'color' => '#FFFFFF', // Culoare albă
-                    'size' => 28,
-                    'weight' => 600, // Un pic mai bold pentru vizibilitate
-                    'lineHeight' => 1.2 // Spațiere bună între rânduri
-                ],
-                'background' => [
-                    'color' => '#000000', // Fundal negru
-                    'opacity' => 0.6 // Semi-transparent
-                ],
-                'alignment' => [
-                    'horizontal' => 'center',
-                    'vertical' => 'center'
-                ]
+            // Revenire la HtmlAsset cu un design îmbunătățit
+            $html = '<div style="position: absolute; width: 85%; left: 7.5%; bottom: 15%; color: white; font-size: 28px; font-family: Arial, sans-serif; text-align: center; background-color: rgba(0,0,0,0.7); padding: 12px; border-radius: 8px; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.4;">';
+            $html .= htmlspecialchars($scene['text']);
+            $html .= '</div>';
+
+            $htmlAsset = [
+                'type' => 'html',
+                'html' => $html,
+                'width' => 854,
+                'height' => 480,
+                'background' => 'transparent'
             ];
 
             $clips[] = [
-                'asset' => $textAsset,
+                'asset' => $htmlAsset,
                 'start' => $currentTime,
                 'length' => $scene['duration'],
                 'transition' => ['in' => 'fade', 'out' => 'fade'],
-                'position' => 'center', // Poziționează textul în centrul ecranului
-                'offset' => [
-                    'y' => 0.2 // Un mic offset pentru a muta textul puțin în jos de centru
-                ]
             ];
 
             $currentTime += $scene['duration'];
@@ -261,7 +247,7 @@ class VideoGenerationService
     {
         // Convertește și validează durata
         $duration = is_numeric($videoDuration) ? (float)$videoDuration : 0;
-        $duration = max(0.1, $duration); // Asigură-te că durata nu este zero
+        $duration = max(0.1, $duration);
 
         Log::info('Generating logo clip with duration', ['duration' => $duration]);
 
@@ -274,7 +260,7 @@ class VideoGenerationService
                 'start' => 0,
                 'length' => $duration,
                 'scale' => 0.15,
-                'position' => 'center',
+                'position' => 'top',
                 'offset' => [
                     'x' => 0,
                     'y' => 0.25
