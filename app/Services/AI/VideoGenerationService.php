@@ -209,7 +209,7 @@ class VideoGenerationService
             return [];
         }
 
-        foreach ($script['scenes'] as $index => $scene) { // Adăugăm indexul
+        foreach ($script['scenes'] as $index => $scene) {
             Log::info('Processing text scene', ['index' => $index, 'scene' => $scene]);
 
             if (!isset($scene['text'], $scene['duration'])) {
@@ -217,33 +217,43 @@ class VideoGenerationService
                 continue;
             }
 
-            // Simplificăm HTML-ul și folosim position: absolute *corect*:
-            $html = '<div style="position: absolute; width: 70%; left: 10%; top: 70%;  color: yellow; font-size: 30px; font-family: Arial, sans-serif;  text-align: center; background-color: rgba(0,0,0,0.5);">';
-            $html .= htmlspecialchars($scene['text']); // O singură linie, fără împărțire, fără <p>
-            $html .= '</div>';
-
-            Log::info('Text HTML', ['html' => $html]); // Verificăm HTML-ul generat
-
-            $htmlAsset = [
-                'type'      => 'html',
-                'html'      => $html,
-                'width'     => 854, // Setăm lățimea la 854 (pentru 9:16, la rezoluția HD)
-                'height'    => 480, // Setăm înălțimea la 480
-                'background' => 'transparent'
+            // Folosim TextAsset cu poziționare centrală și text alb
+            $textAsset = [
+                'type' => 'text',
+                'text' => $scene['text'],
+                'width' => 680, // Lățimea zonei de text 
+                'height' => 200, // Înălțimea zonei de text
+                'font' => [
+                    'family' => 'Open Sans',
+                    'color' => '#FFFFFF', // Culoare albă
+                    'size' => 28,
+                    'weight' => 600, // Un pic mai bold pentru vizibilitate
+                    'lineHeight' => 1.2 // Spațiere bună între rânduri
+                ],
+                'background' => [
+                    'color' => '#000000', // Fundal negru
+                    'opacity' => 0.6 // Semi-transparent
+                ],
+                'alignment' => [
+                    'horizontal' => 'center',
+                    'vertical' => 'center'
+                ]
             ];
 
             $clips[] = [
-                'asset'     => $htmlAsset,
-                'start'     => $currentTime,
-                'length'    => $scene['duration'],
+                'asset' => $textAsset,
+                'start' => $currentTime,
+                'length' => $scene['duration'],
                 'transition' => ['in' => 'fade', 'out' => 'fade'],
+                'position' => 'center', // Poziționează textul în centrul ecranului
+                'offset' => [
+                    'y' => 0.2 // Un mic offset pentru a muta textul puțin în jos de centru
+                ]
             ];
 
-            Log::info('Text clip generated', ['clip' => $clips[$index] ?? null]); // Loghează clipul generat
             $currentTime += $scene['duration'];
         }
 
-        Log::info('All text clips generated', ['clips' => $clips]);
         return $clips;
     }
 
@@ -258,19 +268,18 @@ class VideoGenerationService
         return [
             [
                 'asset' => [
-                    'type'  => 'image',
-                    'src'   => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1741154703/logo-clips_umdxz3.png',
+                    'type' => 'image',
+                    'src' => 'https://res.cloudinary.com/dpxess5iw/image/upload/v1741154703/logo-clips_umdxz3.png',
                 ],
-                'start'  => 0,
+                'start' => 0,
                 'length' => $duration,
-                'fit'    => 'contain',
-                "offset" => [
-                    "x" => 0,
-                    "y" => 0.25
+                'scale' => 0.15,
+                'position' => 'center',
+                'offset' => [
+                    'x' => 0,
+                    'y' => 0.25
                 ],
-                "position" => "center",
-                'opacity' => 0.5,
-                'scale'  => 0.15
+                'opacity' => 0.55
             ]
         ];
     }

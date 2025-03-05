@@ -65,10 +65,15 @@ class NarrationService
             file_put_contents($tempFile, $response->body());
 
             // OBȚINEM DURATA REALĂ:
+            // În NarrationService.php, la calcularea duratei audio
             $getID3 = new getID3;
             $fileInfo = $getID3->analyze($tempFile);
             $audioDuration = $fileInfo['playtime_seconds']; // Durata în secunde
 
+            Log::info('Audio duration calculated', [
+                'duration' => $audioDuration,
+                'duration_type' => gettype($audioDuration)
+            ]);
 
             // Setăm timeout mai mare pentru Cloudinary
             Config::set('cloudinary.upload_timeout', 60);

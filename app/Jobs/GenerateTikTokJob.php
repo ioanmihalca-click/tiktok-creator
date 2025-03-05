@@ -158,10 +158,27 @@ class GenerateTikTokJob implements ShouldQueue
             $audioCloudinaryId = $narrationResult['cloudinary_public_id'];
             $audioDuration = $narrationResult['audio_duration']; // Durata EXACTĂ (de la getID3)
 
+            // Adaugă aceste log-uri pentru debugging
+            Log::info('Narration result details', [
+                'status' => $narrationResult['status'],
+                'audio_url' => $narrationResult['audio_url'],
+                'audio_duration' => $narrationResult['audio_duration'],
+                'audio_duration_type' => gettype($narrationResult['audio_duration'])
+            ]);
+
+            // Verifică dacă durata este salvată corect
             $project->update([
                 'audio_url' => $audioUrl,
                 'audio_cloudinary_id' => $audioCloudinaryId,
-                'audio_duration' => $audioDuration, // Salvăm durata EXACTĂ
+                'audio_duration' => $audioDuration,
+            ]);
+
+            // Adaugă un log după update pentru a verifica dacă durata a fost salvată
+            $updatedProject = VideoProject::find($project->id);
+            Log::info('Project after audio update', [
+                'project_id' => $updatedProject->id,
+                'audio_duration' => $updatedProject->audio_duration,
+                'audio_duration_type' => gettype($updatedProject->audio_duration)
             ]);
 
 

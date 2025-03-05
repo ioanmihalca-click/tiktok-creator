@@ -20,6 +20,7 @@ class VideoProject extends Model
         'status',
         'audio_url',
         'audio_cloudinary_id',
+        'audio_duration',
         'video_url',
         'render_id',
         'category_id',
