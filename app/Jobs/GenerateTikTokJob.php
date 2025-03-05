@@ -112,7 +112,7 @@ class GenerateTikTokJob implements ShouldQueue
             }
 
             foreach ($script['scenes'] as $index => $scene) {
-                Log::info("Processing scene {$index}", ['scene' => $scene]);
+
 
                 if (empty($scene['image_prompt'])) {
                     throw new Exception("Image prompt for scene {$index} is missing");
@@ -120,7 +120,6 @@ class GenerateTikTokJob implements ShouldQueue
 
                 $imageResult = $imageService->generateImage($scene['image_prompt']);
 
-                Log::info("Image generation result for scene {$index}", ['result' => $imageResult]);
 
                 if (!$imageResult['success']) {
                     throw new Exception("Image generation failed for scene {$index}: " . ($imageResult['error'] ?? 'Unknown error'));
@@ -150,12 +149,7 @@ class GenerateTikTokJob implements ShouldQueue
             }
 
             $narrationResult = $narrationService->generate($fullNarration, $this->voiceId);
-            Log::info('Narration generation completed', [
-                'status' => $narrationResult['status'] ?? 'unknown',
-                'has_audio_duration' => isset($narrationResult['audio_duration']),
-                'audio_duration' => $narrationResult['audio_duration'] ?? null,
-                'audio_duration_type' => isset($narrationResult['audio_duration']) ? gettype($narrationResult['audio_duration']) : 'not_set'
-            ]);
+
 
             if ($narrationResult['status'] !== 'success') {
                 throw new Exception("Narration generation failed");
@@ -176,13 +170,6 @@ class GenerateTikTokJob implements ShouldQueue
                 'audio_cloudinary_id' => $audioCloudinaryId,
                 'audio_duration' => $audioDuration, // Salvăm durata EXACTĂ
             ]);
-
-            Log::info('Project update result after adding audio', [
-                'project_id' => $project->id,
-                'update_success' => $updateResult,
-                'updated_fields' => ['audio_url', 'audio_cloudinary_id', 'audio_duration']
-            ]);
-
 
 
             DB::commit(); // Commit *înainte* de a genera video
