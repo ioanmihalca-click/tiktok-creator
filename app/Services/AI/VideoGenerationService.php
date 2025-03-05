@@ -157,25 +157,22 @@ class VideoGenerationService
     {
         $imageClips = [];
         $imageCount = count($videoProject->images);
-        $transitions = [
-            ['in' => 'fade', 'out' => 'slideRight'],
-            ['in' => 'slideLeft', 'out' => 'zoom'],
-            ['in' => 'shuffleTopRightFast', 'out' => 'shuffleBottomLeft'],
-            ['in' => 'zoomIn', 'out' => 'fade'],
+
+        // Define available transitions
+        $availableTransitions = [
+            ['in' => 'fade', 'out' => 'wipeLeft'],
+            ['in' => 'slideUp', 'out' => 'carouselRight'],
+            ['in' => 'revealDown', 'out' => 'fade']
         ];
 
         foreach ($videoProject->images as $index => $image) {
-            $transition = null;
+            // Select transition based on index
+            $transitionIndex = $index % count($availableTransitions);
+            $transition = $availableTransitions[$transitionIndex];
 
-            if ($index < $imageCount - 1) { // Not the last image
-                // Choose a transition based on index or random
-                $transition = $transitions[$index % count($transitions)];
-            } else {
-                // Last image only has in transition
-                $transition = [
-                    'in' => 'fade',
-                    'out' => 'fade'
-                ];
+            // Override for the last image
+            if ($index == $imageCount - 1) {
+                $transition['out'] = 'fade'; // Always fade out on the last image
             }
 
             $imageClips[] = [
@@ -186,8 +183,8 @@ class VideoGenerationService
                 'start' => $image->start,
                 'length' => $image->duration,
                 'fit' => 'cover',
-                'effect' => 'zoomIn', // You can randomize this too
-                'transition' => $transition
+                'effect' => 'kenBurns', // Updated effect
+                'transition' => array_merge($transition, ['duration' => 0.5]) // Add duration
             ];
         }
 
