@@ -158,21 +158,27 @@ class VideoGenerationService
         $imageClips = [];
         $imageCount = count($videoProject->images);
 
-        // Define available transitions
-        $availableTransitions = [
-            ['in' => 'fade', 'out' => 'wipeLeft'],
-            ['in' => 'slideUp', 'out' => 'carouselRight'],
-            ['in' => 'revealDown', 'out' => 'fade']
-        ];
-
         foreach ($videoProject->images as $index => $image) {
-            // Select transition based on index
-            $transitionIndex = $index % count($availableTransitions);
-            $transition = $availableTransitions[$transitionIndex];
+            $transition = null;
 
-            // Override for the last image
-            if ($index == $imageCount - 1) {
-                $transition['out'] = 'fade'; // Always fade out on the last image
+            if ($index < $imageCount - 1) { // Not the last image
+                if ($index % 2 == 0) { // Even index (first, third, etc.)
+                    $transition = [
+                        'in' => 'fade',
+                        'out' => 'shuffleTopRightSlow' // Adjusted to Slow for smoother effect
+                    ];
+                } else { // Odd index (second, fourth, etc.)
+                    $transition = [
+                        'in' => 'shuffleTopRightSlow',
+                        'out' => 'shuffleTopLeft'
+                    ];
+                }
+            } else {
+                // Last image only has in transition
+                $transition = [
+                    'in' => 'shuffleTopRightSlow',
+                    'out' => 'fadeSlow' // Added Slow for a softer ending
+                ];
             }
 
             $imageClips[] = [
@@ -183,8 +189,8 @@ class VideoGenerationService
                 'start' => $image->start,
                 'length' => $image->duration,
                 'fit' => 'cover',
-                'effect' => 'kenBurns', // Updated effect
-                'transition' => array_merge($transition, ['duration' => 0.5]) // Add duration
+                'effect' => 'zoomIn',
+                'transition' => $transition
             ];
         }
 
