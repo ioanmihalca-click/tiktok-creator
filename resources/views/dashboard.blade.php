@@ -10,23 +10,46 @@
             <div class="p-8 border rounded-2xl bg-white/5 backdrop-blur-sm border-white/10 hover:bg-white/[0.07]">
                 <!-- Stats Section -->
                 <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
-                    <!-- Videos Created -->
-                    <div class="p-6 border rounded-xl bg-white/5 border-white/10">
-                        <div class="flex items-center gap-4">
-                            <div class="p-3 rounded-lg bg-purple-500/20">
-                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-400">Videoclipuri Create</p>
-                                <p class="text-2xl font-bold text-white">
-                                    {{ Auth::user()->videoProjects ? Auth::user()->videoProjects->count() : 0 }}</p>
+                    <!-- Create New TikTok -->
+                    <a href="{{ route('tiktoks.create') }}" class="block">
+                        <div
+                            class="p-6 transition-colors border rounded-xl bg-white/5 border-white/10 hover:bg-white/10">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 rounded-lg bg-green-500/20">
+                                    <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Crează TikTok</p>
+                                    <p class="text-2xl font-bold text-white">Nou</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
+
+                    <!-- Videos Created -->
+                    <a href="{{ route('tiktoks.list') }}" class="block">
+                        <div
+                            class="p-6 transition-colors border rounded-xl bg-white/5 border-white/10 hover:bg-white/10">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 rounded-lg bg-purple-500/20">
+                                    <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Videoclipuri Create</p>
+                                    <p class="text-2xl font-bold text-white">
+                                        {{ Auth::user()->videoProjects ? Auth::user()->videoProjects->count() : 0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
 
                     <!-- Available Credits -->
                     <a href="{{ route('credits.index') }}" class="block">
@@ -55,25 +78,7 @@
                         </div>
                     </a>
 
-                    <!-- Subscription Status -->
-                    <div class="p-6 border rounded-xl bg-white/5 border-white/10">
-                        <div class="flex items-center gap-4">
-                            <div class="p-3 rounded-lg bg-pink-500/20">
-                                <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-400">Plan Curent</p>
-                                <p class="text-2xl font-bold text-white">Free</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-
-
             </div>
         </div>
     </div>
