@@ -40,15 +40,17 @@ class VideoGenerationService
 
     public function generate($videoProject)
     {
+        // Forțează mediul corect bazat pe watermark
+        $forceEnvironment = $videoProject->has_watermark ? 'sandbox' : 'production';
 
-        // Verifică explicit tipul creditului înainte de a seta mediul
-        Log::info('Video project environment check', [
+        Log::info('Forcing environment in VideoGenerationService', [
             'project_id' => $videoProject->id,
-            'environment_type' => $videoProject->environment_type,
+            'db_environment' => $videoProject->environment_type,
+            'forced_environment' => $forceEnvironment,
             'has_watermark' => $videoProject->has_watermark
         ]);
 
-        $this->setEnvironment($videoProject->environment_type);
+        $this->setEnvironment($forceEnvironment);
 
         try {
 
@@ -155,27 +157,23 @@ class VideoGenerationService
     {
         $imageClips = [];
         $imageCount = count($videoProject->images);
+        $transitions = [
+            ['in' => 'fade', 'out' => 'slideRight'],
+            ['in' => 'slideLeft', 'out' => 'zoom'],
+            ['in' => 'shuffleTopRightFast', 'out' => 'shuffleBottomLeft'],
+            ['in' => 'zoomIn', 'out' => 'fade'],
+        ];
 
         foreach ($videoProject->images as $index => $image) {
-            // Determine which transition to use based on image position
             $transition = null;
 
             if ($index < $imageCount - 1) { // Not the last image
-                if ($index % 2 == 0) { // Even index (first, third, etc.)
-                    $transition = [
-                        'in' => 'fade',
-                        'out' => 'shuffleTopRightFast'
-                    ];
-                } else { // Odd index (second, fourth, etc.)
-                    $transition = [
-                        'in' => 'shuffleTopRightFast',
-                        'out' => 'shuffleTopLeft'
-                    ];
-                }
+                // Choose a transition based on index or random
+                $transition = $transitions[$index % count($transitions)];
             } else {
                 // Last image only has in transition
                 $transition = [
-                    'in' => 'shuffleTopRightFast',
+                    'in' => 'fade',
                     'out' => 'fade'
                 ];
             }
@@ -188,14 +186,13 @@ class VideoGenerationService
                 'start' => $image->start,
                 'length' => $image->duration,
                 'fit' => 'cover',
-                'effect' => 'zoomIn',
+                'effect' => 'zoomIn', // You can randomize this too
                 'transition' => $transition
             ];
         }
 
         return $imageClips;
     }
-
 
     private function generateAudioClip($videoProject, $videoDuration)
     {
