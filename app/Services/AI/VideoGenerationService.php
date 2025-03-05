@@ -263,10 +263,10 @@ class VideoGenerationService
                 'start' => 0,
                 'length' => $duration,
                 'scale' => 0.15,
-                'position' => 'top',
+                'position' => 'center',
                 'offset' => [
                     'x' => 0,
-                    'y' => 0.25
+                    'y' => 0.4
                 ],
                 'opacity' => 0.5
             ]

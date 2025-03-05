@@ -501,6 +501,10 @@
                                                             class="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-progress">
                                                         </div>
                                                     </div>
+                                                    <p class="mt-2 text-sm text-center text-gray-400">
+                                                        Procesarea videoclipului durează câteva minute. Vă mulțumim
+                                                        pentru răbdare!
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
