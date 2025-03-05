@@ -128,7 +128,7 @@ class CreateTikTok extends Component
 
     public function generate()
     {
-        // Verificăm dacă utilizatorul are credite disponibile
+        // Verificăm doar disponibilitatea creditelor, fără a le deduce
         $user = User::find(Auth::id());
         $this->creditType = $this->creditService->checkCreditType($user);
         $this->hasCredits = (bool) $this->creditType;
@@ -140,8 +140,8 @@ class CreateTikTok extends Component
 
         $this->reset(['videoUrl', 'script', 'imageUrl', 'audioUrl', 'completedSteps', 'projectId', 'jobStarted']);
         $this->isProcessing = true;
-        $this->showInitialProcessingModal = true;  // Afișăm modalul inițial
-        $this->initialProcessingComplete = false;  // Resetăm flag-ul de finalizare
+        $this->showInitialProcessingModal = true;
+        $this->initialProcessingComplete = false;
         $this->dispatch('processingStarted');
 
         $this->validate([
@@ -151,25 +151,16 @@ class CreateTikTok extends Component
         try {
             $this->currentStep = 'Inițializare generare TikTok...';
 
-            //Incepem tranzactia
+            // Începem tranzacția
             DB::beginTransaction();
-            // Deducem creditul *INAINTE* de a începe generarea. Apel DIRECT pe $user
-            $deductResult = $user->deductCredit();
 
-            if (!$deductResult['success']) {
-                // Daca nu s-a putut deduce creditul.
-                DB::rollBack();
-                session()->flash('error', 'Nu ai credite suficiente pentru a genera un videoclip.');
-                $this->isProcessing = false;
-                $this->showInitialProcessingModal = false; // Ascundem modalul
-                return;
-            }
+            // ELIMINAT: $deductResult = $user->deductCredit(); 
+            // Nu mai deducem creditul aici, se va face în job
 
             // Marcăm faptul că jobul este în curs de pornire
             $this->jobStarted = true;
 
             // Salvăm un proiect inițial pentru a avea un ID
-            //$user = User::find(Auth::id()); // Nu mai e nevoie, avem deja $user
             $initialProject = $user->videoProjects()->create([
                 'title' => $this->title ?? $this->categoryService->getCategoryFullPath($this->categorySlug) . " TikTok",
                 'status' => 'processing',
@@ -178,16 +169,12 @@ class CreateTikTok extends Component
             $this->projectId = $initialProject->id;
 
             // Dispatch job-ul pentru generarea TikTok
-
             GenerateTikTokJob::dispatch($user, $this->categorySlug, $this->title, $initialProject->id, $this->selectedVoiceId);
 
-            // Nu mai schimbăm currentStep aici - rămâne în starea inițială
-            // Pentru a permite vizualizarea modalului pentru o perioadă mai lungă de timp
-
             session()->flash('message', 'Procesul de generare a început. Acest lucru poate dura câteva minute.');
-            DB::commit(); //Comitem tranzactia
+            DB::commit(); //Comitem tranzacția
         } catch (Exception $e) {
-            DB::rollBack(); //Rollback in caz de eroare
+            DB::rollBack(); //Rollback în caz de eroare
             $this->showInitialProcessingModal = false;
             $this->isProcessing = false;
             $this->currentStep = 'Eroare: ' . $e->getMessage();
