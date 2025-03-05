@@ -63,6 +63,7 @@ class GenerateTikTokJob implements ShouldQueue
 
             $environmentType = $creditService->getEnvironmentType($this->user);
             $hasWatermark = $creditService->shouldHaveWatermark($this->user);
+
             DB::beginTransaction();
 
             $categoryName = $categoryService->getCategoryFullPath($this->categorySlug);
@@ -205,9 +206,9 @@ class GenerateTikTokJob implements ShouldQueue
             Log::info('GenerateTikTokJob completed successfully', [
                 'project_id' => $project->id,
                 'render_id' => $videoResult['render_id'],
-                // 'credit_type' => $creditType, // Comentat temporar
-                // 'environment_type' => $environmentType, // Comentat temporar
-                // 'has_watermark' => $hasWatermark // Comentat temporar
+                'credit_type' => $creditType,
+                'environment_type' => $environmentType,
+                'has_watermark' => $hasWatermark
             ]);
         } catch (Exception $e) {
             DB::rollBack();

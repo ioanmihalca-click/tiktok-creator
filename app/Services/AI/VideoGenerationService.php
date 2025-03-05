@@ -148,18 +148,18 @@ class VideoGenerationService
                 if ($index % 2 == 0) { // Even index (first, third, etc.)
                     $transition = [
                         'in' => 'fade',
-                        'out' => 'shuffleTopRight'
+                        'out' => 'shuffleTopRightFast'
                     ];
                 } else { // Odd index (second, fourth, etc.)
                     $transition = [
-                        'in' => 'fade',
+                        'in' => 'shuffleRightBottomFast',
                         'out' => 'shuffleTopLeft'
                     ];
                 }
             } else {
                 // Last image only has in transition
                 $transition = [
-                    'in' => 'fade',
+                    'in' => 'shuffleRightBottomFast',
                     'out' => 'fade'
                 ];
             }
