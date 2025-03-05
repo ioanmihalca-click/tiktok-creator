@@ -39,6 +39,12 @@ class VideoGenerationService
 
             $videoProject->load('images');
 
+            Log::info('Video project loaded with images', [
+                'project_id' => $videoProject->id,
+                'image_count' => $videoProject->images->count(),
+                'images' => $videoProject->images->toArray()
+            ]);
+
             $script = is_string($videoProject->script) ? json_decode($videoProject->script, true) : $videoProject->script;
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new Exception('Invalid JSON format in videoProject->script: ' . json_last_error_msg());
@@ -46,23 +52,25 @@ class VideoGenerationService
 
             $videoDuration = $videoProject->audio_duration;
 
-            // Adaugă un log detaliat pentru a vedea valoarea exactă
-            Log::info('Video duration info', [
-                'project_id' => $videoProject->id,
-                'audio_duration' => $videoDuration,
-                'audio_duration_type' => gettype($videoDuration),
-                'is_null' => $videoDuration === null ? 'yes' : 'no',
-                'audio_url' => $videoProject->audio_url,
-                'audio_cloudinary_id' => $videoProject->audio_cloudinary_id
-            ]);
+            // Distribuie durata audio în mod egal între scene dacă avem o durată audio
+            if ($videoDuration && isset($script['scenes']) && count($script['scenes']) > 0) {
+                // Distribuie durata audio în mod egal între scene
+                $sceneCount = count($script['scenes']);
+                $baseDuration = $videoDuration / $sceneCount;
 
-            // Verifică dacă cumva durata este un string și nu poate fi convertită
-            if (is_string($videoDuration)) {
-                $videoDuration = floatval($videoDuration);
-                Log::info('Converted string duration to float', ['new_duration' => $videoDuration]);
+                // Actualizează scriptul cu durate egale
+                foreach ($script['scenes'] as &$scene) {
+                    $scene['duration'] = $baseDuration;
+                }
+
+                Log::info('Set equal scene durations based on audio length', [
+                    'audio_duration' => $videoDuration,
+                    'scene_count' => $sceneCount,
+                    'duration_per_scene' => $baseDuration
+                ]);
             }
 
-            // Verifică și repară dacă durata este totuși null sau zero
+            // Verifică dacă durata este validă
             if ($videoDuration === null || $videoDuration <= 0) {
                 Log::warning('Invalid video duration, calculating from script', ['project_id' => $videoProject->id]);
 
@@ -81,23 +89,18 @@ class VideoGenerationService
 
             $tracks = [];
 
-            // Adaugă un log înainte de a construi primul track
-            Log::info('Building tracks with duration', ['video_duration' => $videoDuration]);
-
-            // 1. Adaugă track-ul pentru LOGO (dacă există)
+            // Adaugă track-ul pentru LOGO (dacă există)
             if ($videoProject->has_watermark) {
-                $logoClips = $this->generateLogoClip($videoDuration);
-                Log::info('Generated logo clip', ['clips' => $logoClips]);
-                $tracks[] = ['clips' => $logoClips];
+                $tracks[] = ['clips' => $this->generateLogoClip($videoDuration)];
             }
 
-            // 2. Adaugă track-ul pentru TEXT
+            // Adaugă track-ul pentru TEXT
             $tracks[] = ['clips' => $this->generateTextClips($script)];
 
-            // 3. Adaugă track-ul pentru IMAGINI
+            // Adaugă track-ul pentru IMAGINI
             $tracks[] = ['clips' => $this->generateImageClips($videoProject)];
 
-            // 4. Adaugă track-ul pentru AUDIO
+            // Adaugă track-ul pentru AUDIO
             $tracks[] = ['clips' => $this->generateAudioClip($videoProject, $videoDuration)];
 
 
@@ -265,7 +268,7 @@ class VideoGenerationService
                     'x' => 0,
                     'y' => 0.25
                 ],
-                'opacity' => 0.55
+                'opacity' => 0.5
             ]
         ];
     }
