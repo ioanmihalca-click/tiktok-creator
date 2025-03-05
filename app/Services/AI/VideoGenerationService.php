@@ -26,14 +26,13 @@ class VideoGenerationService
 
     public function setEnvironment(string $environment)
     {
+        $isProd = (strtolower(trim($environment)) === 'production');
+
         Log::info('Setting video environment', [
             'environment_value' => $environment,
-            'is_production' => $environment === 'production',
-            'value_length' => strlen($environment),
-            'type' => gettype($environment)
+            'is_production' => $isProd,
+            'using_production' => $isProd ? 'YES' : 'NO'
         ]);
-
-        $isProd = (strtolower(trim($environment)) === 'production');
 
         $this->apiKey = $isProd ? $this->productionApiKey : $this->sandboxApiKey;
         $this->baseUrl = $isProd ? $this->productionBaseUrl : $this->sandboxBaseUrl;

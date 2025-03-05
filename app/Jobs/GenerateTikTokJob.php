@@ -96,7 +96,9 @@ class GenerateTikTokJob implements ShouldQueue
                     'audio_url' => null,
                     'audio_cloudinary_id' => null,
                     'audio_duration' => null,
-                    'category_id' => $categoryId
+                    'category_id' => $categoryId,
+                    'environment_type' => $environmentType,
+                    'has_watermark' => $hasWatermark
                 ]);
             } else {
                 $project = $this->user->videoProjects()->create([
