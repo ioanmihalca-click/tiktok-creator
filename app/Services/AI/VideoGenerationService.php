@@ -26,12 +26,29 @@ class VideoGenerationService
 
     public function setEnvironment(string $environment)
     {
-        $this->apiKey = ($environment === 'production') ? $this->productionApiKey : $this->sandboxApiKey;
-        $this->baseUrl = ($environment === 'production') ? $this->productionBaseUrl : $this->sandboxBaseUrl;
+        Log::info('Setting video environment', [
+            'environment_value' => $environment,
+            'is_production' => $environment === 'production',
+            'value_length' => strlen($environment),
+            'type' => gettype($environment)
+        ]);
+
+        $isProd = (strtolower(trim($environment)) === 'production');
+
+        $this->apiKey = $isProd ? $this->productionApiKey : $this->sandboxApiKey;
+        $this->baseUrl = $isProd ? $this->productionBaseUrl : $this->sandboxBaseUrl;
     }
 
     public function generate($videoProject)
     {
+
+        // Verifică explicit tipul creditului înainte de a seta mediul
+        Log::info('Video project environment check', [
+            'project_id' => $videoProject->id,
+            'environment_type' => $videoProject->environment_type,
+            'has_watermark' => $videoProject->has_watermark
+        ]);
+
         $this->setEnvironment($videoProject->environment_type);
 
         try {
@@ -152,14 +169,14 @@ class VideoGenerationService
                     ];
                 } else { // Odd index (second, fourth, etc.)
                     $transition = [
-                        'in' => 'shuffleRightBottomFast',
+                        'in' => 'shuffleTopRightFast',
                         'out' => 'shuffleTopLeft'
                     ];
                 }
             } else {
                 // Last image only has in transition
                 $transition = [
-                    'in' => 'shuffleRightBottomFast',
+                    'in' => 'shuffleTopRightFast',
                     'out' => 'fade'
                 ];
             }
